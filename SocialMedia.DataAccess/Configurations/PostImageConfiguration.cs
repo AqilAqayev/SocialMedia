@@ -8,7 +8,6 @@ internal class PostImageConfiguration : IEntityTypeConfiguration<PostImage>
 {
     public void Configure(EntityTypeBuilder<PostImage> builder)
     {
-        
         builder.Property(pi => pi.ImageUrl)
             .IsRequired()
             .HasMaxLength(50000);
