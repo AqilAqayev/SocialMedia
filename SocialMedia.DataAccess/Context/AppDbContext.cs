@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SocialMedia.Core.Entities;
+using System.Reflection.Emit;
 
 namespace SocialMedia.DataAccess.Context;
 public class AppDbContext : IdentityDbContext<AppUser>
@@ -17,5 +18,21 @@ public class AppDbContext : IdentityDbContext<AppUser>
     public DbSet<CommentLike> CommentLikes { get; set; }
     public DbSet<Story> Stories { get; set; }
     public DbSet<StoryVideo> StoryVideos { get; set; }
-    public DbSet<Message> Messages { get; set; }
+    public DbSet<Message> messages { get; set; }
+
+    //protected override void OnModelCreating(ModelBuilder builder)
+    //{
+    //    builder.Entity<Comment>()
+    //   .HasOne(c => c.Post)
+    //   .WithMany(p => p.Comments)
+    //   .HasForeignKey(c => c.PostId)
+    //   .OnDelete(DeleteBehavior.Restrict);
+
+
+    //    builder.Entity<Comment>()
+    //    .HasOne(c => c.User)
+    //    .WithMany()
+    //    .HasForeignKey(c => c.UserId)
+    //    .OnDelete(DeleteBehavior.Restrict);
+    //}
 }
