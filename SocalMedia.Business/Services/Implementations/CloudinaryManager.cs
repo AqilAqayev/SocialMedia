@@ -1,11 +1,13 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using SocalMedia.Business.Services.Abstractions;
 using System.Net;
 
 namespace SocalMedia.Business.Services.Implementations;
 
-public class CloudinaryManager
+public class CloudinaryManager : ICloudinaryManager
 {
     private readonly IConfiguration _configuration;
     private readonly CloudinaryOptionsDto _optionsDto;

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Http;
 
-namespace SocalMedia.Business.Services.Abstractions
+namespace SocalMedia.Business.Services.Abstractions;
+
+public interface ICloudinaryManager
 {
-    internal interface ICloudinaryManager
-    {
-    }
+    Task<string> FileCreateAsync(IFormFile file);
+    Task<bool> FileDeleteAsync(string filePath);
 }

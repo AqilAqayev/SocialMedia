@@ -1,10 +1,24 @@
 using SocialMedia.DataAccess.ServiceRegistrations;
+using SocalMedia.Business.ServiceRegistrations;
+using Microsoft.AspNetCore.Identity;
+using SocialMedia.Core.Entities;
+using SocialMedia.DataAccess.Context;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDataAccessServices(builder.Configuration);
-
+builder.Services.AddBllServices();
+builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
+{
+    options.Password.RequiredLength = 8;
+    options.Lockout.AllowedForNewUsers = true;
+    options.Lockout.MaxFailedAccessAttempts = 10;
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
+    options.Password.RequireNonAlphanumeric = true;
+    //options.SignIn.RequireConfirmedEmail = true;
+}).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

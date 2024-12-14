@@ -8,13 +8,13 @@ namespace SocialMedia.Core.Entities
         public string NickName { get; set; } = null!;
         public DateTime CreatedTime { get; set; }
         public DateTime? UpdateTime { get; set; }
-        public int FollowerCount { get; set; }
-        public int FollowingCount { get; set; }
-        public int PostCount { get; set; }
-        public string Biography { get; set; } = null!;
+        public int FollowerCount { get; set; } = 0;
+        public int FollowingCount { get; set; } = 0;
+        public int PostCount { get; set; } = 0;
+        public string? Biography { get; set; } 
         public bool IsActive { get; set; }
         public GenderType Gender { get; set; }
-        public bool IsPrivate { get; set; }
+        public bool IsPrivate { get; set; } = false;    
     }
 
 }

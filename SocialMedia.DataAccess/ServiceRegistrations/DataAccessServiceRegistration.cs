@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SocialMedia.DataAccess.Context;
+using SocialMedia.DataAccess.DataInitalizers;
 using SocialMedia.DataAccess.Repositories.Abstraction;
 using SocialMedia.DataAccess.Repositories.Implementations;
 
@@ -13,6 +14,8 @@ namespace SocialMedia.DataAccess.ServiceRegistrations
         public static IServiceCollection AddDataAccessServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("Default")));
+
+            //services.AddScoped<DbContextInitalizer>();
 
             AddRepositories(services);
 
