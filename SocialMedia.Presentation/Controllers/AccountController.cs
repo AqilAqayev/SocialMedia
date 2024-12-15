@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic;
-using SocalMedia.Business.Dtos;
-using SocalMedia.Business.Services.Abstractions;
+using SocalMedia.Business.Dtos.Account;
+using SocalMedia.Business.UiServices.Abstractions;
 using SocialMedia.Core.Entities;
 
 namespace SocialMedia.Presentation.Controllers

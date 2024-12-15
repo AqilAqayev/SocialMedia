@@ -12,7 +12,7 @@ builder.Services.AddDataAccessServices(builder.Configuration);
 builder.Services.AddBllServices();
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {
-    options.Password.RequiredLength = 8;
+    options.Password.RequiredLength = 8;    
     options.Lockout.AllowedForNewUsers = true;
     options.Lockout.MaxFailedAccessAttempts = 10;
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);

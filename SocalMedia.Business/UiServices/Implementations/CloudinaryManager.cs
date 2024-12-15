@@ -2,10 +2,10 @@
 using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using SocalMedia.Business.Services.Abstractions;
+using SocalMedia.Business.UiServices.Abstractions;
 using System.Net;
 
-namespace SocalMedia.Business.Services.Implementations;
+namespace SocalMedia.Business.UiServices.Implementations;
 
 public class CloudinaryManager : ICloudinaryManager
 {
@@ -67,7 +67,7 @@ public class CloudinaryManager : ICloudinaryManager
             return false;
         }
     }
-    
+
 }
 public class CloudinaryOptionsDto
 {

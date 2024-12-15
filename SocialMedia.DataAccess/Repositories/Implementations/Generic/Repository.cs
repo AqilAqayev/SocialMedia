@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 
 namespace SocialMedia.DataAccess.Repositories.Implementations.Generic;
 
-internal abstract class Repository<T> : IRepository<T> where T : BaseEntity
+internal  class Repository<T> : IRepository<T> where T : BaseEntity
 {
     private readonly AppDbContext _context;
     private DbSet<T> _table;

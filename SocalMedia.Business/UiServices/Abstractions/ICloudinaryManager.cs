@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace SocalMedia.Business.Services.Abstractions;
+namespace SocalMedia.Business.UiServices.Abstractions;
 
 public interface ICloudinaryManager
 {

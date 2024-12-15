@@ -1,7 +1,7 @@
 ﻿using SocialMedia.Core.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace SocalMedia.Business.Dtos;
+namespace SocalMedia.Business.Dtos.Account;
 
 public class RegisterDto
 {
@@ -15,5 +15,5 @@ public class RegisterDto
     [Compare(nameof(Password), ErrorMessage = "Passwords do not match")]
     public string ConfirmPassword { get; set; } = null!;
     public string PhoneNumber { get; set; } = null!;
-    public GenderType Gender { get; set; }  
+    public GenderType Gender { get; set; }
 }

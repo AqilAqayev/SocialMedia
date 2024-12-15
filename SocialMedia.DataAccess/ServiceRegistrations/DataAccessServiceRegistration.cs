@@ -4,7 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 using SocialMedia.DataAccess.Context;
 using SocialMedia.DataAccess.DataInitalizers;
 using SocialMedia.DataAccess.Repositories.Abstraction;
+using SocialMedia.DataAccess.Repositories.Abstraction.Generic;
 using SocialMedia.DataAccess.Repositories.Implementations;
+using SocialMedia.DataAccess.Repositories.Implementations.Generic;
 
 
 namespace SocialMedia.DataAccess.ServiceRegistrations
@@ -23,6 +25,8 @@ namespace SocialMedia.DataAccess.ServiceRegistrations
         }
         private static void AddRepositories(IServiceCollection services)
         {
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
             services.AddScoped<IMessageRepository,MessageRepository>();
 
             services.AddScoped<ICommentLikeRepository,CommentLikeRepository>();

@@ -1,0 +1,10 @@
+﻿using SocalMedia.Business.Dtos.Generic;
+
+namespace SocalMedia.Business.Dtos.PostImageDtos;
+
+public class PostImageDto :IDto
+{
+    public int Id { get; set; }
+    public int PostId { get; set; }
+    public string ImageUrl { get; set; } = null!;
+}

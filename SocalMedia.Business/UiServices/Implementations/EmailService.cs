@@ -1,9 +1,9 @@
-﻿using SocalMedia.Business.Services.Abstractions;
-using System.Net.Mail;
+﻿using System.Net.Mail;
 using System.Net;
 using Microsoft.Extensions.Configuration;
+using SocalMedia.Business.UiServices.Abstractions;
 
-namespace SocalMedia.Business.Services.Implementations;
+namespace SocalMedia.Business.UiServices.Implementations;
 
 public class EmailService : IEmailService
 {
