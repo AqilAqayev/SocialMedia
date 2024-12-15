@@ -5,6 +5,7 @@ namespace SocalMedia.Business.Dtos;
 
 public class RegisterDto
 {
+    public string UserName { get; set; } = null!;
     public string NickName { get; set; } = null!;
     [DataType(DataType.EmailAddress)]
     public string Email { get; set; } = null!;

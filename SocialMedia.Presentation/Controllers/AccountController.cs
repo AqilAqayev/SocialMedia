@@ -27,6 +27,7 @@ namespace SocialMedia.Presentation.Controllers
         {
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> Register(RegisterDto registerDto)
         {
@@ -37,13 +38,14 @@ namespace SocialMedia.Presentation.Controllers
 
             var user = new AppUser
             {
+                UserName = registerDto.UserName,
                 NickName = registerDto.NickName,
                 Email = registerDto.Email,
                 PhoneNumber = registerDto.PhoneNumber,
-                CreatedTime= DateTime.UtcNow,
-                UpdateTime= DateTime.UtcNow,
+                CreatedTime = DateTime.UtcNow,
+                UpdateTime = DateTime.UtcNow,
                 Gender = registerDto.Gender,
-                EmailConfirmed = false
+                EmailConfirmed = true 
             };
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
@@ -56,16 +58,48 @@ namespace SocialMedia.Presentation.Controllers
                 return View();
             }
 
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-
-            var confirmationLink = Url.Action("ConfirmEmail", "Account",
-                new { userId = user.Id, token = token }, Request.Scheme);
-
-            _emailService.SendEmail(user.Email, "Email Confirmation",
-                $"Please confirm your email by clicking <a href='{confirmationLink}'>here</a>.");
-
-            return RedirectToAction("Login", "Account");
+            return RedirectToAction("Index", "Home");
         }
+        //[HttpPost]
+        //public async Task<IActionResult> Register(RegisterDto registerDto)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return View();
+        //    }
+
+        //    var user = new AppUser
+        //    {
+        //        UserName=registerDto.UserName,
+        //        NickName = registerDto.NickName,
+        //        Email = registerDto.Email,
+        //        PhoneNumber = registerDto.PhoneNumber,
+        //        CreatedTime= DateTime.UtcNow,
+        //        UpdateTime= DateTime.UtcNow,
+        //        Gender = registerDto.Gender,
+        //        EmailConfirmed = false
+        //    };
+
+        //    var result = await _userManager.CreateAsync(user, registerDto.Password);
+        //    if (!result.Succeeded)
+        //    {
+        //        foreach (var error in result.Errors)
+        //        {
+        //            ModelState.AddModelError("", error.Description);
+        //        }
+        //        return View();
+        //    }
+
+        //    var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+        //    var confirmationLink = Url.Action("ConfirmEmail", "Account",
+        //        new { userId = user.Id, token = token }, Request.Scheme);
+
+        //    _emailService.SendEmail(user.Email, "Email Confirmation",
+        //        $"Please confirm your email by clicking <a href='{confirmationLink}'>here</a>.");
+
+        //    return RedirectToAction("Login", "Account");
+        //}
 
         public async Task<IActionResult> ConfirmEmail(string userId, string token)
         {

@@ -1,4 +1,4 @@
-﻿@model RegisterDto
+﻿    @model RegisterDto
 @{
     Layout = null;
 }
@@ -68,29 +68,34 @@
                             <h1 class="mb-0">Sign Up</h1>
                             <p>Enter your email address and password to access admin panel.</p>
                             <form asp-controller="Account" asp-action="Register" method="post" class="mt-4">
+                                <div asp-validation-summary="ModelOnly"></div>
                                 <div class="form-group">
                                     <label class="form-label" for="NickName">Nickname</label>
-                                    <input type="text" class="form-control mb-0" id="NickName" name="NickName" placeholder="Enter your nickname" required>
+                                    <input type="text" asp-for="NickName" class="form-control mb-0" id="NickName" name="NickName" placeholder="Enter your nickname" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="UserName">UserName</label>
+                                    <input type="text" asp-for="UserName" class="form-control mb-0" id="UserName" name="UserName" placeholder="Enter your UserName" required>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label" for="Email">Email Address</label>
-                                    <input type="email" class="form-control mb-0" id="Email" name="Email" placeholder="Enter your email address" required>
+                                    <input type="email" asp-for="Email" class="form-control mb-0" id="Email" name="Email" placeholder="Enter your email address" required>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label" for="Password">Password</label>
-                                    <input type="password" class="form-control mb-0" id="Password" name="Password" placeholder="Enter your password" required>
+                                    <input type="password" asp-for="Password" class="form-control mb-0" id="Password" name="Password" placeholder="Enter your password" required>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label" for="ConfirmPassword">Confirm Password</label>
-                                    <input type="password" class="form-control mb-0" id="ConfirmPassword" name="ConfirmPassword" placeholder="Re-enter your password" required>
+                                    <input type="password" asp-for="ConfirmPassword" class="form-control mb-0" id="ConfirmPassword" name="ConfirmPassword" placeholder="Re-enter your password" required>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label" for="PhoneNumber">Phone Number</label>
-                                    <input type="text" class="form-control mb-0" id="PhoneNumber" name="PhoneNumber" placeholder="Enter your phone number" required>
+                                    <input type="text" asp-for="PhoneNumber" class="form-control mb-0" id="PhoneNumber" name="PhoneNumber" placeholder="Enter your phone number" required>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label" for="Gender">Gender</label>
-                                    <select class="form-control mb-0" id="Gender" name="Gender" required>
+                                    <select class="form-control mb-0" asp-for="Gender" id="Gender" name="Gender" required>
                                         <option value="" disabled selected>Select your gender</option>
                                         <option value="0">Male</option>
                                         <option value="1">Female</option>
