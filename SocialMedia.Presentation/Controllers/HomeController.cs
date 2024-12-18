@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using SocalMedia.Business.Dtos.HomeDtos;
+using SocalMedia.Business.Services.Abstractions;
 using SocialMedia.Presentation.Models;
 using System.Diagnostics;
 
@@ -6,16 +8,27 @@ namespace SocialMedia.Presentation.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IPostService _postService;
+        private readonly IPostImageService _postImageService;
+        private readonly IPostVideoService _postVideoService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IPostService postService, IPostImageService postImageService, IPostVideoService postVideoService)
         {
-            _logger = logger;
+            _postService = postService;
+            _postImageService = postImageService;
+            _postVideoService = postVideoService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            HomeDto homeDto = new HomeDto
+            {
+                Posts = await _postService.GetAllAsync(),
+                PostImages= await _postImageService.GetAllAsync(),
+                PostVideos = await _postVideoService.GetAllAsync(),
+                
+            };    
+            return View(homeDto);
         }
 
         public IActionResult Privacy()
