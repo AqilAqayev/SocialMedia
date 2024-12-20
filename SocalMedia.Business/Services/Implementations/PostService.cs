@@ -38,8 +38,8 @@ public class PostService : CrudService<Post, CreatePostDto, UpdatePostDto, PostD
            
             Text = p.Text,
             CreatedTime = p.CreatedTime,
-            ImageUrls = p.PostImages.Select(i => i.ImageUrl).ToList(),
-            VideoUrls = p.PostVideos.Select(v => v.VideoUrl).ToList(),
+            //ImageUrls = p.PostImages.Select(i => i.ImageUrl).ToList(),
+            //VideoUrls = p.PostVideos.Select(v => v.VideoUrl).ToList(),
             Comments = p.Comments.Select(c => c.Text).ToList(),
         }).ToList();
     }
