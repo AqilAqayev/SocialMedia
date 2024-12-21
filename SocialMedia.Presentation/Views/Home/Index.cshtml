@@ -1,5 +1,10 @@
 ﻿@using SocalMedia.Business.Dtos.HomeDtos
 @model HomeDto
+<style>
+    .card_card-block_card-stretch_card-height{
+
+    }
+</style>
 <div id="content-page" class="content-page">
     <div class="container">
         <div class="row">
@@ -21,7 +26,7 @@
                 </form>
                 @foreach (var post in Model.Posts)
                 {
-                    <div class="card card-block card-stretch card-height">
+                    <div class="card_card-block_card-stretch_card-height">
                         <div class="card-body">
                             <div class="user-post-data">
                                 <div class="d-flex justify-content-between">
@@ -96,7 +101,7 @@
                                         @foreach (var item in image.ImageUrl)
                                         {
                                             
-                                        <img src="@item" alt="Image" class="gallery-image" width="100px">
+                                        <img src="@item" alt="Image" class="gallery-image" width="50">
                                         }
                                     }
                                    
@@ -213,63 +218,7 @@
                     </div>
                 }
 
-     @*            <div class="container">
-                    <!-- Display Posts -->
-                    @foreach (var post in Model.Posts)
-                    {
-                        <div class="post-card">
-                            <div class="post-header">
-                                <h3>@post.UserName</h3>
-                                <p>@post.CreatedTime.ToString("yyyy-MM-dd HH:mm")</p>
-                            </div>
-                            <p>@post.Text</p>
-
-                            <!-- Display Images -->
-                            @foreach (var imageUrl in post.ImageUrls)
-                            {
-                                <img src="@imageUrl" alt="Post Image" class="post-image">
-                            }
-
-                            <!-- Display Videos -->
-                            @foreach (var videoUrl in post.VideoUrls)
-                            {
-                                <video controls>
-                                    <source src="@videoUrl" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                            }
-
-                            <!-- Display Comments -->
-                            @foreach (var comment in post.Comments)
-                            {
-                                <div class="comment">
-                                    <p>@comment</p>
-                                </div>
-                            }
-
-                            <hr />
-                        </div>
-                    }
-
-                    <!-- Display Images and Videos (not tied to specific posts) -->
-                    <div class="media-gallery">
-                        <h4>All Images</h4>
-                        @foreach (var image in Model.PostImages)
-                        {
-                            <img src="@image.ImageUrl" alt="Image" class="gallery-image">
-                        }
-
-                        <h4>All Videos</h4>
-                        @foreach (var video in Model.PostVideos)
-                        {
-                            <video controls>
-                                <source src="@video.VideoUrl" type="video/mp4">
-                                Your browser does not support the video tag.
-                            </video>
-                        }
-                    </div>
-                </div>
-              *@
+     
             </div>
             <div class="col-lg-4">
                 <div class="card">

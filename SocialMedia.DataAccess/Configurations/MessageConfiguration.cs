@@ -12,7 +12,6 @@ internal class MessageConfiguration : IEntityTypeConfiguration<Message>
             .IsRequired()
             .HasMaxLength(200000);
 
-        builder.Property(m => m.IsDelete)
-            .HasDefaultValue(false);
+        
     }
 }

@@ -1,0 +1,227 @@
+﻿@using SocialMedia.Core.Entities
+@using System.Security.Claims
+@{
+    Layout = null;
+}
+@model Chat
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f3f3;
+        }
+
+        .chat-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .chat-list {
+            width: 30%;
+            background-color: #e6e6e6;
+            border-right: 1px solid #ccc;
+            overflow-y: auto;
+        }
+
+        .chat-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            .chat-header button {
+                background-color: white;
+                border: none;
+                border-radius: 5px;
+                padding: 5px 10px;
+                cursor: pointer;
+                color: #007bff;
+            }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background-color: white;
+        }
+
+        .chat-input {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-top: 1px solid #ccc;
+            background-color: #f9f9f9;
+        }
+
+            .chat-input input {
+                flex-grow: 1;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                font-size: 16px;
+            }
+
+            .chat-input button {
+                margin-left: 10px;
+                padding: 10px 15px;
+                background-color: #007bff;
+                border: none;
+                border-radius: 5px;
+                color: white;
+                cursor: pointer;
+                font-size: 16px;
+            }
+
+        .messages-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .message {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+            .message.sent {
+                justify-content: flex-end;
+            }
+
+            .message.received {
+                justify-content: flex-start;
+            }
+
+            .message .text {
+                max-width: 60%;
+                padding: 10px;
+                border-radius: 10px;
+                font-size: 14px;
+            }
+
+            .message.sent .text {
+                background-color: #007bff;
+                color: white;
+            }
+
+            .message.received .text {
+                background-color: #f1f1f1;
+                color: #333;
+            }
+
+        .chat-list ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .chat-list li {
+            padding: 15px;
+            border-bottom: 1px solid #ccc;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+            .chat-list li:hover {
+                background-color: #d9d9d9;
+            }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-list">
+            <ul>
+                <li>Chat 1</li>
+                <li>Chat 2</li>
+                <li>Chat 3</li>
+                <li>Chat 4</li>
+            </ul>
+        </div>
+        <div class="chat-content">
+            <div class="chat-header">
+                <span>Chat Adı</span>
+                <button>📞 Görüntü Zəngi</button>
+            </div>
+            <div class="chat-messages">
+                <ol class="messages-list">
+                    @foreach (var message in Model.Messages)
+                    {
+                        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!.ToString();
+                        if (message.SenderId != currentUserId)
+                        {
+                            <li class="message received">
+                                <div class="text">@message.Text</div>
+                                <time>@message.CreatedTime.ToShortTimeString()</time>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="message sent">
+                                <div class="text">@message.Text</div>
+                                <time>@message.CreatedTime.ToShortTimeString()</time>
+                            </li>
+                        }
+                    }
+                </ol>
+            </div>
+            <div class="chat-input">
+                <form method="post" class="sendMessageForm" asp-action="SendMessage" asp-route-chatId="@Model.Id">
+                    <input class="messageInput" type="text" required name="text" placeholder="Say something" />
+                    <button type="submit" class="send">Send</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        const form = document.querySelector(".sendMessageForm");
+        const messageInput = document.querySelector(".messageInput");
+        const chat = document.querySelector(".messages-list");
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const response = await fetch(`/Message/SendMessage?chatId=@Model.Id&text=${messageInput.value}`,
+                {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    method: "POST",
+                });
+
+            const data = await response.json();
+
+            const li = ` <li class="message sent">
+                                    <div class="text">${data.text}</div>
+                                    <time>${data.createdTime}</time>
+                                </li>`;
+
+            chat.innerHTML += li;
+
+            messageInput.value = "";
+            messageInput.blur();
+        })
+
+
+
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.7/signalr.min.js"></script>
+    <script src="~/assets/js/chat.js"></script>
+</body>
+</html>

@@ -19,7 +19,9 @@ public class AppDbContext : IdentityDbContext<AppUser>
     public DbSet<CommentLike> CommentLikes { get; set; }
     public DbSet<Story> Stories { get; set; }
     public DbSet<StoryVideo> StoryVideos { get; set; }
-    public DbSet<Message> messages { get; set; }
+    public DbSet<Message> Messages { get; set; }
+    public DbSet<Chat> Chats { get; set; } = null!;
+    public DbSet<AppUserChat> AppUserChats { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

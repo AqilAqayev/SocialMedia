@@ -2,12 +2,13 @@
 
 namespace SocialMedia.Core.Entities;
 
-public class Message: BaseEntity
+public class Message : BaseEntity
 {
     public string Text { get; set; } = null!;
-    public string FromUserId { get; set; } = null!;
     public DateTime CreatedTime { get; set; }
-    public bool IsDelete { get; set; } 
-    public AppUser ToUser { get; set; }=null!;
-    public AppUser FromUser { get; set; } = null!;
+    public AppUser Sender { get; set; } = null!;
+    public string SenderId { get; set; } = null!;
+    public Chat Chat { get; set; } = null!;
+    public int ChatId { get; set; }
+    public bool IsDeleted { get; set; } = false;
 }

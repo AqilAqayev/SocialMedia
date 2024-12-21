@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocialMedia.DataAccess.Context;
 
@@ -11,9 +12,11 @@ using SocialMedia.DataAccess.Context;
 namespace SocialMedia.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241220173129_chatMassage")]
+    partial class chatMassage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -272,7 +275,7 @@ namespace SocialMedia.DataAccess.Migrations
 
                     b.HasIndex("ChatId");
 
-                    b.ToTable("AppUserChat", (string)null);
+                    b.ToTable("AppUserChat");
                 });
 
             modelBuilder.Entity("SocialMedia.Core.Entities.Chat", b =>
@@ -294,7 +297,7 @@ namespace SocialMedia.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Chat", (string)null);
+                    b.ToTable("Chat");
                 });
 
             modelBuilder.Entity("SocialMedia.Core.Entities.Comment", b =>
@@ -331,7 +334,7 @@ namespace SocialMedia.DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comments", (string)null);
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("SocialMedia.Core.Entities.CommentLike", b =>
@@ -355,7 +358,7 @@ namespace SocialMedia.DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CommentLikes", (string)null);
+                    b.ToTable("CommentLikes");
                 });
 
             modelBuilder.Entity("SocialMedia.Core.Entities.Message", b =>
@@ -390,7 +393,7 @@ namespace SocialMedia.DataAccess.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("messages", (string)null);
+                    b.ToTable("messages");
                 });
 
             modelBuilder.Entity("SocialMedia.Core.Entities.Post", b =>
@@ -422,7 +425,7 @@ namespace SocialMedia.DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Posts", (string)null);
+                    b.ToTable("Posts");
                 });
 
             modelBuilder.Entity("SocialMedia.Core.Entities.PostImage", b =>
@@ -445,7 +448,7 @@ namespace SocialMedia.DataAccess.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("PostImages", (string)null);
+                    b.ToTable("PostImages");
                 });
 
             modelBuilder.Entity("SocialMedia.Core.Entities.PostVideo", b =>
@@ -468,7 +471,7 @@ namespace SocialMedia.DataAccess.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("PostVideos", (string)null);
+                    b.ToTable("PostVideos");
                 });
 
             modelBuilder.Entity("SocialMedia.Core.Entities.Story", b =>
@@ -493,7 +496,7 @@ namespace SocialMedia.DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Stories", (string)null);
+                    b.ToTable("Stories");
                 });
 
             modelBuilder.Entity("SocialMedia.Core.Entities.StoryVideo", b =>
@@ -515,7 +518,7 @@ namespace SocialMedia.DataAccess.Migrations
 
                     b.HasIndex("StoryId");
 
-                    b.ToTable("StoryVideos", (string)null);
+                    b.ToTable("StoryVideos");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
