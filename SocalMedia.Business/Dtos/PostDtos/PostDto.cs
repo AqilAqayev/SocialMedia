@@ -11,8 +11,8 @@ public class PostDto : IDto
     public string Text { get; set; } = null!;
     public DateTime CreatedTime { get; set; }
     public bool IsDelete { get; set; }
-    public List<PostImageDto> ImageUrls { get; set; } = [];
-    public List<PostVideoDto> VideoUrls { get; set; } = [];
+    public List<PostImageDto>? ImageUrls { get; set; } = [];
+    public List<PostVideoDto>? VideoUrls { get; set; } = [];
     public List<string> Comments { get; set; } = [];
 }
 

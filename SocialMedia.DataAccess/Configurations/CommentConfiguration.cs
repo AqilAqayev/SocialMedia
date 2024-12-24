@@ -15,7 +15,7 @@ internal class CommentConfiguration : IEntityTypeConfiguration<Comment>
         builder.Property(c => c.CreatedTime)
             .IsRequired();
 
-        builder.Property(c => c.LikeCount)
-            .HasDefaultValue(0);
+        //builder.Property(c => c.LikeCount)
+        //    .HasDefaultValue(0);
     }
 }

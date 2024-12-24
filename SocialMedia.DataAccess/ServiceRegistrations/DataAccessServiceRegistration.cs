@@ -39,6 +39,8 @@ namespace SocialMedia.DataAccess.ServiceRegistrations
             services.AddScoped<IPostVideoRepository,PostVideoRepository>();
             services.AddScoped<IPostImageRepository,PostImageRepository>();
 
+            services.AddScoped<IFollowRepository,FollowRepository>();
+
         }
     }
 }

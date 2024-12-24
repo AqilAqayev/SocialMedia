@@ -26,15 +26,18 @@ namespace SocalMedia.Business.ServiceRegistrations
 
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<ICommentLikeService, CommentLikeService>();
-            services.AddScoped<IPostService, PostService>();
-            services.AddScoped<IMessageService, MessageService>();
-            services.AddScoped<IStoryService, StoryService>();
-            services.AddScoped<IStoryVideoService, StoryVideoService>();
+
             services.AddScoped<IPostImageService, PostImageService>();
             services.AddScoped<IPostVideoService, PostVideoService>();
+            services.AddScoped<IPostService, PostService>();
 
+            services.AddScoped<IMessageService, MessageService>();
 
+            services.AddScoped<IStoryService, StoryService>();
 
+            services.AddScoped<IStoryVideoService, StoryVideoService>();
+
+            services.AddScoped<IFollowService, FollowService>();
 
             return services;
         }

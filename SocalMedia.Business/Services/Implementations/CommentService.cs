@@ -13,4 +13,3 @@ public class CommentService : CrudService<Comment, CreateCommentDto, UpdateComme
     {
     }
 }
-

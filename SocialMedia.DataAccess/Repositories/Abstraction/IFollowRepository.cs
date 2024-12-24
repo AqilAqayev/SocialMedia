@@ -3,6 +3,6 @@ using SocialMedia.DataAccess.Repositories.Abstraction.Generic;
 
 namespace SocialMedia.DataAccess.Repositories.Abstraction;
 
-public interface IPostRepository : IRepository<Post>
+public interface IFollowRepository : IRepository<Follow>
 {
 }

@@ -22,6 +22,7 @@ public class AppDbContext : IdentityDbContext<AppUser>
     public DbSet<Message> Messages { get; set; }
     public DbSet<Chat> Chats { get; set; } = null!;
     public DbSet<AppUserChat> AppUserChats { get; set; } = null!;
+    public DbSet<Follow> Follows { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

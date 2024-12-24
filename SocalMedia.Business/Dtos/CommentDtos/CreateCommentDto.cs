@@ -4,8 +4,15 @@ namespace SocalMedia.Business.Dtos.CommentDtos;
 
 public class CreateCommentDto : IDto
 {
-    public string UserId { get; set; } = null!;
+    public string Text { get; set; } = null!;   
+    public int Rating { get; set; }
     public int PostId { get; set; }
-    public string Text { get; set; } = null!;
 }
 
+public class CommentReplyDto : IDto
+{
+    public int ParentId { get; set; }
+    public int PostId { get; set; }
+
+    public string Text { get; set; }
+}

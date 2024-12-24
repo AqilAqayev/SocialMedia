@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using SocalMedia.Business.Dtos.HomeDtos;
 using SocalMedia.Business.Hubs;
 using SocalMedia.Business.StaticFiles;
 using SocialMedia.Core.Entities;
@@ -48,6 +49,7 @@ namespace SocialMedia.Presentation.Controllers
 
             if (user is null)
                 return BadRequest();
+            var chats = await _context.Chats.Include(x => x.AppUserChats).Where(x => x.AppUserChats.Any(x => x.AppUserId == userId)).ToListAsync();
 
             var chat = await _context.Chats.Include(x => x.AppUserChats).ThenInclude(x => x.AppUser)
                                     .Include(x => x.Messages)
@@ -56,7 +58,7 @@ namespace SocialMedia.Presentation.Controllers
 
             if (chat is null)
                 return NotFound();
-
+            
             return View(chat);
         }
 

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocialMedia.DataAccess.Context;
 
@@ -11,9 +12,11 @@ using SocialMedia.DataAccess.Context;
 namespace SocialMedia.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241222152737_chatUpdate")]
+    partial class chatUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -375,34 +378,6 @@ namespace SocialMedia.DataAccess.Migrations
                     b.ToTable("CommentLikes");
                 });
 
-            modelBuilder.Entity("SocialMedia.Core.Entities.Follow", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("FollowerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("FollowingId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FollowerId");
-
-                    b.HasIndex("FollowingId");
-
-                    b.ToTable("Follows");
-                });
-
             modelBuilder.Entity("SocialMedia.Core.Entities.Message", b =>
                 {
                     b.Property<int>("Id")
@@ -675,25 +650,6 @@ namespace SocialMedia.DataAccess.Migrations
                     b.Navigation("Comment");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("SocialMedia.Core.Entities.Follow", b =>
-                {
-                    b.HasOne("SocialMedia.Core.Entities.AppUser", "Follower")
-                        .WithMany()
-                        .HasForeignKey("FollowerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SocialMedia.Core.Entities.AppUser", "Following")
-                        .WithMany()
-                        .HasForeignKey("FollowingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Follower");
-
-                    b.Navigation("Following");
                 });
 
             modelBuilder.Entity("SocialMedia.Core.Entities.Message", b =>

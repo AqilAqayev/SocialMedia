@@ -4,14 +4,19 @@ namespace SocialMedia.Core.Entities
 {
     public class Comment : BaseEntity
     {
-        public string UserId { get; set; } = null!;
-        public int PostId { get; set; }
-        public string Text { get; set; } = null!;
-        public DateTime CreatedTime { get; set; }
-        public int LikeCount { get; set; }
-
-        public AppUser User { get; set; } = null!;
+        public AppUser AppUser { get; set; } = null!;
+        public string AppUserId { get; set; } = null!;
+        public int  PostId { get; set; }
         public Post Post { get; set; } = null!;
-        public ICollection<CommentLike> CommentLikes { get; set; } = [];
+        public string Text { get; set; } = null!;
+        public int? Rating { get; set; }
+        public int? ParentId { get; set; }
+        public Comment? Parent { get; set; } = null!;
+        public List<Comment> Children { get; set; } = [];
+        public bool IsDeleted { get; set; } = false;
+        public DateTime CreatedTime { get; set; }
+        public DateTime UpdatedTime { get; set; }
+        public string CreatedBy { get; set; } = null!;
+        public string UpdatedBy { get; set; } = null!;
     }
 }
