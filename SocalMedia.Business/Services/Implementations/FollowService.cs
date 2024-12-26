@@ -24,7 +24,7 @@ public class FollowService : CrudService<Follow, CreateFollowDto, UpdateFollowDt
      
     public async Task Follow(string followedId)
     {
-        followedId = "52a1c3f6-2e51-461b-a37e-acdf039f4cce";
+        
     string userId = _http.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
         if (userId is null)
         {
@@ -35,7 +35,7 @@ public class FollowService : CrudService<Follow, CreateFollowDto, UpdateFollowDt
         {
             throw new Exception("User not found");
         }
-        AppUser followed = await _userManager.FindByIdAsync("52a1c3f6-2e51-461b-a37e-acdf039f4cce");
+        AppUser followed = await _userManager.FindByIdAsync(followedId);
         
         Follow following = new Follow
         {

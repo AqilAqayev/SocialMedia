@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Identity;
 using SocialMedia.Core.Entities;
 using SocialMedia.DataAccess.Context;
 using SocalMedia.Business.Hubs;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

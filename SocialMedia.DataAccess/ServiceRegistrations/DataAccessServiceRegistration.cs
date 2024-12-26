@@ -41,6 +41,8 @@ namespace SocialMedia.DataAccess.ServiceRegistrations
 
             services.AddScoped<IFollowRepository,FollowRepository>();
 
+            services.AddScoped<IUserRepository,UserRepository>();
+
         }
     }
 }
