@@ -1,4 +1,5 @@
-﻿using SocialMedia.Core.Enums;
+﻿using Microsoft.AspNetCore.Http;
+using SocialMedia.Core.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace SocalMedia.Business.Dtos.Account;
@@ -15,5 +16,6 @@ public class RegisterDto
     [Compare(nameof(Password), ErrorMessage = "Passwords do not match")]
     public string ConfirmPassword { get; set; } = null!;
     public string PhoneNumber { get; set; } = null!;
+    public IFormFile? ProfilePhoto { get; set; }
     public GenderType Gender { get; set; }
 }

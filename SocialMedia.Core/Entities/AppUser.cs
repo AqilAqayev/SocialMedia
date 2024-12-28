@@ -8,6 +8,7 @@ namespace SocialMedia.Core.Entities
         public string NickName { get; set; } = null!;
         public DateTime CreatedTime { get; set; }
         public DateTime? UpdateTime { get; set; }
+        public string? ProfilePhotoUrl { get; set; }
         public int FollowerCount { get; set; } = 0;
         public int FollowingCount { get; set; } = 0;
         public int PostCount { get; set; } = 0;

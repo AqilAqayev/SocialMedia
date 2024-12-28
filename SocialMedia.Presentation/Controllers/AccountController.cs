@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic;
 using SocalMedia.Business.Dtos.Account;
 using SocalMedia.Business.UiServices.Abstractions;
+using SocalMedia.Business.UiServices.Implementations;
 using SocialMedia.Core.Entities;
 
 namespace SocialMedia.Presentation.Controllers
@@ -13,14 +14,16 @@ namespace SocialMedia.Presentation.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly IEmailService _emailService;
+        private readonly ICloudinaryManager _cloudinaryManager;
 
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailService emailService, RoleManager<IdentityRole> roleManager)
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailService emailService, RoleManager<IdentityRole> roleManager, ICloudinaryManager cloudinaryManager)
         {
             _userManager = userManager;
 
             _signInManager = signInManager;
             _emailService = emailService;
             _roleManager = roleManager;
+            _cloudinaryManager = cloudinaryManager;
         }
 
         public IActionResult Register()
@@ -28,38 +31,7 @@ namespace SocialMedia.Presentation.Controllers
             return View();
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> Register(RegisterDto registerDto)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return View();
-        //    }
 
-        //    var user = new AppUser
-        //    {
-        //        UserName = registerDto.UserName,
-        //        NickName = registerDto.NickName,
-        //        Email = registerDto.Email,
-        //        PhoneNumber = registerDto.PhoneNumber,
-        //        CreatedTime = DateTime.UtcNow,
-        //        UpdateTime = DateTime.UtcNow,
-        //        Gender = registerDto.Gender,
-        //        EmailConfirmed = true 
-        //    };
-
-        //    var result = await _userManager.CreateAsync(user, registerDto.Password);
-        //    if (!result.Succeeded)
-        //    {
-        //        foreach (var error in result.Errors)
-        //        {
-        //            ModelState.AddModelError("", error.Description);
-        //        }
-        //        return View();
-        //    }
-
-        //    return RedirectToAction("Index", "Home");
-        //}
         [HttpPost]
         public async Task<IActionResult> Register(RegisterDto registerDto)
         {
@@ -67,7 +39,11 @@ namespace SocialMedia.Presentation.Controllers
             {
                 return View();
             }
-
+            
+           
+            
+             var profilePhotoUrl = await _cloudinaryManager.FileCreateAsync(registerDto.ProfilePhoto);
+            
             var user = new AppUser
             {
                 UserName = registerDto.UserName,
@@ -77,7 +53,9 @@ namespace SocialMedia.Presentation.Controllers
                 CreatedTime = DateTime.UtcNow,
                 UpdateTime = DateTime.UtcNow,
                 Gender = registerDto.Gender,
-                EmailConfirmed = false
+                EmailConfirmed = false,
+                ProfilePhotoUrl = profilePhotoUrl
+
             };
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);

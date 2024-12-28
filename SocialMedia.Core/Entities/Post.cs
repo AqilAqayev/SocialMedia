@@ -9,7 +9,7 @@ public class Post : BaseEntity
     public DateTime CreatedTime { get; set; }
     public bool IsDelete { get; set; }
     public AppUser User { get; set; } = null!;
-    public ICollection<PostImage> PostImages { get; set; } = [];
+    public List<PostImage> PostImages { get; set; } = [];
     public ICollection<PostVideo> PostVideos { get; set; } = [];
     public ICollection<Comment> Comments { get; set; } = [];
 }

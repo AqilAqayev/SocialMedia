@@ -67,8 +67,13 @@
                         <div class="sign-in-from">
                             <h1 class="mb-0">Sign Up</h1>
                             <p>Enter your email address and password to access admin panel.</p>
-                            <form asp-controller="Account" asp-action="Register" method="post" class="mt-4">
+                            <form asp-controller="Account" asp-action="Register" method="post" enctype="multipart/form-data" class="mt-4">
                                 <div asp-validation-summary="ModelOnly"></div>
+                                <div class="form-group">
+                                    <label class="form-label" for="ProfilePhotoUrl">Profile Photo</label>
+                                    <input type="file" asp-for="ProfilePhoto" class="form-control mb-0" id="ProfilePhotoUrl" name="ProfilePhoto">
+                                </div>
+
                                 <div class="form-group">
                                     <label class="form-label" for="NickName">Nickname</label>
                                     <input type="text" asp-for="NickName" class="form-control mb-0" id="NickName" name="NickName" placeholder="Enter your nickname" required>

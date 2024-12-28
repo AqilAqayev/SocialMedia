@@ -41,6 +41,8 @@ namespace SocalMedia.Business.ServiceRegistrations
 
             services.AddScoped<IHomeService, HomeService>();
 
+            services.AddScoped<IProfileService, ProfileService>();
+
             return services;
         }
     }

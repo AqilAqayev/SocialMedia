@@ -13,46 +13,61 @@ public class FollowService : CrudService<Follow, CreateFollowDto, UpdateFollowDt
 {
     private readonly IHttpContextAccessor _http;
     private readonly UserManager<AppUser> _userManager;
-    private readonly IFollowRepository followRepository;
-    public FollowService(IFollowRepository repository, IMapper mapper, IHttpContextAccessor http, IFollowRepository followRepository, UserManager<AppUser> userManager) : base(repository, mapper)
+    private readonly IFollowRepository _followRepository;
+
+    public FollowService(IFollowRepository repository, IMapper mapper, IHttpContextAccessor http, IFollowRepository followRepository, UserManager<AppUser> userManager)
+        : base(repository, mapper)
     {
         _http = http;
-        this.followRepository = followRepository;
+        _followRepository = followRepository;
         _userManager = userManager;
     }
 
-     
     public async Task Follow(string followedId)
     {
-        
-    string userId = _http.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        string userId = _http.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
         if (userId is null)
         {
             throw new Exception("User not found");
         }
-        AppUser user = await _userManager.FindByIdAsync(userId) ;
-        if (user == null) 
+
+        AppUser user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
         {
             throw new Exception("User not found");
         }
+
         AppUser followed = await _userManager.FindByIdAsync(followedId);
-        
+        if (followed == null)
+        {
+            throw new Exception("Followed user not found");
+        }
+
+        // Daha önce takip isteği gönderilmiş mi kontrol et
+        bool isAlreadyFollowing = await _followRepository.AnyAsync(f =>
+            f.FollowerId == userId && f.FollowingId == followedId);
+
+        if (isAlreadyFollowing)
+        {
+            throw new Exception("You are already following this user or follow request is pending.");
+        }
+
         Follow following = new Follow
         {
-
             FollowingId = followedId,
             FollowerId = userId,
-            Status = false
-
+            Status = !followed.IsPrivate 
         };
+
         if (!followed.IsPrivate)
         {
-            following.Status = true;
+            following.Status = true; 
             followed.FollowerCount++;
             user.FollowingCount++;
         }
 
-        await followRepository.CreateAsync(following);
-        await followRepository.SaveChangesAsync();
+        await _followRepository.CreateAsync(following);
+        await _followRepository.SaveChangesAsync();
     }
 }

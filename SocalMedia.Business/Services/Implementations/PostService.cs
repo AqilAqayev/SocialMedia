@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using SocalMedia.Business.Dtos.PostDtos;
 using SocalMedia.Business.Dtos.PostImageDtos;
 using SocalMedia.Business.Dtos.PostVideoDtos;
@@ -7,8 +8,10 @@ using SocalMedia.Business.Services.Abstractions;
 using SocalMedia.Business.Services.Implementations.Generic;
 using SocalMedia.Business.UiServices.Abstractions;
 using SocialMedia.Core.Entities;
+using SocialMedia.DataAccess.Context;
 using SocialMedia.DataAccess.Repositories.Abstraction;
 using SocialMedia.DataAccess.Repositories.Abstraction.Generic;
+using System.Linq.Expressions;
 using System.Security.Claims;
 
 namespace SocalMedia.Business.Services.Implementations;
@@ -20,28 +23,33 @@ public class PostService : CrudService<Post, CreatePostDto, UpdatePostDto, PostD
     private readonly IRepository<PostVideo> _postVideoRepository;
     private readonly ICloudinaryManager _cloudinaryManager;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly AppDbContext _appDbContext;
 
-    public PostService(IPostRepository repository, IMapper mapper, IRepository<Post> postRepository, IRepository<PostImage> postImageRepository, IRepository<PostVideo> postVideoRepository, ICloudinaryManager cloudinaryManager, IHttpContextAccessor httpContextAccessor) : base(repository, mapper)
+    public PostService(IPostRepository repository, IMapper mapper, IRepository<Post> postRepository, IRepository<PostImage> postImageRepository, IRepository<PostVideo> postVideoRepository, ICloudinaryManager cloudinaryManager, IHttpContextAccessor httpContextAccessor, AppDbContext appDbContext) : base(repository, mapper)
     {
         _postRepository = postRepository;
         _postImageRepository = postImageRepository;
         _postVideoRepository = postVideoRepository;
         _cloudinaryManager = cloudinaryManager;
         _httpContextAccessor = httpContextAccessor;
+        _appDbContext = appDbContext;
     }
-    public List<PostDto> GetAllPosts()
+    public async Task<List<Post>> GetAllAsync(Expression<Func<Post, bool>> predicate)
     {
-       
-        return _postRepository.GetAll().Select(p => new PostDto
-        {
-            UserId = p.UserId,
-           
-            Text = p.Text,
-            CreatedTime = p.CreatedTime,
-            //ImageUrls = p.PostImages.Select(i => i.ImageUrl).ToList(),
-            //VideoUrls = p.PostVideos.Select(v => v.VideoUrl).ToList(),
-            Comments = p.Comments.Select(c => c.Text).ToList(),
-        }).ToList();
+        return await _appDbContext.Posts
+        .Include(p => p.PostImages) // PostImages ilişkisini yükle
+        .Where(predicate)
+        .ToListAsync();
+        //return _postRepository.GetAll().Select(p => new PostDto
+        //{
+        //    UserId = p.UserId,
+
+        //    Text = p.Text,
+        //    CreatedTime = p.CreatedTime,
+        //    //ImageUrls = p.PostImages.Select(i => i.ImageUrl).ToList(),
+        //    //VideoUrls = p.PostVideos.Select(v => v.VideoUrl).ToList(),
+        //    Comments = p.Comments.Select(c => c.Text).ToList(),
+        //}).ToList();
     }
 
     public async Task<int> CreatePostAsync(CreatePostDto createPostDto)
