@@ -66,5 +66,38 @@ internal class ProfileService : IProfileService
 
         };
     }
+    public async Task<ProfileOther> GetProfileOther(string userId)
+    {
+        AppUser user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            throw new Exception("User not found");
+        }
 
+        var posts = await _postService.GetAllAsync(x => x.UserId == userId);
+
+        var imagesDto = new List<string>();
+
+        foreach (var post in posts)
+        {
+            var postImages = await _postImageService.GetAllAsync(x => x.PostId == post.Id);
+            imagesDto.AddRange(postImages.Select(img => img.ImageUrl));
+        }
+
+        var postDto = _mapper.Map<List<PostDto>>(posts);
+
+        var postCount = posts.Count;
+        return new ProfileOther
+        {
+            userId = user.Id,
+            Email = user.Email,
+            UserName = user.UserName,
+            PhoneNumber = user.PhoneNumber,
+            Posts = postDto,
+            PostCount = postCount,
+            FollowCount = user.FollowerCount,
+            FollowingCount = user.FollowingCount,
+            ProfilePhoto = user.ProfilePhotoUrl
+        };
+    }
 }

@@ -38,7 +38,9 @@ namespace SocalMedia.Business.UiServices.Implementations
                 SearchDtos = queryes.Select(u => new SearchDto
                 {
                     UserId = u.Id,
-                    UserName = u.UserName!
+                    UserName = u.UserName!,
+                    ProfileImage = u.ProfilePhotoUrl!
+
                 }).ToList()
             };
 

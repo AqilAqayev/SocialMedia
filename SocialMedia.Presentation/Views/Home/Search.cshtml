@@ -373,11 +373,13 @@
 
         @foreach (var user in Model.SearchDtos)
         {
-            <div class="card">
-                <img src="~/assets/images/user/01.jpg" alt="Profil Foto">
-                <div class="user-info">@user.UserName</div>
-                <a asp-controller="Follow" asp-action="Follow" asp-route-followId="@user.UserId"> Dostluq  </a>
-            </div>
+            <a asp-controller="Profile" asp-action="ProfileUser" asp-route-userId="@user.UserId" class="card">
+                <div>
+                    <img src="@user.ProfileImage" alt="Profil Foto">
+                    <div class="user-info">@user.UserName</div>
+                </div>
+            </a>
+            @* <a asp-controller="Follow" asp-action="Follow" asp-route-followId="@user.UserId" class="follow-button"> Dostluq </a> *@
         }
     }
 

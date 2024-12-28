@@ -14,7 +14,13 @@ public class ProfileController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var PrifileDto = await _profileService.GetProfile();
-        return View(PrifileDto);
+        var profileDto = await _profileService.GetProfile();
+        return View(profileDto);
+    }
+
+    public async Task<IActionResult> ProfileUser(string UserId)
+    {
+        var profileDto = await _profileService.GetProfileOther(UserId);
+        return View(profileDto);
     }
 }
