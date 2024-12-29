@@ -16,14 +16,16 @@ internal class ProfileService : IProfileService
     private readonly IPostService _postService;
     private readonly IMapper _mapper;
     private readonly IPostImageService _postImageService;
+    private readonly IFriendService _friendService;
 
-    public ProfileService(IHttpContextAccessor http, UserManager<AppUser> userManager, IPostService postService, IMapper mapper, IPostImageService postImageService)
+    public ProfileService(IHttpContextAccessor http, UserManager<AppUser> userManager, IPostService postService, IMapper mapper, IPostImageService postImageService, IFriendService friendService)
     {
         _http = http;
         _userManager = userManager;
         _postService = postService;
         _mapper = mapper;
         _postImageService = postImageService;
+        _friendService = friendService;
     }
 
     public async Task<ProfileDto> GetProfile()
@@ -53,6 +55,15 @@ internal class ProfileService : IProfileService
             throw new Exception("User not found");
         }
         var postCount = posts.Count;
+        var closedFriend = await _friendService.GetFriendsWithStatusAsync(userId);
+        var closedFriendsDto = closedFriend
+        .Where(f => f.IsClosedFriend) 
+        .Select(f => new FriendClosed
+        {
+            Name = f.Friend.UserName,
+            ProfileImage = f.Friend.ProfilePhotoUrl
+        })
+        .ToList();
         return new ProfileDto
         {
             Email = user.Email,
@@ -64,7 +75,9 @@ internal class ProfileService : IProfileService
             FollowCount = user.FollowerCount,
             FollowingCount = user.FollowingCount,
             ProfilePhoto = user.ProfilePhotoUrl,
-            BioNews = user.Biography
+            BioNews = user.Biography,
+            FriendCloseds = closedFriendsDto
+
 
 
         };

@@ -19,5 +19,7 @@ namespace SocialMedia.Presentation.Controllers
             await _followService.Follow(followId);
             return RedirectToAction("Index", "Home");
         }   
+
+
     }
 }

@@ -30,7 +30,7 @@ namespace SocalMedia.Business.UiServices.Implementations
             }
 
             var queryes = await _userRepository.GetAllAsync(user =>
-                (user.UserName!.Contains(query) || user.Email!.Contains(query)) && 
+                (user.UserName!.Contains(query)) && 
                 user.Id != userId); 
 
             var model = new SearchUsersDto

@@ -43,6 +43,8 @@ namespace SocalMedia.Business.ServiceRegistrations
 
             services.AddScoped<IProfileService, ProfileService>();
 
+            services.AddScoped<IFriendService, FriendService>();
+
             return services;
         }
     }

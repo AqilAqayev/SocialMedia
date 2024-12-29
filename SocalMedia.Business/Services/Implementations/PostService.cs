@@ -24,7 +24,7 @@ public class PostService : CrudService<Post, CreatePostDto, UpdatePostDto, PostD
     private readonly ICloudinaryManager _cloudinaryManager;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly AppDbContext _appDbContext;
-
+    private readonly IMapper _mapper;
     public PostService(IPostRepository repository, IMapper mapper, IRepository<Post> postRepository, IRepository<PostImage> postImageRepository, IRepository<PostVideo> postVideoRepository, ICloudinaryManager cloudinaryManager, IHttpContextAccessor httpContextAccessor, AppDbContext appDbContext) : base(repository, mapper)
     {
         _postRepository = postRepository;
@@ -33,13 +33,20 @@ public class PostService : CrudService<Post, CreatePostDto, UpdatePostDto, PostD
         _cloudinaryManager = cloudinaryManager;
         _httpContextAccessor = httpContextAccessor;
         _appDbContext = appDbContext;
+        _mapper = mapper;
     }
-    public async Task<List<Post>> GetAllAsync(Expression<Func<Post, bool>> predicate)
+    public async Task<List<PostDto>> GetAllPostAsync(Expression<Func<Post, bool>>? predicate)
     {
-        return await _appDbContext.Posts
+
+
+        var entity= await _appDbContext.Posts
         .Include(p => p.PostImages) // PostImages ilişkisini yükle
         .Where(predicate)
         .ToListAsync();
+
+        var dto = _mapper.Map<List<PostDto>>(entity);
+
+        return dto;
         //return _postRepository.GetAll().Select(p => new PostDto
         //{
         //    UserId = p.UserId,

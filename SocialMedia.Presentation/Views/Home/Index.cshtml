@@ -94,17 +94,34 @@
                             </div>
                             <div class="user-post">
                                 <div class=" d-grid grid-rows-2 grid-flow-col gap-3">
-                               @*      @foreach (var image in post.ImageUrls)
+                                    @foreach (var image in post.ImageUrls)
                                     {
-                                        @foreach (var item in image.ImageUrl)
-                                        {
-                                            
-                                        <img src="@item" alt="Image" class="gallery-image" width="50">
-                                        }
-                                    } *@
+                                       
+                                        <img src="@image" alt="Image" class="gallery-image" width="200">
+                                        
+                                    }
                                    
                                 </div>
                             </div>
+                            <style>
+                                .user-post {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Dinamik kolon sayısı */
+    gap: 10px; /* Elemanlar arasındaki boşluk */
+    justify-items: center; /* Görsellerin merkezlenmesi */
+    align-items: center; /* Dikey hizalama */
+   
+}
+
+.user-post img {
+    width: 100%; /* Görsellerin genişliği div'in genişliğine uyacak */
+    height: auto; /* Oranları korumak için otomatik yükseklik */
+    border-radius: 8px; /* Görsellere yuvarlatılmış köşeler */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Hafif gölge efekti */
+}
+
+
+                            </style>
                             <div class="comment-area mt-3">
                                 <div class="d-flex justify-content-between align-items-center flex-wrap">
                                     <div class="like-block position-relative d-flex align-items-center">

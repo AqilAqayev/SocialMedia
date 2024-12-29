@@ -20,4 +20,30 @@ internal class FollowRepository : Repository<Follow>, IFollowRepository
     {
         return await _context.Set<Follow>().AnyAsync(predicate);
     }
+    public async Task<List<(AppUser Friend, bool IsClosedFriend)>> GetFriendsWithStatusAsync(string userId)
+    {
+      
+
+        var friendsWithStatusQuery = await _context.Follows
+            .Where(f => f.FollowerId == userId)
+            .GroupJoin(
+                _context.Follows.Where(ff => ff.FollowingId == userId),
+                f => f.FollowingId,
+                ff => ff.FollowerId,
+                (f, matchingFollowBacks) => new
+                {
+                    Friend = f.Following,
+                    IsClosedFriend = matchingFollowBacks.Any()
+                }
+            )
+            .ToListAsync(); 
+
+        var result = friendsWithStatusQuery
+            .Select(f => (f.Friend, f.IsClosedFriend))
+            .ToList();
+
+        return result;
+    }
+
+
 }

@@ -12,10 +12,9 @@ public class PostMapperProfile : Profile
         
         CreateMap<Post, CreatePostDto>().ReverseMap();
         CreateMap<Post, UpdatePostDto>().ReverseMap();
-        CreateMap<Post,PostDto>().ForMember(dest => dest.ImageUrls, opt => opt.MapFrom(src => src.PostImages.Select(img => new PostImageDto
-        {
-            Id = img.Id,
-            ImageUrl = img.ImageUrl
-        }).ToList())).ReverseMap();
+       CreateMap<Post, PostDto>()
+    .ForMember(dest => dest.ImageUrls, 
+               opt => opt.MapFrom(src => src.PostImages.Select(img => img.ImageUrl).ToList()))
+    .ReverseMap();
     }
 }

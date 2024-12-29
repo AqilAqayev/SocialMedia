@@ -3,6 +3,7 @@ using SocalMedia.Business.Dtos.HomeDtos;
 using SocalMedia.Business.Services.Abstractions;
 using SocalMedia.Business.UiServices.Abstractions;
 using SocialMedia.Core.Entities;
+using static System.Net.WebRequestMethods;
 
 namespace SocialMedia.Presentation.Controllers;
 
@@ -23,9 +24,10 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var post = await _postService.GetAllAsync();
-        var image = await _postImageService.GetAllAsync();
-        var video = await _postVideoService.GetAllAsync();
+        string userId =HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        var post = await _postService.GetAllPostAsync(x=>x.UserId!=userId);
+        //var image = await _postImageService.GetAllAsync();
+        //var video = await _postVideoService.GetAllAsync();
 
         HomeDto homeDto = new HomeDto
         {
@@ -34,8 +36,8 @@ public class HomeController : Controller
             //PostVideos = await _postVideoService.GetAllAsync(),
 
             Posts = post,
-            PostImages=image,
-            PostVideos=video
+            //PostImages=image,
+            //PostVideos=video
 
         };    
         return View(homeDto);
