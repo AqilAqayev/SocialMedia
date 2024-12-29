@@ -5,5 +5,6 @@ namespace SocalMedia.Business.UiServices.Abstractions;
 public interface IProfileService
 {
     Task<ProfileDto> GetProfile();
+    Task BioCreate(string bio);
     Task<ProfileOther> GetProfileOther(string userId);
 }

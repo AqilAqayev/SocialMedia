@@ -13,6 +13,7 @@ public class ProfileDto : IDto
     public List<PostDto> Posts { get; set; } = [];
     public string? ProfilePhoto { get; set; }
     public int PostCount { get; set; }
+    public string? BioNews { get; set; }
     public List<string> ImageUrls { get; set; } = new List<string>(); 
 
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Identity.Client;
 using SocalMedia.Business.Dtos.ProfileDtos;
 using SocalMedia.Business.Services.Abstractions;
 using SocalMedia.Business.UiServices.Abstractions;
@@ -62,7 +63,9 @@ internal class ProfileService : IProfileService
             PostCount = postCount,
             FollowCount = user.FollowerCount,
             FollowingCount = user.FollowingCount,
-            ProfilePhoto = user.ProfilePhotoUrl
+            ProfilePhoto = user.ProfilePhotoUrl,
+            BioNews = user.Biography
+
 
         };
     }
@@ -99,5 +102,25 @@ internal class ProfileService : IProfileService
             FollowingCount = user.FollowingCount,
             ProfilePhoto = user.ProfilePhotoUrl
         };
+
+
+    }
+    public async Task BioCreate(string bio)
+    {
+        string userId = _http.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            throw new Exception("User not found");
+        }
+
+        AppUser user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            throw new Exception("User not found");
+        }
+
+        user.Biography = bio;
+        await _userManager.UpdateAsync(user);
     }
 }
