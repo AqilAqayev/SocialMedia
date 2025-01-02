@@ -1,0 +1,20 @@
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
+using SocalMedia.Business.Dtos.Account;
+using SocialMedia.Core.Entities;
+
+namespace SocalMedia.Business.UiServices.Abstractions;
+public interface IAccountService
+{
+    Task<IdentityResult> RegisterUserAsync(RegisterDto registerDto);
+    Task<string> GenerateEmailConfirmationTokenAsync(AppUser user);
+    Task<AppUser> FindUserByEmailAsync(string email);
+    Task<AppUser> FindUserByIdAsync(string userId);
+    Task<IdentityResult> ConfirmEmailAsync(AppUser user, string token);
+    Task<SignInResult> LoginUserAsync(LoginDto loginDto);
+    Task LogoutUserAsync();
+    AuthenticationProperties GetGoogleLoginProperties(string redirectUrl);
+    Task<ExternalLoginInfo> GetExternalLoginInfoAsync();
+    Task<AppUser> HandleGoogleLoginAsync(ExternalLoginInfo info);
+    Task SendEmailAsync(string to, string subject, string body);
+}

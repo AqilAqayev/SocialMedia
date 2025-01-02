@@ -45,6 +45,9 @@ namespace SocalMedia.Business.ServiceRegistrations
 
             services.AddScoped<IFriendService, FriendService>();
 
+            services.AddScoped<IAccountService, AccountService>();
+
+
             return services;
         }
     }

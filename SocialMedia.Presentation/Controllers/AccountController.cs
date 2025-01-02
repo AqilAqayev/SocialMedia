@@ -1,146 +1,111 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualBasic;
+﻿using Microsoft.AspNetCore.Mvc;
 using SocalMedia.Business.Dtos.Account;
 using SocalMedia.Business.UiServices.Abstractions;
-using SocalMedia.Business.UiServices.Implementations;
-using SocialMedia.Core.Entities;
 
 namespace SocialMedia.Presentation.Controllers
+
 {
-    public class AccountController : Controller
+
+    namespace SocialMedia.Presentation.Controllers
     {
-        private readonly UserManager<AppUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly SignInManager<AppUser> _signInManager;
-        private readonly IEmailService _emailService;
-        private readonly ICloudinaryManager _cloudinaryManager;
-
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailService emailService, RoleManager<IdentityRole> roleManager, ICloudinaryManager cloudinaryManager)
+        public class AccountController : Controller
         {
-            _userManager = userManager;
+            private readonly IAccountService _accountService;
 
-            _signInManager = signInManager;
-            _emailService = emailService;
-            _roleManager = roleManager;
-            _cloudinaryManager = cloudinaryManager;
-        }
-
-        public IActionResult Register()
-        {
-            return View();
-        }
-
-
-        [HttpPost]
-        public async Task<IActionResult> Register(RegisterDto registerDto)
-        {
-            if (!ModelState.IsValid)
+            public AccountController(IAccountService accountService)
             {
-                return View();
+                _accountService = accountService;
             }
-            
-           
-            
-             var profilePhotoUrl = await _cloudinaryManager.FileCreateAsync(registerDto.ProfilePhoto);
-            
-            var user = new AppUser
-            {
-                UserName = registerDto.UserName,
-                NickName = registerDto.NickName,
-                Email = registerDto.Email,
-                PhoneNumber = registerDto.PhoneNumber,
-                CreatedTime = DateTime.UtcNow,
-                UpdateTime = DateTime.UtcNow,
-                Gender = registerDto.Gender,
-                EmailConfirmed = false,
-                ProfilePhotoUrl = profilePhotoUrl
 
-            };
+            public IActionResult Register() => View();
 
-            var result = await _userManager.CreateAsync(user, registerDto.Password);
-            if (!result.Succeeded)
+            [HttpPost]
+            public async Task<IActionResult> Register(RegisterDto registerDto)
             {
-                foreach (var error in result.Errors)
+                if (!ModelState.IsValid)
+                    return View();
+
+                var result = await _accountService.RegisterUserAsync(registerDto);
+                if (!result.Succeeded)
                 {
-                    ModelState.AddModelError("", error.Description);
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                    return View();
                 }
-                return View();
+
+                var user = await _accountService.FindUserByEmailAsync(registerDto.Email);
+                var token = await _accountService.GenerateEmailConfirmationTokenAsync(user);
+
+                var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token }, Request.Scheme);
+                await _accountService.SendEmailAsync(user.Email, "Email Confirmation",
+                    $"Please confirm your email by clicking <a href='{confirmationLink}'>here</a>.");
+
+                return RedirectToAction("Login");
             }
 
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-
-            var confirmationLink = Url.Action("ConfirmEmail", "Account",
-                new { userId = user.Id, token = token }, Request.Scheme);
-
-            _emailService.SendEmail(user.Email, "Email Confirmation",
-                $"Please confirm your email by clicking <a href='{confirmationLink}'>here</a>.");
-
-            return RedirectToAction("Login", "Account");
-        }
-
-        public async Task<IActionResult> ConfirmEmail(string userId, string token)
-        {
-            if (userId == null || token == null)
+            public async Task<IActionResult> ConfirmEmail(string userId, string token)
             {
-                return BadRequest("Invalid email confirmation request.");
+                if (userId == null || token == null)
+                    return BadRequest("Invalid email confirmation request.");
+
+                var user = await _accountService.FindUserByIdAsync(userId);
+                if (user == null)
+                    return NotFound("User not found.");
+
+                var result = await _accountService.ConfirmEmailAsync(user, token);
+                if (result.Succeeded)
+                    return View("ConfirmEmail");
+
+                return BadRequest("Email confirmation failed.");
             }
 
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
+            public IActionResult Login() => View();
+
+            [HttpPost]
+            public async Task<IActionResult> Login(LoginDto loginDto)
             {
-                return NotFound("User not found.");
+                if (!ModelState.IsValid)
+                    return View();
+
+                var result = await _accountService.LoginUserAsync(loginDto);
+                if (!result.Succeeded)
+                {
+                    ModelState.AddModelError("", "Username or password is incorrect.");
+                    return View();
+                }
+
+                return RedirectToAction("Index", "Home");
             }
 
-            var result = await _userManager.ConfirmEmailAsync(user, token);
-            if (result.Succeeded)
+            public async Task<IActionResult> Logout()
             {
-                return View("ConfirmEmail");
+                await _accountService.LogoutUserAsync();
+                return RedirectToAction("Index", "Home");
             }
 
-            return BadRequest("Email confirmation failed.");
-        }
-
-        public IActionResult Login()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Login(LoginDto loginDto)
-        {
-            if (!ModelState.IsValid)
+            [HttpGet]
+            public IActionResult LoginWithGoogle()
             {
-                return View();
+                var redirectUrl = Url.Action("GoogleResponse", "Account");
+                var properties = _accountService.GetGoogleLoginProperties(redirectUrl);
+                return Challenge(properties, "Google");
             }
 
-            var user = await _userManager.FindByEmailAsync(loginDto.Email);
-            if (user == null)
+            public async Task<IActionResult> GoogleResponse()
             {
-                ModelState.AddModelError("", "Username or password is incorrect.");
-                return View();
+                var info = await _accountService.GetExternalLoginInfoAsync();
+                if (info == null)
+                    return RedirectToAction("Login", new { error = "Google login failed." });
+
+                var user = await _accountService.HandleGoogleLoginAsync(info);
+                if (user == null)
+                    return RedirectToAction("Login", new { error = "Google registration failed." });
+
+                return RedirectToAction("Index", "Home");
             }
-
-            if (!user.EmailConfirmed)
-            {
-                ModelState.AddModelError("", "Please confirm your email to log in.");
-                return View();
-            }
-
-            var result = await _signInManager.PasswordSignInAsync(user, loginDto.Password, true, true);
-            if (!result.Succeeded)
-            {
-                ModelState.AddModelError("", "Username or password is incorrect.");
-                return View();
-            }
-
-            return RedirectToAction("Index", "Home");
-        }
-
-        public async Task<IActionResult> Logout()
-        {
-            await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
         }
     }
+
 }
