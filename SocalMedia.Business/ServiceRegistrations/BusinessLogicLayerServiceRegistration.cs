@@ -5,6 +5,7 @@ using SocalMedia.Business.Services.Implementations;
 using SocalMedia.Business.Services.Implementations.Generic;
 using SocalMedia.Business.UiServices.Abstractions;
 using SocalMedia.Business.UiServices.Implementations;
+using SocialMedia.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,8 +46,9 @@ namespace SocalMedia.Business.ServiceRegistrations
 
             services.AddScoped<IFriendService, FriendService>();
 
-            services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IAccountService, AccountService>(); 
 
+            services.AddScoped<IChatService, ChatService>(); 
 
             return services;
         }

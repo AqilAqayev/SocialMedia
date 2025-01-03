@@ -33,10 +33,12 @@ public class PostController : Controller
     {
         if (!ModelState.IsValid)
         {
-            RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home");
         }
+
         int postId = await _postService.CreatePostAsync(createPostDto);
-        return Json(postId);
+
+        return RedirectToAction("Index", "Home");
     }
     [HttpPost]
     [Authorize]

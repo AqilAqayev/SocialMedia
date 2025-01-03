@@ -40,7 +40,8 @@ public class PostService : CrudService<Post, CreatePostDto, UpdatePostDto, PostD
 
 
         var entity= await _appDbContext.Posts
-        .Include(p => p.PostImages) // PostImages ilişkisini yükle
+        .Include(p => p.PostImages)
+        .Include(p => p.PostVideos)
         .Where(predicate)
         .ToListAsync();
 
@@ -86,7 +87,7 @@ public class PostService : CrudService<Post, CreatePostDto, UpdatePostDto, PostD
 
         foreach (var video in createPostDto.VideoUrls)
         {
-            string videoUrl = await _cloudinaryManager.FileCreateAsync(video);
+            string videoUrl = await _cloudinaryManager.VideoUploadAsync(video);
             var videoEntity = new PostVideo
             {
                 PostId = post.Id,

@@ -15,6 +15,9 @@ public class PostMapperProfile : Profile
        CreateMap<Post, PostDto>()
     .ForMember(dest => dest.ImageUrls, 
                opt => opt.MapFrom(src => src.PostImages.Select(img => img.ImageUrl).ToList()))
+    .ForMember(dest => dest.VideoUrls,
+               opt => opt.MapFrom(src => src.PostVideos.Select(vid => vid.VideoUrl).ToList()))
     .ReverseMap();
+
     }
 }

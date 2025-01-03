@@ -14,6 +14,7 @@ public class HomeController : Controller
     private readonly IPostVideoService _postVideoService;
     private readonly IHomeService _homeService;
 
+
     public HomeController(IPostService postService, IPostImageService postImageService, IPostVideoService postVideoService, IHomeService homeService)
     {
         _postService = postService;
@@ -26,19 +27,12 @@ public class HomeController : Controller
     {
         string userId =HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
         var post = await _postService.GetAllPostAsync(x=>x.UserId!=userId);
-        //var image = await _postImageService.GetAllAsync();
-        //var video = await _postVideoService.GetAllAsync();
 
         HomeDto homeDto = new HomeDto
         {
-            //Posts = await _postService.GetAllAsync(),
-            //PostImages = await _postImageService.GetAllAsync(),
-            //PostVideos = await _postVideoService.GetAllAsync(),
-
             Posts = post,
-            //PostImages=image,
-            //PostVideos=video
-
+            
+            
         };    
         return View(homeDto);
     }

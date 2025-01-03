@@ -67,6 +67,48 @@ public class CloudinaryManager : ICloudinaryManager
             return false;
         }
     }
+    public async Task<string> VideoUploadAsync(IFormFile file)
+    {
+        string fileName = string.Concat(Guid.NewGuid(), file.FileName.Substring(file.FileName.LastIndexOf('.')));
+
+        var uploadResult = new VideoUploadResult();
+        if (file.Length > 0)
+        {
+            using var stream = file.OpenReadStream();
+            var uploadParams = new VideoUploadParams
+            {
+                File = new FileDescription(fileName, stream)
+            };
+            uploadResult = await _cloudinary.UploadAsync(uploadParams);
+        }
+        string url = uploadResult.SecureUrl.ToString();
+
+        return url;
+    }
+
+    public async Task<bool> VideoDeleteAsync(string filePath)
+    {
+        try
+        {
+            string publicIdWithExtension = filePath.Substring(filePath.LastIndexOf("connex.az"));
+            string publicId = publicIdWithExtension.Substring(0, publicIdWithExtension.LastIndexOf('.'));
+
+            var deleteParams = new DelResParams()
+            {
+                PublicIds = new List<string> { publicId },
+                Type = "upload",
+                ResourceType = ResourceType.Video
+            };
+            var result = await _cloudinary.DeleteResourcesAsync(deleteParams);
+
+            return result.StatusCode == HttpStatusCode.OK;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return false;
+        }
+    }
 
 }
 public class CloudinaryOptionsDto

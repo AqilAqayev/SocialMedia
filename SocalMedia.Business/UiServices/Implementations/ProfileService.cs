@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Identity.Client;
 using SocalMedia.Business.Dtos.ProfileDtos;
+using SocalMedia.Business.Exceptions;
 using SocalMedia.Business.Services.Abstractions;
 using SocalMedia.Business.UiServices.Abstractions;
 using SocialMedia.Core.Entities;
@@ -34,7 +35,7 @@ internal class ProfileService : IProfileService
 
         if (string.IsNullOrEmpty(userId))
         {
-            throw new Exception("User not found");
+            throw new NotFoundException("User not found");
         }
 
         var posts = await _postService.GetAllAsync(x => x.UserId == userId);
@@ -52,7 +53,7 @@ internal class ProfileService : IProfileService
         AppUser user = await _userManager.FindByIdAsync(userId);
         if (user == null)
         {
-            throw new Exception("User not found");
+            throw new NotFoundException("User not found");
         }
         var postCount = posts.Count;
         var closedFriend = await _friendService.GetFriendsWithStatusAsync(userId);
@@ -87,7 +88,7 @@ internal class ProfileService : IProfileService
         AppUser user = await _userManager.FindByIdAsync(userId);
         if (user == null)
         {
-            throw new Exception("User not found");
+            throw new NotFoundException("User not found");
         }
 
         var posts = await _postService.GetAllAsync(x => x.UserId == userId);
@@ -124,13 +125,13 @@ internal class ProfileService : IProfileService
 
         if (string.IsNullOrEmpty(userId))
         {
-            throw new Exception("User not found");
+            throw new NotFoundException("User not found");
         }
 
         AppUser user = await _userManager.FindByIdAsync(userId);
         if (user == null)
         {
-            throw new Exception("User not found");
+            throw new NotFoundException("User not found");
         }
 
         user.Biography = bio;

@@ -4,7 +4,6 @@ using SocalMedia.Business.Services.Abstractions;
 using SocalMedia.Business.Services.Implementations.Generic;
 using SocialMedia.Core.Entities;
 using SocialMedia.DataAccess.Repositories.Abstraction;
-using SocialMedia.DataAccess.Repositories.Abstraction.Generic;
 
 namespace SocalMedia.Business.Services.Implementations;
 

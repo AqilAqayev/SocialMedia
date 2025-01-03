@@ -82,7 +82,7 @@ namespace SocialMedia.Presentation.Controllers
             public async Task<IActionResult> Logout()
             {
                 await _accountService.LogoutUserAsync();
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Login", "Account");
             }
 
             [HttpGet]
