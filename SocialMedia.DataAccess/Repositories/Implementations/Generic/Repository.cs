@@ -21,6 +21,7 @@ internal  class Repository<T> : IRepository<T> where T : BaseEntity
     public async Task CreateAsync(T entity)
     {
         await _table.AddAsync(entity);
+        await _context.SaveChangesAsync();
     }
 
     public void Delete(T entity)

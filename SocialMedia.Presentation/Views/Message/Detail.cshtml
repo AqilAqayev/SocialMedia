@@ -208,10 +208,11 @@
 
             const data = await response.json();
 
-            const li = ` <li class="message sent">
-                                    <div class="text">${data.text}</div>
-                                    <time>${data.createdTime}</time>
-                                </li>`;
+            const li = `
+            <li class="message sent">
+                <div class="text">${data.text}</div>
+                <time>${new Date(data.createdTime).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}</time>
+            </li>`;
 
             chat.innerHTML += li;
 

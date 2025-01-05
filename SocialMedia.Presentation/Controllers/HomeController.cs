@@ -25,20 +25,12 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-        string userId =HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-        var post = await _postService.GetAllPostAsync(x=>x.UserId!=userId);
-
-        HomeDto homeDto = new HomeDto
-        {
-            Posts = post,
-            
-            
-        };    
+       var homeDto = await _homeService.GetHomeDto();
         return View(homeDto);
     }
 
     [HttpGet]
-    public async Task<IActionResult> Search()
+    public  IActionResult Search()
     {
         return View();
     }
@@ -52,5 +44,11 @@ public class HomeController : Controller
 
         var users = await _homeService.SearchUsersAsync(query);
         return View(users);
+    }
+    [HttpGet]
+    public async Task<IActionResult> GetMorePosts(int page = 1, int pageSize = 10)
+    {
+        var homeDto = await _homeService.GetPaginatedHomeDtoAsync(page, pageSize);
+        return Json(homeDto);
     }
 }

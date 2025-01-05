@@ -45,6 +45,8 @@ namespace SocialMedia.DataAccess.ServiceRegistrations
 
             services.AddScoped<IChatRepository,ChatRepository>();
 
+            services.AddScoped<IPostLikeRepository,PostLikeRepository>();
+
         }
     }
 }

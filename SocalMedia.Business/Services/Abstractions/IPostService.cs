@@ -9,4 +9,6 @@ public interface IPostService : ICrudService<Post, CreatePostDto, UpdatePostDto,
 {
     Task<int> CreatePostAsync(CreatePostDto createPostDto);
     Task<List<PostDto>> GetAllPostAsync(Expression<Func<Post, bool>>? predicate);
+    Task<int> GetPostCountAsync();
+    Task<bool> LikePostAsync(int postId);
 }

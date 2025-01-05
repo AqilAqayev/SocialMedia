@@ -1,7 +1,7 @@
 ﻿@using SocalMedia.Business.Dtos.HomeDtos
 @model HomeDto
 <style>
- 
+
 </style>
 <div id="content-page" class="content-page">
     <div class="container">
@@ -19,7 +19,7 @@
                         <label for="VideoUrls">Upload Videos</label>
                         <input type="file" name="VideoUrls" id="VideoUrls" class="form-control" accept="video/*" multiple>
                     </div>
-                    <input type="hidden" name="UserId" value="12345"> 
+                    <input type="hidden" name="UserId" value="12345">
                     <button type="submit" class="btn btn-primary d-block w-100 mt-3">Post</button>
                 </form>
                 @foreach (var post in Model.Posts)
@@ -93,50 +93,33 @@
                                 <p>@post.Text</p>
                             </div>
                             <div class="user-post">
-                                <div class=" d-grid grid-rows-2 grid-flow-col gap-3">
-                                    @foreach (var image in post.ImageUrls ?? [])
-                                                        {
-                                       
-                                        <img src="@image" alt="Image" class="gallery-image" width="200">
-                                        
-                                    }
-                                    @foreach(var video in post.VideoUrls?? []){
-                                        <video width="200" controls>
-                                            <source src="@video" type="video/mp4">
-                                            Your browser does not support the video tag.
-                                        </video>
-                                    }
-                                   
+                                <div class="custom-grid">
+                                    <div class="user-post">
+                                        @foreach (var image in post.ImageUrls ?? [])
+                                        {
+                                            <img src="@image" alt="Image" class="gallery-image">
+                                        }
+                                        @foreach (var video in post.VideoUrls ?? [])
+                                        {
+                                            <video controls>
+                                                <source src="@video" type="video/mp4">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        }
+                                    </div>
+
                                 </div>
                             </div>
-                            <style>
-                                .user-post {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Dinamik kolon sayısı */
-    gap: 10px; /* Elemanlar arasındaki boşluk */
-    justify-items: center; /* Görsellerin merkezlenmesi */
-    align-items: center; /* Dikey hizalama */
-   
-}
-
-.user-post img {
-    width: 100%; /* Görsellerin genişliği div'in genişliğine uyacak */
-    height: auto; /* Oranları korumak için otomatik yükseklik */
-    border-radius: 8px; /* Görsellere yuvarlatılmış köşeler */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Hafif gölge efekti */
-}
-
-
-                            </style>
+                           
                             <div class="comment-area mt-3">
                                 <div class="d-flex justify-content-between align-items-center flex-wrap">
                                     <div class="like-block position-relative d-flex align-items-center">
                                         <div class="d-flex align-items-center">
                                             <div class="like-data">
                                                 <div class="dropdown">
-                                                    <span class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
+                                                    <a asp-controller="Like" asp-action="PostLike" asp-route-postId="@post.Id" class="ms-2 me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Like">
                                                         <img src="../assets/images/icon/01.png" class="img-fluid" alt="">
-                                                    </span>
+                                                    </a>
                                                     <div class="dropdown-menu py-2">
                                                         <a class="ms-2 me-2" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="Like"><img src="../assets/images/icon/01.png" class="img-fluid" alt=""></a>
                                                         <a class="me-2" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="Love"><img src="../assets/images/icon/02.png" class="img-fluid" alt=""></a>
@@ -151,36 +134,23 @@
                                             <div class="total-like-block ms-2 me-3">
                                                 <div class="dropdown">
                                                     <span class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
-                                                        140 Likes
+                                                        @post.Count Likes
                                                     </span>
                                                     <div class="dropdown-menu">
                                                         <a class="dropdown-item" href="#">Max Emum</a>
-                                                        <a class="dropdown-item" href="#">Bill Yerds</a>
-                                                        <a class="dropdown-item" href="#">Hap E. Birthday</a>
-                                                        <a class="dropdown-item" href="#">Tara Misu</a>
-                                                        <a class="dropdown-item" href="#">Midge Itz</a>
-                                                        <a class="dropdown-item" href="#">Sal Vidge</a>
-                                                        <a class="dropdown-item" href="#">Other</a>
+
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="total-comment-block">
                                             <div class="dropdown">
-                                                <span class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
-                                                    20 Comment
+                                                <span class="dropdown-toggle" data-bs-toggle="tooltip" onclick="toggleComments(this);" role="button">
+                                                    @post.Comments.Count Comment
                                                 </span>
-                                                <div class="dropdown-menu">
-                                                    <a class="dropdown-item" href="#">Max Emum</a>
-                                                    <a class="dropdown-item" href="#">Bill Yerds</a>
-                                                    <a class="dropdown-item" href="#">Hap E. Birthday</a>
-                                                    <a class="dropdown-item" href="#">Tara Misu</a>
-                                                    <a class="dropdown-item" href="#">Midge Itz</a>
-                                                    <a class="dropdown-item" href="#">Sal Vidge</a>
-                                                    <a class="dropdown-item" href="#">Other</a>
-                                                </div>
                                             </div>
                                         </div>
+
                                     </div>
                                     <div class="share-block d-flex align-items-center feather-icon mt-2 mt-md-0">
                                         <a href="javascript:void();" data-bs-toggle="offcanvas" data-bs-target="#share-btn" aria-controls="share-btn">
@@ -190,56 +160,75 @@
                                     </div>
                                 </div>
                                 <hr>
-                                <ul class="post-comments list-inline p-0 m-0">
-                                    <li class="mb-2">
-                                        <div class="d-flex">
-                                            <div class="user-img">
-                                                <img src="../assets/images/user/02.jpg" alt="userimg" class="avatar-35 rounded-circle img-fluid">
-                                            </div>
-                                            <div class="comment-data-block ms-3">
-                                                <h6>Monty Carlo</h6>
-                                                <p class="mb-0">Lorem ipsum dolor sit amet</p>
-                                                <div class="d-flex flex-wrap align-items-center comment-activity">
-                                                    <a href="javascript:void();">like</a>
-                                                    <a href="javascript:void();">reply</a>
-                                                    <a href="javascript:void();">translate</a>
-                                                    <span> 5 min </span>
+                                <ul class="post-comments">
+                                    @foreach (var comment in post.Comments)
+                                    {
+                                        <li>
+                                            <div class="d-flex">
+                                                <div class="user-img">
+                                                    <img src="../assets/images/user/02.jpg" alt="userimg">
+                                                </div>
+                                                <div class="comment-data-block">
+                                                    <h6>@comment.UserName</h6>
+                                                    <p>@comment.Text</p>
+                                                    <div class="d-flex flex-wrap align-items-center comment-activity">
+                                                        <a href="javascript:void(0);" class="reply-toggle" onclick="toggleReplyInput(this);">Reply</a>
+                                                        <a href="javascript:void();">Like</a>
+                                                        <a href="javascript:void();">Translate</a>
+                                                        <span>@comment.CreatedTime</span>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="d-flex">
-                                            <div class="user-img">
-                                                <img src="../assets/images/user/03.jpg" alt="userimg" class="avatar-35 rounded-circle img-fluid">
-                                            </div>
-                                            <div class="comment-data-block ms-3">
-                                                <h6>Paul Molive</h6>
-                                                <p class="mb-0">Lorem ipsum dolor sit amet</p>
-                                                <div class="d-flex flex-wrap align-items-center comment-activity">
-                                                    <a href="javascript:void();">like</a>
-                                                    <a href="javascript:void();">reply</a>
-                                                    <a href="javascript:void();">translate</a>
-                                                    <span> 5 min </span>
+
+                                            <!-- Reply Input -->
+                                            <form class="reply-input" asp-controller="Post" asp-action="ReplyComment" method="post" style="display: none;">
+                                                <input type="hidden" name="PostId" value="@post.Id" />
+                                                <input type="hidden" name="ParentId" value="@comment.Id" />
+                                                <input type="text" name="Text" placeholder="Reply to this comment" required />
+                                                <button type="submit">Reply</button>
+                                            </form>
+
+                                            <!-- Child Comments -->
+                                            @foreach (var child in comment.Children)
+                                            {
+                                            <li class="child-comment">
+                                                <div class="d-flex">
+                                                    <div class="user-img">
+                                                        <img src="../assets/images/user/03.jpg" alt="userimg">
+                                                    </div>
+                                                    <div class="comment-data-block">
+                                                        <h6>@child.UserName</h6>
+                                                        <p>@child.Text</p>
+                                                        <div class="d-flex flex-wrap align-items-center comment-activity">
+                                                            <a href="javascript:void();">Like</a>
+                                                            <a href="javascript:void();">Reply</a>
+                                                            <span>@child.CreatedTime</span>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </li>
+                                            </li>
+                                            }
+                                        </li>
+                                    }
                                 </ul>
-                               @*  <form class="commentForm" asp-action="PostComment" asp-route-CourseId="@Model." action="javascript:void(0);">
-                                    <input type="text" class="form-control rounded" placeholder="Enter Your Comment">
-                                    <div class="comment-attagement d-flex">
-                                        <a href="javascript:void();"><i class="ri-link me-3"></i></a>
-                                        <a href="javascript:void();"><i class="ri-user-smile-line me-3"></i></a>
-                                        <a href="javascript:void();"><i class="ri-camera-line me-3"></i></a>
+
+
+                                <form class="commentForm" asp-controller="Post" asp-action="PostComment" method="post">
+                                    <input type="hidden" name="PostId" value="@post.Id" />
+                                    <div class="form-group">
+                                        <input type="text" name="Text" class="form-control rounded" placeholder="Enter Your Comment" required />
                                     </div>
-                                </form> *@
+                                    <div class="form-group">
+                                        <label for="Rating">Rating</label>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary mt-2">Post Comment</button>
+                                </form>
                             </div>
                         </div>
                     </div>
                 }
 
-     
+
             </div>
             <div class="col-lg-4">
                 <div class="card">
@@ -282,7 +271,7 @@
                         <a href="#" class="btn btn-primary d-block mt-3">See All</a>
                     </div>
                 </div>
-               
+
             </div>
             <div class="col-sm-12 text-center">
                 <img src="~/assets/images/page-img/page-load-loader.gif" alt="loader" style="height: 100px;">
@@ -290,5 +279,161 @@
         </div>
     </div>
 </div>
-   
+
 <!-- Wrapper End-->
+<script>
+    function toggleReplyInput(element) {
+        const replyInput = element.closest('li').querySelector('.reply-input');
+        if (replyInput.style.display === 'none' || replyInput.style.display === '') {
+            replyInput.style.display = 'flex'; // Görünür hale getir
+        } else {
+            replyInput.style.display = 'none'; // Gizle
+        }
+    }
+    function toggleComments(element) {
+        const commentList = element.closest('.comment-area').querySelector('.post-comments');
+        if (commentList.style.display === 'none' || commentList.style.display === '') {
+            commentList.style.display = 'block'; // Yorumları görünür yap
+        } else {
+            commentList.style.display = 'none'; // Yorumları gizle
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.post-comments').forEach(commentList => {
+            commentList.style.display = 'none';
+        });
+    });
+</script>
+
+<style>
+    /* Post Kartları */
+    .card_card-block_card-stretch_card-height {
+        background: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        overflow: hidden; /* Kart dışına taşmayı engelle */
+    }
+
+        /* Uzun metni sarmalama */
+        .card_card-block_card-stretch_card-height p {
+            word-wrap: break-word; /* Uzun kelimelerin taşmasını önle */
+            overflow-wrap: break-word; /* Eski tarayıcılar için destek */
+        }
+
+    /* Görseller ve Videolar */
+    .user-post img,
+    .user-post video {
+        width: 100%;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin-bottom: 0; /* Medya elementleri arasındaki boşluk */
+    }
+
+    /* Altındaki fazla boşluğu engelle */
+    .user-post {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+        margin-top: 15px;
+        margin-bottom: 0; /* Alt boşluğu sıfırla */
+        padding-bottom: 0; /* Fazla içeriği engelle */
+    }
+
+    /* Kart içindeki medya ve metin düzeni */
+    .user-post-data {
+        margin-bottom: 10px;
+    }
+
+        .user-post-data p {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 5px; /* Fazla boşluğu azalt */
+        }
+
+    /* Genel margin ve padding ayarları */
+    .comment-area {
+        margin-top: 20px;
+        padding: 20px;
+        background: #f9f9f9;
+        border-radius: 8px;
+    }
+
+    .post-comments > li {
+        margin-bottom: 20px;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 15px;
+    }
+
+    /* Uzun metinli yorumlar için düzenleme */
+    .comment-data-block {
+        margin-left: 10px;
+        background: #fff;
+        border-radius: 8px;
+        padding: 10px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        word-wrap: break-word; /* Uzun kelimeler için sarma */
+        overflow-wrap: break-word;
+    }
+
+    /* Çocuk yorum düzeni */
+    .child-comment {
+        margin-left: 40px;
+        border-left: 2px solid #ddd;
+        padding-left: 15px;
+    }
+
+    .post-comments {
+        display: none; /* Başlangıçta gizli */
+        transition: all 0.3s ease-in-out; /* Geçiş animasyonu */
+
+        .reply-input
+
+    {
+        display: none; /* Başlangıçta gizli */
+        flex-direction: column; /* Dikey hizalama */
+        margin-top: 10px;
+    }
+
+    .reply-input input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        font-size: 14px;
+    }
+
+    .reply-input button {
+        padding: 10px 20px;
+        background-color: #007bff; /* Mavi ton */
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out;
+    }
+
+        .reply-input button:hover {
+            background-color: #0056b3; /* Daha koyu mavi */
+        }
+
+    /* Yanıt Butonu */
+    .reply-toggle {
+        color: #007bff;
+        cursor: pointer;
+        font-size: 14px;
+        margin-right: 10px;
+        text-decoration: none;
+        transition: color 0.3s ease-in-out;
+    }
+
+        .reply-toggle:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+</style>

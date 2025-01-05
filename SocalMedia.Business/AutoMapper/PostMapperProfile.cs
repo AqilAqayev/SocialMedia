@@ -9,15 +9,13 @@ public class PostMapperProfile : Profile
 {
     public PostMapperProfile()
     {
-        
-        CreateMap<Post, CreatePostDto>().ReverseMap();
-        CreateMap<Post, UpdatePostDto>().ReverseMap();
-       CreateMap<Post, PostDto>()
-    .ForMember(dest => dest.ImageUrls, 
-               opt => opt.MapFrom(src => src.PostImages.Select(img => img.ImageUrl).ToList()))
-    .ForMember(dest => dest.VideoUrls,
-               opt => opt.MapFrom(src => src.PostVideos.Select(vid => vid.VideoUrl).ToList()))
-    .ReverseMap();
+
+        CreateMap<Post, PostDto>()
+           .ForMember(dest => dest.ImageUrls, opt => opt.MapFrom(src => src.PostImages.Select(i => i.ImageUrl).ToList()))
+           .ForMember(dest => dest.VideoUrls, opt => opt.MapFrom(src => src.PostVideos.Select(v => v.VideoUrl).ToList()))
+           .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName)) // Map UserName from AppUser
+           .ForMember(dest => dest.Comments, opt => opt.MapFrom(src => src.Comments)) // Correctly map Comments
+           .ReverseMap();
 
     }
 }

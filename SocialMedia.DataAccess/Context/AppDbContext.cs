@@ -23,9 +23,16 @@ public class AppDbContext : IdentityDbContext<AppUser>
     public DbSet<Chat> Chats { get; set; } = null!;
     public DbSet<AppUserChat> AppUserChats { get; set; } = null!;
     public DbSet<Follow> Follows { get; set; }
+    public DbSet<PostLike> PostLikes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<PostLike>()
+           .HasOne(pl => pl.Post)
+           .WithMany(p => p.PostLikes)
+           .HasForeignKey(pl => pl.PostId);
+
+
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         //modelBuilder.AddSeedData();
         base.OnModelCreating(modelBuilder);

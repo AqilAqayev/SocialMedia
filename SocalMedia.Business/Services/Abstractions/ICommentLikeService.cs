@@ -1,5 +1,4 @@
-﻿using SocalMedia.Business.Dtos.CommentDtos;
-using SocalMedia.Business.Dtos.CommentLikeDtos;
+﻿using SocalMedia.Business.Dtos.CommentLikeDtos;
 using SocalMedia.Business.Services.Abstractions.Generic;
 using SocialMedia.Core.Entities;
 

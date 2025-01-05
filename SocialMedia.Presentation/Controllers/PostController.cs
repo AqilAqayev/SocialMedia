@@ -62,12 +62,14 @@ public class PostController : Controller
             Rating = dto.Rating,
             AppUserId = userId,
             PostId = dto.PostId,
+            CreatedTime = DateTime.UtcNow,
+            CreatedBy =user.Id
 
         };
 
 
         post.Comments.Add(comment);
-
+        post.CommentCount++;
         await _context.Comments.AddAsync(comment);
 
         var avaragePoint = Math.Round((decimal)(post.Comments!.Sum(x => (int)x.Rating)) / (decimal)post.Comments.Count);
@@ -88,36 +90,45 @@ public class PostController : Controller
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "";
 
+        if (string.IsNullOrEmpty(userId))
+            return BadRequest("User is not authenticated.");
+
         var user = await _userManager.FindByIdAsync(userId);
-
         if (user is null)
-            return BadRequest();
+            return BadRequest("User not found.");
 
-        var isExistParent = await _context.Comments.AnyAsync(x => x.Id == dto.ParentId && x.ParentId == null);
+        if (dto.ParentId <= 0 || dto.PostId <= 0 || string.IsNullOrEmpty(dto.Text))
+            return BadRequest("Invalid input data.");
 
-        if (!isExistParent)
-            return BadRequest();
+        var parentComment = await _context.Comments
+            .FirstOrDefaultAsync(x => x.Id == dto.ParentId && x.ParentId == null);
+        if (parentComment is null)
+            return BadRequest("Parent comment does not exist.");
 
+        var post = await _context.Posts
+            .Include(x => x.Comments)
+            .FirstOrDefaultAsync(x => x.Id == dto.PostId);
+        if (post is null)
+            return BadRequest("Post not found.");
 
-        var isExistPost = await _context.Posts.AnyAsync(x => x.Id == dto.PostId);
-
-        if (!isExistPost)
-            return BadRequest();
-
-        Comment comment = new()
+        Comment replyComment = new()
         {
             Text = dto.Text,
-            AppUserId = userId,
-            PostId = dto.PostId,
             ParentId = dto.ParentId,
+            PostId = dto.PostId,
+            AppUserId = userId,
+            CreatedBy = user.Id,
+            CreatedTime = DateTime.UtcNow
         };
 
-        await _context.Comments.AddAsync(comment);
+        await _context.Comments.AddAsync(replyComment);
+        post.CommentCount++;
+
+        _context.Posts.Update(post);
         await _context.SaveChangesAsync();
 
-
         string returnUrl = Request.GetReturnUrl();
-
         return Redirect(returnUrl);
     }
+
 }

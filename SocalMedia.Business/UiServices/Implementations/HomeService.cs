@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using SocalMedia.Business.Dtos.HomeDtos;
 using SocalMedia.Business.Dtos.SearchDtos;
+using SocalMedia.Business.Services.Abstractions;
 using SocalMedia.Business.UiServices.Abstractions;
+using SocialMedia.Core.Entities;
 using SocialMedia.DataAccess.Repositories.Abstraction;
 using System.Security.Claims;
 
@@ -12,12 +15,30 @@ namespace SocalMedia.Business.UiServices.Implementations
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IPostService _postService;
+        private readonly ICommentService _commentService;
 
-        public HomeService(IUserRepository userRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        public HomeService(IUserRepository userRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor, IPostService postService, ICommentService commentService)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
+            _postService = postService;
+            _commentService = commentService;
+        }
+
+        public async Task<HomeDto> GetHomeDto()
+        {
+            string userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var post = await _postService.GetAllPostAsync(x => x.UserId != userId);
+            var comment = await _commentService.GetAllAsync();
+
+            HomeDto homeDto = new HomeDto
+            {
+                Posts = post,
+              
+            };
+            return homeDto;
         }
 
         public async Task<SearchUsersDto> SearchUsersAsync(string query)
@@ -46,5 +67,24 @@ namespace SocalMedia.Business.UiServices.Implementations
 
             return model;
         }
+
+        public async Task<HomeDto> GetPaginatedHomeDtoAsync(int page, int pageSize)
+        {
+            string userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var posts = await _postService.GetAllPostAsync(x => x.UserId != userId);
+
+            var paginatedPosts = posts
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+            HomeDto homeDto = new HomeDto
+            {
+                Posts = posts,
+
+            };
+            return homeDto;
+        }
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using SocalMedia.Business.Dtos.CommentDtos;
+using SocalMedia.Business.Dtos.PostDtos;
 using SocalMedia.Business.Services.Abstractions;
 using SocalMedia.Business.Services.Implementations.Generic;
 using SocialMedia.Core.Entities;

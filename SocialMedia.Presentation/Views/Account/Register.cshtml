@@ -28,7 +28,7 @@
     </div>
     <!-- loader END -->
 
-    <div class="wrapper">
+    <div class="wrapper" style="min-height: 100vh; overflow-y: auto;">
         <section class="sign-in-page">
             <div id="container-inside">
                 <div id="circle-small"></div>
@@ -148,3 +148,10 @@
 
 </body>
 </html>
+<style>
+    html, body {
+        overflow: auto; /* Və ya */
+        overflow-y: scroll; /* Dikey olaraq scroll bar məcburi göstərilir */
+        height: 100%; /* Tam boy */
+    }
+</style>

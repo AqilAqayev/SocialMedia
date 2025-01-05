@@ -85,10 +85,12 @@ namespace SocialMedia.Presentation.Controllers
                 Text = text,
                 ChatId = chatId,
                 SenderId = userId,
+                CreatedTime =DateTime.Now
             };
 
             await _context.Messages.AddAsync(message);
             await _context.SaveChangesAsync();
+
 
             message.Chat = null; 
 

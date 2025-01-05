@@ -1,4 +1,5 @@
 ﻿using SocalMedia.Business.Dtos.ChatDtos;
+using SocalMedia.Business.Dtos.CommentDtos;
 using SocalMedia.Business.Dtos.Generic;
 using SocalMedia.Business.Dtos.PostImageDtos;
 using SocalMedia.Business.Dtos.PostVideoDtos;
@@ -15,7 +16,9 @@ public class PostDto : IDto
     public bool IsDelete { get; set; }
     public List<string> ImageUrls { get; set; } = new List<string>();
     public List<string>? VideoUrls { get; set; } = [];
-    public List<string> Comments { get; set; } = [];
+    public List<CommentDto> Comments { get; set; } = [];
     public List<ChatDto> ChatDtos { get; set; } = [];
+    public int Count { get; set; }
+    public int PostCount { get; set; }
 }
 
