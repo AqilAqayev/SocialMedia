@@ -31,14 +31,14 @@ internal class ProfileService : IProfileService
 
     public async Task<ProfileDto> GetProfile()
     {
-        string userId = _http.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        string userId = _http.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "";
 
         if (string.IsNullOrEmpty(userId))
         {
             throw new NotFoundException("User not found");
         }
+        var posts = await _postService.GetAllPostAsync(x => x.UserId == userId);
 
-        var posts = await _postService.GetAllAsync(x => x.UserId == userId);
 
         var imagesDto = new List<string>();
 
@@ -62,7 +62,8 @@ internal class ProfileService : IProfileService
         .Select(f => new FriendClosed
         {
             Name = f.Friend.UserName,
-            ProfileImage = f.Friend.ProfilePhotoUrl
+            ProfileImage = f.Friend.ProfilePhotoUrl,
+            Id = f.Friend.Id
         })
         .ToList();
         return new ProfileDto
@@ -77,9 +78,8 @@ internal class ProfileService : IProfileService
             FollowingCount = user.FollowingCount,
             ProfilePhoto = user.ProfilePhotoUrl,
             BioNews = user.Biography,
-            FriendCloseds = closedFriendsDto
-
-
+            FriendCloseds = closedFriendsDto,
+            PostDtos =posts
 
         };
     }

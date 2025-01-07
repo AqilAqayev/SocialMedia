@@ -13,9 +13,9 @@ public class LikeController : Controller
         _postService = postService;
     }
 
-    public IActionResult PostLike(int postId)
+    public async Task<IActionResult> PostLike(int postId)
     {
-        var like = _postService.LikePostAsync(postId);
+        var like =await _postService.LikePostAsync(postId);
         return RedirectToAction("Index", "Home");
     }
 }

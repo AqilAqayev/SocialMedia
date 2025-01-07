@@ -42,7 +42,8 @@ public class PostService : CrudService<Post, CreatePostDto, UpdatePostDto, PostD
         var entity = await _appDbContext.Posts
         .Include(p => p.PostImages)
         .Include(p => p.PostVideos)
-        .Include(p => p.Comments)
+        .Include(p => p.Comments).ThenInclude(c => c.User)
+        .Include(p=>p.User)
         .Where(predicate)
         .ToListAsync();
 
@@ -98,7 +99,7 @@ public class PostService : CrudService<Post, CreatePostDto, UpdatePostDto, PostD
         string userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "";
         if (userId == null)
             return false;
-        var post = await _postRepository.GetAsync(postId);
+        var post = await _postRepository.GetAsync(postId,include:x=>x.Include(x=>x.PostLikes));
 
         if (post == null)
             return false;
@@ -125,10 +126,14 @@ public class PostService : CrudService<Post, CreatePostDto, UpdatePostDto, PostD
 
         await _postLikeRepository.CreateAsync(postLike);
         await _postLikeRepository.SaveChangesAsync();
+
         post.Count++;
 
         _postRepository.Update(post);
         await _postRepository.SaveChangesAsync();
+        
+
+      
 
         return true;
     }

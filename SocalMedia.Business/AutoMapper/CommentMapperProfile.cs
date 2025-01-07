@@ -12,8 +12,11 @@ public class CommentMapperProfile : Profile
         CreateMap<Comment, UpdateCommentDto>().ReverseMap();
 
         CreateMap<Comment, CommentDto>()
-               .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.AppUser.UserName))
-               .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Text)) 
+               .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
+               .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Text)).ForMember(dest => dest.Children, opt => opt.MapFrom(src => src.Children))
+               .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
+               .ForMember(dest => dest.ProfilePhotoUrl, opt => opt.MapFrom(src => src.User.ProfilePhotoUrl))
                .ReverseMap();
+
     }
 }

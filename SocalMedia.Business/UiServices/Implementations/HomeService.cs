@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Query;
 using SocalMedia.Business.Dtos.HomeDtos;
 using SocalMedia.Business.Dtos.SearchDtos;
 using SocalMedia.Business.Services.Abstractions;
@@ -17,26 +19,28 @@ namespace SocalMedia.Business.UiServices.Implementations
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IPostService _postService;
         private readonly ICommentService _commentService;
+        private readonly UserManager<AppUser> _userManager;
 
-        public HomeService(IUserRepository userRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor, IPostService postService, ICommentService commentService)
+
+        public HomeService(IUserRepository userRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor, IPostService postService, ICommentService commentService, UserManager<AppUser> userManager)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
             _postService = postService;
             _commentService = commentService;
+            _userManager = userManager;
         }
 
         public async Task<HomeDto> GetHomeDto()
         {
             string userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var post = await _postService.GetAllPostAsync(x => x.UserId != userId);
-            var comment = await _commentService.GetAllAsync();
-
+            var user = await _userManager.FindByIdAsync(userId);
             HomeDto homeDto = new HomeDto
             {
                 Posts = post,
-              
+
             };
             return homeDto;
         }

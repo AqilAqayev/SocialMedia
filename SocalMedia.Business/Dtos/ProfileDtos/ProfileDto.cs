@@ -14,13 +14,15 @@ public class ProfileDto : IDto
     public string? ProfilePhoto { get; set; }
     public int PostCount { get; set; }
     public string? BioNews { get; set; }
-    public List<string> ImageUrls { get; set; } = new List<string>(); 
+    public List<string> ImageUrls { get; set; } = new List<string>();
     public List<FriendClosed>? FriendCloseds { get; set; } = [];
+    public List<PostDto> PostDtos { get; set; } = [];
 
 }
 
 public class FriendClosed : IDto
 {
+    public string Id { get; set; } = null!;
     public string? Name { get; set; }
     public string? ProfileImage { get; set; }
 }

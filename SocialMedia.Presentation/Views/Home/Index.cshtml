@@ -29,13 +29,13 @@
                             <div class="user-post-data">
                                 <div class="d-flex justify-content-between">
                                     <div class="me-3">
-                                        <img class="rounded-circle img-fluid" src="../assets/images/user/01.jpg" alt="">
+                                        <img class="rounded-circle img-fluid" src="@post.ProfilePhotoUrl" alt="" style="width: 50px; height: 50px; object-fit: cover;">
                                     </div>
                                     <div class="w-100">
                                         <div class="d-flex justify-content-between">
                                             <div class="">
                                                 <h5 class="mb-0 d-inline-block">@post.UserName</h5>
-                                                <span class="mb-0 d-inline-block">Add New Post</span>
+                                                <span class="mb-0 d-inline-block">@post.UserName</span>
                                                 <p class="mb-0 text-primary">@post.CreatedTime.ToString("yyyy-MM-dd HH:mm")</p>
                                             </div>
                                             <div class="card-post-toolbar">
@@ -110,7 +110,7 @@
 
                                 </div>
                             </div>
-                           
+
                             <div class="comment-area mt-3">
                                 <div class="d-flex justify-content-between align-items-center flex-wrap">
                                     <div class="like-block position-relative d-flex align-items-center">
@@ -120,15 +120,7 @@
                                                     <a asp-controller="Like" asp-action="PostLike" asp-route-postId="@post.Id" class="ms-2 me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Like">
                                                         <img src="../assets/images/icon/01.png" class="img-fluid" alt="">
                                                     </a>
-                                                    <div class="dropdown-menu py-2">
-                                                        <a class="ms-2 me-2" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="Like"><img src="../assets/images/icon/01.png" class="img-fluid" alt=""></a>
-                                                        <a class="me-2" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="Love"><img src="../assets/images/icon/02.png" class="img-fluid" alt=""></a>
-                                                        <a class="me-2" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="Happy"><img src="../assets/images/icon/03.png" class="img-fluid" alt=""></a>
-                                                        <a class="me-2" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="HaHa"><img src="../assets/images/icon/04.png" class="img-fluid" alt=""></a>
-                                                        <a class="me-2" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="Think"><img src="../assets/images/icon/05.png" class="img-fluid" alt=""></a>
-                                                        <a class="me-2" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="Sade"><img src="../assets/images/icon/06.png" class="img-fluid" alt=""></a>
-                                                        <a class="me-2" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="Lovely"><img src="../assets/images/icon/07.png" class="img-fluid" alt=""></a>
-                                                    </div>
+
                                                 </div>
                                             </div>
                                             <div class="total-like-block ms-2 me-3">
@@ -146,7 +138,7 @@
                                         <div class="total-comment-block">
                                             <div class="dropdown">
                                                 <span class="dropdown-toggle" data-bs-toggle="tooltip" onclick="toggleComments(this);" role="button">
-                                                    @post.Comments.Count Comment
+                                                    @post.CommentCount Comment
                                                 </span>
                                             </div>
                                         </div>
@@ -155,7 +147,6 @@
                                     <div class="share-block d-flex align-items-center feather-icon mt-2 mt-md-0">
                                         <a href="javascript:void();" data-bs-toggle="offcanvas" data-bs-target="#share-btn" aria-controls="share-btn">
                                             <i class="ri-share-line"></i>
-                                            <span class="ms-1">99 Share</span>
                                         </a>
                                     </div>
                                 </div>
@@ -166,7 +157,7 @@
                                         <li>
                                             <div class="d-flex">
                                                 <div class="user-img">
-                                                    <img src="../assets/images/user/02.jpg" alt="userimg">
+                                                    <img src="@comment.ProfilePhotoUrl" alt="userimg" style="width: 50px; height: 50px; object-fit: cover;">
                                                 </div>
                                                 <div class="comment-data-block">
                                                     <h6>@comment.UserName</h6>
@@ -194,7 +185,7 @@
                                             <li class="child-comment">
                                                 <div class="d-flex">
                                                     <div class="user-img">
-                                                        <img src="../assets/images/user/03.jpg" alt="userimg">
+                                                        <img src="@comment.ProfilePhotoUrl" alt="userimg" style="width: 50px; height: 50px; object-fit: cover;">
                                                     </div>
                                                     <div class="comment-data-block">
                                                         <h6>@child.UserName</h6>
@@ -388,10 +379,8 @@
     .post-comments {
         display: none; /* Başlangıçta gizli */
         transition: all 0.3s ease-in-out; /* Geçiş animasyonu */
-
-        .reply-input
-
-    {
+    }
+    .reply-input {
         display: none; /* Başlangıçta gizli */
         flex-direction: column; /* Dikey hizalama */
         margin-top: 10px;

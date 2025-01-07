@@ -56,7 +56,19 @@
     <script src="../vendor/vanillajs-datepicker/dist/js/datepicker.min.js"></script>
     <script src="~/assets/js/lottie.js"></script>
 
+    <script>
+        window.addEventListener('scroll', () => {
+            sessionStorage.setItem(`scrollPosition-${window.location.pathname}`, window.scrollY);
 
+        });
+
+        window.addEventListener('load', () => {
+            const scrollPosition = sessionStorage.getItem(`scrollPosition-${window.location.pathname}`);
+            if (scrollPosition) {
+                window.scrollTo(0, parseInt(scrollPosition, 10));
+            }
+        });
+    </script>
     <!-- offcanvas start -->
 
     <div class="offcanvas offcanvas-bottom share-offcanvas" tabindex="-1" id="share-btn" aria-labelledby="shareBottomLabel">

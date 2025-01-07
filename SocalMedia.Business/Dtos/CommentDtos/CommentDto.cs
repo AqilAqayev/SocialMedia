@@ -13,5 +13,7 @@ public class CommentDto : IDto
     public List<CommentDto> Children { get; set; } = [];
     public DateTime CreatedTime { get; set; }
     public int LikeCount { get; set; }
+    public string? ProfilePhotoUrl { get; set; }
+
 }
 

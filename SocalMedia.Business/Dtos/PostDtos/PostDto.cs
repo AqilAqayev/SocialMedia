@@ -1,8 +1,6 @@
 ﻿using SocalMedia.Business.Dtos.ChatDtos;
 using SocalMedia.Business.Dtos.CommentDtos;
 using SocalMedia.Business.Dtos.Generic;
-using SocalMedia.Business.Dtos.PostImageDtos;
-using SocalMedia.Business.Dtos.PostVideoDtos;
 
 namespace SocalMedia.Business;
 
@@ -20,5 +18,7 @@ public class PostDto : IDto
     public List<ChatDto> ChatDtos { get; set; } = [];
     public int Count { get; set; }
     public int PostCount { get; set; }
+    public int CommentCount { get; set;}
+    public string? ProfilePhotoUrl { get; set; }
 }
 
