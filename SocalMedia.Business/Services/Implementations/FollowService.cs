@@ -29,14 +29,14 @@ public class FollowService : CrudService<Follow, CreateFollowDto, UpdateFollowDt
 
     public async Task Follow(string followedId)
     {
-        string userId = _http.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        string userId = _http.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "";
 
         if (userId is null)
         {
             throw new NotFoundException("User not found");
         }
 
-        AppUser user = await _userManager.FindByIdAsync(userId);
+        AppUser user = await _userManager.FindByIdAsync(userId) ;
         if (user == null)
         {
             throw new NotFoundException("User not found");
@@ -82,53 +82,52 @@ public class FollowService : CrudService<Follow, CreateFollowDto, UpdateFollowDt
             await _chatService.CreateChatIfMutualFollowAsync(userId, followedId);
         }
     }
-    public async Task Unfollow(string unfollowedId)
+
+    public Task Unfollow(string unfollowedId)
     {
-        string userId = _http.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-
-        if (userId is null)
-        {
-            throw new NotFoundException("User not found");
-        }
-
-        AppUser user = await _userManager.FindByIdAsync(userId);
-        if (user == null)
-        {
-            throw new NotFoundException("User not found");
-        }
-
-        AppUser unfollowed = await _userManager.FindByIdAsync(unfollowedId);
-        if (unfollowed == null)
-        {
-            throw new NotFoundException("Unfollowed user not found");
-        }
-
-        Follow following = await _followRepository.GetAsync(f =>
-            f.FollowerId == userId && f.FollowingId == unfollowedId);
-
-        if (following == null)
-        {
-            throw new NotFoundException("You are not following this user.");
-        }
-
-        // Update follower and following counts only if the follow was accepted
-        if (following.Status)
-        {
-            unfollowed.FollowerCount--;
-            user.FollowingCount--;
-        }
-
-        _followRepository.Delete(following);
-        await _followRepository.SaveChangesAsync();
-
-        bool isStillMutualFollow = await _followRepository.AnyAsync(f =>
-            f.FollowerId == unfollowedId && f.FollowingId == userId);
-
-        if (!isStillMutualFollow)
-        {
-            await _chatService.DeleteChatIfNoMutualFollowAsync(userId, unfollowedId);
-        }
+        throw new NotImplementedException();
     }
+    //public async Task Unfollow(string unfollowedId)
+    //{
+    //    string userId = _http.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "";
+
+    //    if (userId is null)
+    //    {
+    //        throw new NotFoundException("User not found");
+    //    }
+
+    //    AppUser user = await _userManager.FindByIdAsync(userId);
+    //    if (user == null)
+    //    {
+    //        throw new NotFoundException("User not found");
+    //    }
+
+    //    AppUser unfollowed = await _userManager.FindByIdAsync(unfollowedId);
+    //    if (unfollowed == null)
+    //    {
+    //        throw new NotFoundException("Unfollowed user not found");
+    //    }
+
+    //    Follow following = await _followRepository.GetAsync(f =>
+    //        f.FollowerId == userId && f.FollowingId == unfollowedId);
+
+    //    if (following == null)
+    //    {
+    //        throw new NotFoundException("You are not following this user.");
+    //    }
+
+
+    //    if (following.Status)
+    //    {
+    //        unfollowed.FollowerCount--;
+    //        user.FollowingCount--;
+    //    }
+
+    //    _followRepository.Delete(following);
+    //    await _followRepository.SaveChangesAsync();
+
+
+    //}
 
 
 

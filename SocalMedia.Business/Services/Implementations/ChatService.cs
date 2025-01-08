@@ -18,35 +18,34 @@ public class ChatService : CrudService<Chat, CreateChatDto, UpdateChatDto, ChatD
     private readonly UserManager<AppUser> _userManager;
     private readonly IMapper _mapper;
     private readonly IFollowRepository _followRepository;
-    private readonly IFollowService _followService;
 
-    public ChatService(IChatRepository repository, IMapper mapper, IFriendService friendService, IChatRepository chatRepository, UserManager<AppUser> userManager, IFollowRepository followRepository, IFollowService followService) : base(repository, mapper)
+    public ChatService(IChatRepository repository, IMapper mapper, IFriendService friendService, IChatRepository chatRepository, UserManager<AppUser> userManager, IFollowRepository followRepository/*, IFollowService followService*/) : base(repository, mapper)
     {
         _friendService = friendService;
         _chatRepository = chatRepository;
         _userManager = userManager;
         _mapper = mapper;
         _followRepository = followRepository;
-        _followService = followService;
+        //_followService = followService;
     }
-    public async Task DeleteChatIfNoMutualFollowAsync(string userId, string otherUserId)
-    {
-        bool isMutualFollow = await _followRepository.AnyAsync(f =>
-            (f.FollowerId == userId && f.FollowingId == otherUserId) ||
-            (f.FollowerId == otherUserId && f.FollowingId == userId));
+    //public async Task DeleteChatIfNoMutualFollowAsync(string userId, string otherUserId)
+    //{
+    //    bool isMutualFollow = await _followRepository.AnyAsync(f =>
+    //        (f.FollowerId == userId && f.FollowingId == otherUserId) ||
+    //        (f.FollowerId == otherUserId && f.FollowingId == userId));
 
-        if (!isMutualFollow)
-        {
-            var chat = await _chatRepository.GetAll()
-                .FirstOrDefaultAsync(c => c.AppUserChats.Any(ac => ac.AppUserId == userId) &&
-                                          c.AppUserChats.Any(ac => ac.AppUserId == otherUserId));
-            if (chat != null)
-            {
-                _chatRepository.Delete(chat);
-                await _chatRepository.SaveChangesAsync();
-            }
-        }
-    }
+    //    if (!isMutualFollow)
+    //    {
+    //        var chat = await _chatRepository.GetAll()
+    //            .FirstOrDefaultAsync(c => c.AppUserChats.Any(ac => ac.AppUserId == userId) &&
+    //                                      c.AppUserChats.Any(ac => ac.AppUserId == otherUserId));
+    //        if (chat != null)
+    //        {
+    //            _chatRepository.Delete(chat);
+    //            await _chatRepository.SaveChangesAsync();
+    //        }
+    //    }
+    //}
 
     public async Task CreateChatIfMutualFollowAsync(string userId, string friendId)
     {

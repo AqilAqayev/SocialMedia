@@ -13,12 +13,18 @@ namespace SocialMedia.Presentation.Controllers
             _followService = followService;
         }
 
-    
+
         public async Task<IActionResult> Follow(string followId)
         {
             await _followService.Follow(followId);
             return RedirectToAction("Index", "Home");
-        }   
+        }
+
+        //public async Task<IActionResult> Unfollow(string followId)
+        //{
+        //    await _followService.Unfollow(followId);
+        //    return RedirectToAction("Index", "Home");
+        //}
 
 
     }

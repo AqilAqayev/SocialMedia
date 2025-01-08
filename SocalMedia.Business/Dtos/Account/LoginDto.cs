@@ -7,4 +7,3 @@ public class LoginDto
     [DataType(DataType.Password)]
     public string Password { get; set; } = null!;
 }
-

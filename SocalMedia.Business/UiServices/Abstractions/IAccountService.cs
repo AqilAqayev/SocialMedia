@@ -7,6 +7,8 @@ namespace SocalMedia.Business.UiServices.Abstractions;
 public interface IAccountService
 {
     Task<IdentityResult> RegisterUserAsync(RegisterDto registerDto);
+    Task<IdentityResult> ResetPasswordAsync(AppUser user, string token, string newPassword);
+    Task<string> GeneratePasswordResetTokenAsync(AppUser user);
     Task<string> GenerateEmailConfirmationTokenAsync(AppUser user);
     Task<AppUser> FindUserByEmailAsync(string email);
     Task<AppUser> FindUserByIdAsync(string userId);

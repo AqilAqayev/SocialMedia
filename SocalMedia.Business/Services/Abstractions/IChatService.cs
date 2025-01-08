@@ -7,7 +7,7 @@ namespace SocalMedia.Business.Services.Abstractions;
 public interface IChatService : ICrudService<Chat, CreateChatDto, UpdateChatDto, ChatDto>
 {
     Task CreateChatIfMutualFollowAsync(string userId, string friendId);
-    Task DeleteChatIfNoMutualFollowAsync(string userId, string otherUserId);
+    //Task DeleteChatIfNoMutualFollowAsync(string userId, string otherUserId);
     Task<List<ChatDto>> GetUserChatsAsync(string userId);
 
 }

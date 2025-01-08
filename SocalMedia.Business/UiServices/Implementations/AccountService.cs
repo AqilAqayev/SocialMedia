@@ -115,4 +115,10 @@ public class AccountService : IAccountService
     {
          _emailService.SendEmail(to, subject, body);
     }
+    public async Task<string> GeneratePasswordResetTokenAsync(AppUser user) =>
+    await _userManager.GeneratePasswordResetTokenAsync(user);
+
+    public async Task<IdentityResult> ResetPasswordAsync(AppUser user, string token, string newPassword) =>
+        await _userManager.ResetPasswordAsync(user, token, newPassword);
+
 }

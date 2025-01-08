@@ -68,7 +68,10 @@
                   </div>
             <div class="card">
                 <div class="card-body text-center">
-                    <a class="add-follow-button" asp-controller="Follow" asp-action="Follow" asp-route-followId="@Model.userId">Add Follow</a>
+                    <a class="add-follow-button" asp-controller="Follow" asp-action="Follow" asp-route-followId="@Model.userId">Follow</a>
+                </div>
+                <div class="card-body text-center">
+                    <a class="add-follow-button" asp-controller="Follow" asp-action="Unfollow" asp-route-followId="@Model.userId"> UnFollow</a>
                 </div>
             </div>
 <style>
