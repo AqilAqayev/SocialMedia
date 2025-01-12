@@ -6,6 +6,7 @@ using SocialMedia.Core.Entities;
 namespace SocalMedia.Business.UiServices.Abstractions;
 public interface IAccountService
 {
+    Task<bool> UserHasPasswordAsync(AppUser user);
     Task<IdentityResult> RegisterUserAsync(RegisterDto registerDto);
     Task<IdentityResult> ResetPasswordAsync(AppUser user, string token, string newPassword);
     Task<string> GeneratePasswordResetTokenAsync(AppUser user);

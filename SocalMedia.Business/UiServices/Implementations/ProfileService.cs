@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Identity.Client;
 using SocalMedia.Business.Dtos.ProfileDtos;
 using SocalMedia.Business.Exceptions;
 using SocalMedia.Business.Services.Abstractions;
@@ -50,7 +49,7 @@ internal class ProfileService : IProfileService
 
         var postDto = _mapper.Map<List<PostDto>>(posts);
 
-        AppUser user = await _userManager.FindByIdAsync(userId);
+        var user = await _userManager.FindByIdAsync(userId);
         if (user == null)
         {
             throw new NotFoundException("User not found");
@@ -79,31 +78,49 @@ internal class ProfileService : IProfileService
             ProfilePhoto = user.ProfilePhotoUrl,
             BioNews = user.Biography,
             FriendCloseds = closedFriendsDto,
-            PostDtos =posts
+            PostDtos =posts,
+
+            
+            
 
         };
     }
     public async Task<ProfileOther> GetProfileOther(string userId)
     {
-        AppUser user = await _userManager.FindByIdAsync(userId);
+        var user = await _userManager.FindByIdAsync(userId);
         if (user == null)
-        {
             throw new NotFoundException("User not found");
-        }
 
-        var posts = await _postService.GetAllAsync(x => x.UserId == userId);
+        string currentUserId = _http.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "";
 
-        var imagesDto = new List<string>();
+        bool isAcceptedFollower = true;
 
-        foreach (var post in posts)
-        {
-            var postImages = await _postImageService.GetAllAsync(x => x.PostId == post.Id);
-            imagesDto.AddRange(postImages.Select(img => img.ImageUrl));
-        }
+        var posts = await _postService.GetAllPostAsync(x => x.UserId == userId);
 
         var postDto = _mapper.Map<List<PostDto>>(posts);
+      
+        if (user.IsPrivate)
+        {
+            isAcceptedFollower = await _friendService.IsAcceptedFollowerAsync(userId, currentUserId);
+        }
+        bool btn = await _friendService.IFollowerAsync(userId, currentUserId);
+        if (user.IsPrivate && !isAcceptedFollower)
+        {
+            return new ProfileOther
+            {
+                userId = user.Id,
+                UserName = user.UserName,
+                ProfilePhoto = user.ProfilePhotoUrl,
+                PostCount = posts.Count,
+                FollowCount = user.FollowerCount,
+                FollowingCount = user.FollowingCount,
+                Status = false ,
+                FollowBtn= btn
+               
+            };
+        }
 
-        var postCount = posts.Count;
+
         return new ProfileOther
         {
             userId = user.Id,
@@ -111,17 +128,18 @@ internal class ProfileService : IProfileService
             UserName = user.UserName,
             PhoneNumber = user.PhoneNumber,
             Posts = postDto,
-            PostCount = postCount,
+            PostCount = posts.Count,
             FollowCount = user.FollowerCount,
             FollowingCount = user.FollowingCount,
-            ProfilePhoto = user.ProfilePhotoUrl
+            ProfilePhoto = user.ProfilePhotoUrl,
+            Status = true,
+            FollowBtn = btn
         };
-
-
     }
+
     public async Task BioCreate(string bio)
     {
-        string userId = _http.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        string userId = _http.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "";
 
         if (string.IsNullOrEmpty(userId))
         {

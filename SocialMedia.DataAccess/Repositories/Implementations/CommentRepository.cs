@@ -11,3 +11,10 @@ internal class CommentRepository : Repository<Comment>, ICommentRepository
     {
     }
 }
+
+internal class SendNatficationRepository : Repository<SendNatfication>, ISendNatficationRepository
+{
+    public SendNatficationRepository(AppDbContext context) : base(context)
+    {
+    }
+}

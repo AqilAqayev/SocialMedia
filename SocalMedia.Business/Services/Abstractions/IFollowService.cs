@@ -7,5 +7,6 @@ namespace SocalMedia.Business.Services.Abstractions;
 public interface IFollowService : ICrudService<Follow, CreateFollowDto, UpdateFollowDto, FollowDto>
 {
     public Task Follow(string followedId);
-    //public Task Unfollow(string unfollowedId);
+    Task RejectRequest(string receiverId);
+    Task AcceptRequest(string receiverId);
 }

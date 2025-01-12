@@ -47,6 +47,8 @@ namespace SocialMedia.DataAccess.ServiceRegistrations
 
             services.AddScoped<IPostLikeRepository,PostLikeRepository>();
 
+            services.AddScoped<ISendNatficationRepository, SendNatficationRepository>();
+
         }
     }
 }

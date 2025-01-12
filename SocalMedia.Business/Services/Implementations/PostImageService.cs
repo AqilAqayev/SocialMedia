@@ -13,4 +13,3 @@ public class PostImageService : CrudService<PostImage, CreatePostImageDto, Updat
     {
     }
 }
-

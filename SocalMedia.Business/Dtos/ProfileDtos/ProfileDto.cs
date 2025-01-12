@@ -39,6 +39,9 @@ public class ProfileOther : IDto
     public List<PostDto> Posts { get; set; } = [];
     public string? ProfilePhoto { get; set; }
     public int PostCount { get; set; }
+    public bool Status { get; set; }
+    public bool FollowBtn { get; set; }
+
 }
 
 

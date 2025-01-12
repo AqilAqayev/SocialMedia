@@ -20,6 +20,17 @@ namespace SocialMedia.Presentation.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        public async Task<IActionResult> Accept(string id)
+        {
+            await _followService.AcceptRequest(id);
+            return RedirectToAction("Index", "Home");
+        }
+
+        public async Task<IActionResult> Reject(string id)
+        {
+            await _followService.RejectRequest(id);
+            return RedirectToAction("Index", "Home");
+        }
         //public async Task<IActionResult> Unfollow(string followId)
         //{
         //    await _followService.Unfollow(followId);

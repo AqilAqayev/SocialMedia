@@ -24,6 +24,8 @@ public class AppDbContext : IdentityDbContext<AppUser>
     public DbSet<AppUserChat> AppUserChats { get; set; } = null!;
     public DbSet<Follow> Follows { get; set; }
     public DbSet<PostLike> PostLikes { get; set; }
+    public DbSet<FollowConnection> FollowConnections { get; set; }
+    public DbSet<SendNatfication> SendNatfications { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -32,6 +34,10 @@ public class AppDbContext : IdentityDbContext<AppUser>
            .WithMany(p => p.PostLikes)
            .HasForeignKey(pl => pl.PostId);
 
+        modelBuilder.Entity<SendNatfication>()
+           .HasOne(sn => sn.User)
+           .WithMany()
+           .HasForeignKey(sn => sn.SenderId);
 
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         //modelBuilder.AddSeedData();

@@ -48,7 +48,7 @@ public class HomeController : Controller
     [HttpGet]
     public async Task<IActionResult> GetMorePosts(int page = 1, int pageSize = 10)
     {
-        var homeDto = await _homeService.GetPaginatedHomeDtoAsync(page, pageSize);
-        return Json(homeDto);
+        var posts = await _homeService.GetPaginatedHomeDtoAsync(page, pageSize);
+        return Json(new { posts = posts.Posts });
     }
 }

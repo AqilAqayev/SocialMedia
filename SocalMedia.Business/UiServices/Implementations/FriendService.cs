@@ -17,5 +17,28 @@ internal class FriendService : IFriendService
     {
         return await _friendRepository.GetFriendsWithStatusAsync(userId);
     }
+    public async Task<bool> IsAcceptedFollowerAsync(string userId, string followerId)
+    {
+        if (string.IsNullOrEmpty(followerId) || string.IsNullOrEmpty(userId))
+        {
+            return false;
+        }
 
+        return await _friendRepository.AnyAsync(f =>
+          f.FollowingId == userId &&
+          f.FollowerId == followerId &&
+          f.Status == true);
+    }
+
+    public async Task<bool> IFollowerAsync(string userId, string followerId)
+    {
+        if (string.IsNullOrEmpty(followerId) || string.IsNullOrEmpty(userId))
+        {
+            return false;
+        }
+
+        return await _friendRepository.AnyAsync(f =>
+          f.FollowingId == userId &&
+          f.FollowerId == followerId);
+    }
 }

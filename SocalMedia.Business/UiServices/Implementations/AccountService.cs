@@ -20,6 +20,10 @@ public class AccountService : IAccountService
         _cloudinaryManager = cloudinaryManager;
     }
 
+    public async Task<bool> UserHasPasswordAsync(AppUser user)
+    {
+        return await _userManager.HasPasswordAsync(user);
+    }
     public async Task<IdentityResult> RegisterUserAsync(RegisterDto registerDto)
     {
         string profilePhotoUrl = registerDto.ProfilePhoto == null

@@ -21,8 +21,8 @@ builder.Services.AddAuthentication(options =>
 }).AddCookie()
 .AddGoogle(GoogleDefaults.AuthenticationScheme,options =>
 {
-    options.ClientId = builder.Configuration.GetSection("GoogleKeys:ClientId").Value;
-    options.ClientSecret = builder.Configuration.GetSection("GoogleKeys:ClientSecret").Value;
+    options.ClientId = builder.Configuration.GetSection("GoogleKeys:ClientId").Value ?? "";
+    options.ClientSecret = builder.Configuration.GetSection("GoogleKeys:ClientSecret").Value ?? "";
 });
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {

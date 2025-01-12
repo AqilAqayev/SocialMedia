@@ -22,203 +22,206 @@
                     <input type="hidden" name="UserId" value="12345">
                     <button type="submit" class="btn btn-primary d-block w-100 mt-3">Post</button>
                 </form>
-                @foreach (var post in Model.Posts)
-                {
-                    <div class="card_card-block_card-stretch_card-height">
-                        <div class="card-body">
-                            <div class="user-post-data">
-                                <div class="d-flex justify-content-between">
-                                    <div class="me-3">
-                                        <img class="rounded-circle img-fluid" src="@post.ProfilePhotoUrl" alt="" style="width: 50px; height: 50px; object-fit: cover;">
-                                    </div>
-                                    <div class="w-100">
-                                        <div class="d-flex justify-content-between">
-                                            <div class="">
-                                                <h5 class="mb-0 d-inline-block">@post.UserName</h5>
-                                                <span class="mb-0 d-inline-block">@post.UserName</span>
-                                                <p class="mb-0 text-primary">@post.CreatedTime.ToString("yyyy-MM-dd HH:mm")</p>
-                                            </div>
-                                            <div class="card-post-toolbar">
-                                                <div class="dropdown">
-                                                    <span class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
-                                                        <i class="ri-more-fill"></i>
-                                                    </span>
-                                                    <div class="dropdown-menu m-0 p-0">
-                                                        <a class="dropdown-item p-3" href="#">
-                                                            <div class="d-flex align-items-top">
-                                                                <div class="h4">
-                                                                    <i class="ri-save-line"></i>
+                <div>
+                    @foreach (var post in Model.Posts)
+                    {
+                        <div class="card_card-block_card-stretch_card-height">
+                            <div class="card-body">
+                                <div class="user-post-data">
+                                    <div class="d-flex justify-content-between">
+                                        <div class="me-3">
+                                            <img class="rounded-circle img-fluid" src="@post.ProfilePhotoUrl" alt="" style="width: 50px; height: 50px; object-fit: cover;">
+                                        </div>
+                                        <div class="w-100">
+                                            <div class="d-flex justify-content-between">
+                                                <div class="">
+                                                    <h5 class="mb-0 d-inline-block">@post.UserName</h5>
+                                                    <span class="mb-0 d-inline-block">@post.UserName</span>
+                                                    <p class="mb-0 text-primary">@post.CreatedTime.ToString("yyyy-MM-dd HH:mm")</p>
+                                                </div>
+                                                <div class="card-post-toolbar">
+                                                    <div class="dropdown">
+                                                        <span class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
+                                                            <i class="ri-more-fill"></i>
+                                                        </span>
+                                                        <div class="dropdown-menu m-0 p-0">
+                                                            <a class="dropdown-item p-3" href="#">
+                                                                <div class="d-flex align-items-top">
+                                                                    <div class="h4">
+                                                                        <i class="ri-save-line"></i>
+                                                                    </div>
+                                                                    <div class="data ms-2">
+                                                                        <h6>Save Post</h6>
+                                                                        <p class="mb-0">Add this to your saved items</p>
+                                                                    </div>
                                                                 </div>
-                                                                <div class="data ms-2">
-                                                                    <h6>Save Post</h6>
-                                                                    <p class="mb-0">Add this to your saved items</p>
+                                                            </a>
+                                                            <a class="dropdown-item p-3" href="#">
+                                                                <div class="d-flex align-items-top">
+                                                                    <i class="ri-close-circle-line h4"></i>
+                                                                    <div class="data ms-2">
+                                                                        <h6>Hide Post</h6>
+                                                                        <p class="mb-0">See fewer posts like this.</p>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        </a>
-                                                        <a class="dropdown-item p-3" href="#">
-                                                            <div class="d-flex align-items-top">
-                                                                <i class="ri-close-circle-line h4"></i>
-                                                                <div class="data ms-2">
-                                                                    <h6>Hide Post</h6>
-                                                                    <p class="mb-0">See fewer posts like this.</p>
+                                                            </a>
+                                                            <a class="dropdown-item p-3" href="#">
+                                                                <div class="d-flex align-items-top">
+                                                                    <i class="ri-user-unfollow-line h4"></i>
+                                                                    <div class="data ms-2">
+                                                                        <h6>Unfollow User</h6>
+                                                                        <p class="mb-0">Stop seeing posts but stay friends.</p>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        </a>
-                                                        <a class="dropdown-item p-3" href="#">
-                                                            <div class="d-flex align-items-top">
-                                                                <i class="ri-user-unfollow-line h4"></i>
-                                                                <div class="data ms-2">
-                                                                    <h6>Unfollow User</h6>
-                                                                    <p class="mb-0">Stop seeing posts but stay friends.</p>
+                                                            </a>
+                                                            <a class="dropdown-item p-3" href="#">
+                                                                <div class="d-flex align-items-top">
+                                                                    <i class="ri-notification-line h4"></i>
+                                                                    <div class="data ms-2">
+                                                                        <h6>Notifications</h6>
+                                                                        <p class="mb-0">Turn on notifications for this post</p>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        </a>
-                                                        <a class="dropdown-item p-3" href="#">
-                                                            <div class="d-flex align-items-top">
-                                                                <i class="ri-notification-line h4"></i>
-                                                                <div class="data ms-2">
-                                                                    <h6>Notifications</h6>
-                                                                    <p class="mb-0">Turn on notifications for this post</p>
-                                                                </div>
-                                                            </div>
-                                                        </a>
+                                                            </a>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="mt-3">
-                                <p>@post.Text</p>
-                            </div>
-                            <div class="user-post">
-                                <div class="custom-grid">
-                                    <div class="user-post">
-                                        @foreach (var image in post.ImageUrls ?? [])
-                                        {
-                                            <img src="@image" alt="Image" class="gallery-image">
-                                        }
-                                        @foreach (var video in post.VideoUrls ?? [])
-                                        {
-                                            <video controls>
-                                                <source src="@video" type="video/mp4">
-                                                Your browser does not support the video tag.
-                                            </video>
-                                        }
-                                    </div>
-
+                                <div class="mt-3">
+                                    <p>@post.Text</p>
                                 </div>
-                            </div>
-
-                            <div class="comment-area mt-3">
-                                <div class="d-flex justify-content-between align-items-center flex-wrap">
-                                    <div class="like-block position-relative d-flex align-items-center">
-                                        <div class="d-flex align-items-center">
-                                            <div class="like-data">
-                                                <div class="dropdown">
-                                                    <a asp-controller="Like" asp-action="PostLike" asp-route-postId="@post.Id" class="ms-2 me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Like">
-                                                        <img src="../assets/images/icon/01.png" class="img-fluid" alt="">
-                                                    </a>
-
-                                                </div>
-                                            </div>
-                                            <div class="total-like-block ms-2 me-3">
-                                                <div class="dropdown">
-                                                    <span class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
-                                                        @post.Count Likes
-                                                    </span>
-                                                    <div class="dropdown-menu">
-                                                        <a class="dropdown-item" href="#">Max Emum</a>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="total-comment-block">
-                                            <div class="dropdown">
-                                                <span class="dropdown-toggle" data-bs-toggle="tooltip" onclick="toggleComments(this);" role="button">
-                                                    @post.CommentCount Comment
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    <div class="share-block d-flex align-items-center feather-icon mt-2 mt-md-0">
-                                        <a href="javascript:void();" data-bs-toggle="offcanvas" data-bs-target="#share-btn" aria-controls="share-btn">
-                                            <i class="ri-share-line"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                                <hr>
-                                <ul class="post-comments">
-                                    @foreach (var comment in post.Comments)
-                                    {
-                                        <li>
-                                            <div class="d-flex">
-                                                <div class="user-img">
-                                                    <img src="@comment.ProfilePhotoUrl" alt="userimg" style="width: 50px; height: 50px; object-fit: cover;">
-                                                </div>
-                                                <div class="comment-data-block">
-                                                    <h6>@comment.UserName</h6>
-                                                    <p>@comment.Text</p>
-                                                    <div class="d-flex flex-wrap align-items-center comment-activity">
-                                                        <a href="javascript:void(0);" class="reply-toggle" onclick="toggleReplyInput(this);">Reply</a>
-                                                        <a href="javascript:void();">Like</a>
-                                                        <a href="javascript:void();">Translate</a>
-                                                        <span>@comment.CreatedTime</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Reply Input -->
-                                            <form class="reply-input" asp-controller="Post" asp-action="ReplyComment" method="post" style="display: none;">
-                                                <input type="hidden" name="PostId" value="@post.Id" />
-                                                <input type="hidden" name="ParentId" value="@comment.Id" />
-                                                <input type="text" name="Text" placeholder="Reply to this comment" required />
-                                                <button type="submit">Reply</button>
-                                            </form>
-
-                                            <!-- Child Comments -->
-                                            @foreach (var child in comment.Children)
+                                <div class="user-post">
+                                    <div class="custom-grid">
+                                        <div class="user-post">
+                                            @foreach (var image in post.ImageUrls ?? [])
                                             {
-                                            <li class="child-comment">
+                                                <img src="@image" alt="Image" class="gallery-image">
+                                            }
+                                            @foreach (var video in post.VideoUrls ?? [])
+                                            {
+                                                <video controls>
+                                                    <source src="@video" type="video/mp4">
+                                                    Your browser does not support the video tag.
+                                                </video>
+                                            }
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="comment-area mt-3">
+                                    <div class="d-flex justify-content-between align-items-center flex-wrap">
+                                        <div class="like-block position-relative d-flex align-items-center">
+                                            <div class="d-flex align-items-center">
+                                                <div class="like-data">
+                                                    <div class="dropdown">
+                                                        <a asp-controller="Like" asp-action="PostLike" asp-route-postId="@post.Id" class="ms-2 me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Like">
+                                                            <img src="../assets/images/icon/01.png" class="img-fluid" alt="">
+                                                        </a>
+
+                                                    </div>
+                                                </div>
+                                                <div class="total-like-block ms-2 me-3">
+                                                    <div class="dropdown">
+                                                        <span class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
+                                                            @post.Count Likes
+                                                        </span>
+                                                        <div class="dropdown-menu">
+                                                            <a class="dropdown-item" href="#">Max Emum</a>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="total-comment-block">
+                                                <div class="dropdown">
+                                                    <span class="dropdown-toggle" data-bs-toggle="tooltip" onclick="toggleComments(this);" role="button">
+                                                        @post.CommentCount Comment
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="share-block d-flex align-items-center feather-icon mt-2 mt-md-0">
+                                            <a href="javascript:void();" data-bs-toggle="offcanvas" data-bs-target="#share-btn" aria-controls="share-btn">
+                                                <i class="ri-share-line"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <ul class="post-comments">
+                                        @foreach (var comment in post.Comments)
+                                        {
+                                            <li>
                                                 <div class="d-flex">
                                                     <div class="user-img">
                                                         <img src="@comment.ProfilePhotoUrl" alt="userimg" style="width: 50px; height: 50px; object-fit: cover;">
                                                     </div>
                                                     <div class="comment-data-block">
-                                                        <h6>@child.UserName</h6>
-                                                        <p>@child.Text</p>
+                                                        <h6>@comment.UserName</h6>
+                                                        <p>@comment.Text</p>
                                                         <div class="d-flex flex-wrap align-items-center comment-activity">
+                                                            <a href="javascript:void(0);" class="reply-toggle" onclick="toggleReplyInput(this);">Reply</a>
                                                             <a href="javascript:void();">Like</a>
-                                                            <a href="javascript:void();">Reply</a>
-                                                            <span>@child.CreatedTime</span>
+                                                            <a href="javascript:void();">Translate</a>
+                                                            <span>@comment.CreatedTime</span>
                                                         </div>
                                                     </div>
                                                 </div>
+
+                                                <!-- Reply Input -->
+                                                <form class="reply-input" asp-controller="Post" asp-action="ReplyComment" method="post" style="display: none;">
+                                                    <input type="hidden" name="PostId" value="@post.Id" />
+                                                    <input type="hidden" name="ParentId" value="@comment.Id" />
+                                                    <input type="text" name="Text" placeholder="Reply to this comment" required />
+                                                    <button type="submit">Reply</button>
+                                                </form>
+
+                                                <!-- Child Comments -->
+                                                @foreach (var child in comment.Children)
+                                                {
+                                                <li class="child-comment">
+                                                    <div class="d-flex">
+                                                        <div class="user-img">
+                                                            <img src="@comment.ProfilePhotoUrl" alt="userimg" style="width: 50px; height: 50px; object-fit: cover;">
+                                                        </div>
+                                                        <div class="comment-data-block">
+                                                            <h6>@child.UserName</h6>
+                                                            <p>@child.Text</p>
+                                                            <div class="d-flex flex-wrap align-items-center comment-activity">
+                                                                <a href="javascript:void();">Like</a>
+                                                                <a href="javascript:void();">Reply</a>
+                                                                <span>@child.CreatedTime</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                }
                                             </li>
-                                            }
-                                        </li>
-                                    }
-                                </ul>
+                                        }
+                                    </ul>
 
 
-                                <form class="commentForm" asp-controller="Post" asp-action="PostComment" method="post">
-                                    <input type="hidden" name="PostId" value="@post.Id" />
-                                    <div class="form-group">
-                                        <input type="text" name="Text" class="form-control rounded" placeholder="Enter Your Comment" required />
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="Rating">Rating</label>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary mt-2">Post Comment</button>
-                                </form>
+                                    <form class="commentForm" asp-controller="Post" asp-action="PostComment" method="post">
+                                        <input type="hidden" name="PostId" value="@post.Id" />
+                                        <div class="form-group">
+                                            <input type="text" name="Text" class="form-control rounded" placeholder="Enter Your Comment" required />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Rating">Rating</label>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary mt-2">Post Comment</button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                }
-
+                    }
+ 
+                </div>
+             
 
             </div>
             <div class="col-lg-4">
@@ -295,6 +298,13 @@
             commentList.style.display = 'none';
         });
     });
+
+
+
+
+
+
+
 </script>
 
 <style>

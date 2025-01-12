@@ -50,7 +50,9 @@ namespace SocalMedia.Business.ServiceRegistrations
 
             services.AddScoped<IChatService, ChatService>(); 
 
-            services.AddScoped<IPostLikeService, PostLikeService>(); 
+            services.AddScoped<IPostLikeService, PostLikeService>();
+
+            services.AddScoped<ISendNatficationService, SendNatficationService>();
 
             return services;
         }

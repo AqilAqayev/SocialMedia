@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocialMedia.DataAccess.Context;
 
@@ -11,9 +12,11 @@ using SocialMedia.DataAccess.Context;
 namespace SocialMedia.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250110144613_SendNatfication")]
+    partial class SendNatfication
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -276,6 +279,27 @@ namespace SocialMedia.DataAccess.Migrations
                     b.HasIndex("ChatId");
 
                     b.ToTable("AppUserChats");
+                });
+
+            modelBuilder.Entity("SocialMedia.Core.Entities.Base.SendNatfication", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("SewnderId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("SendNatfications");
                 });
 
             modelBuilder.Entity("SocialMedia.Core.Entities.Chat", b =>
@@ -568,27 +592,6 @@ namespace SocialMedia.DataAccess.Migrations
                     b.ToTable("PostVideos");
                 });
 
-            modelBuilder.Entity("SocialMedia.Core.Entities.SendNatfication", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("SenderId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("SendNatfications");
-                });
-
             modelBuilder.Entity("SocialMedia.Core.Entities.Story", b =>
                 {
                     b.Property<int>("Id")
@@ -704,6 +707,15 @@ namespace SocialMedia.DataAccess.Migrations
                     b.Navigation("AppUser");
 
                     b.Navigation("Chat");
+                });
+
+            modelBuilder.Entity("SocialMedia.Core.Entities.Base.SendNatfication", b =>
+                {
+                    b.HasOne("SocialMedia.Core.Entities.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SocialMedia.Core.Entities.Comment", b =>
@@ -847,15 +859,6 @@ namespace SocialMedia.DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("Post");
-                });
-
-            modelBuilder.Entity("SocialMedia.Core.Entities.SendNatfication", b =>
-                {
-                    b.HasOne("SocialMedia.Core.Entities.AppUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SocialMedia.Core.Entities.Story", b =>
