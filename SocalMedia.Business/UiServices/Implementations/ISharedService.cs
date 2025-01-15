@@ -14,7 +14,7 @@ internal class SharedService : ISharedService
 
     public async Task CreateChatIfMutualFollowAsync(string userId, string followedId)
     {
-        await _chatService.CreateChatIfMutualFollowAsync(userId, followedId);
+        await _chatService.CreateChatIfMutualFollowAsync(followedId);
     }
 
     //public async Task DeleteChatIfNoMutualFollowAsync(string userId, string unfollowedId)

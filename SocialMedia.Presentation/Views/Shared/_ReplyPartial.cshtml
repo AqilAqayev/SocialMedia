@@ -1,0 +1,12 @@
+﻿<li id="comment-@Model.Id">
+    <div class="d-flex">
+        <div class="user-img">
+            <img src="@Model.ProfilePhotoUrl" alt="userimg" style="width: 50px; height: 50px; object-fit: cover;">
+        </div>
+        <div class="comment-data-block">
+            <h6>@Model.UserName</h6>
+            <p>@Model.Text</p>
+            <span>@Model.CreatedTime</span>
+        </div>
+    </div>
+</li>

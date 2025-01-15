@@ -118,15 +118,21 @@
                                             <div class="d-flex align-items-center">
                                                 <div class="like-data">
                                                     <div class="dropdown">
-                                                        <a asp-controller="Like" asp-action="PostLike" asp-route-postId="@post.Id" class="ms-2 me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Like">
-                                                            <img src="../assets/images/icon/01.png" class="img-fluid" alt="">
+                                                        <a href="javascript:void(0);"
+                                                           onclick="postLike(this)"
+                                                           data-post-id="@post.Id"
+                                                           class="like-link"
+                                                           data-bs-toggle="tooltip"
+                                                           data-bs-placement="top"
+                                                           title="Like">
+                                                            <img src="../assets/images/icon/01.png" class="img-fluid"/>
                                                         </a>
 
                                                     </div>
                                                 </div>
                                                 <div class="total-like-block ms-2 me-3">
                                                     <div class="dropdown">
-                                                        <span class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
+                                                        <span id="like-count-@post.Id" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
                                                             @post.Count Likes
                                                         </span>
                                                         <div class="dropdown-menu">
@@ -208,7 +214,7 @@
                                     <form class="commentForm" asp-controller="Post" asp-action="PostComment" method="post">
                                         <input type="hidden" name="PostId" value="@post.Id" />
                                         <div class="form-group">
-                                            <input type="text" name="Text" class="form-control rounded" placeholder="Enter Your Comment" required />
+                                            <input type="text" name="Text" id="commentSubmit" class="form-control rounded" placeholder="Enter Your Comment" required />
                                         </div>
                                         <div class="form-group">
                                             <label for="Rating">Rating</label>
@@ -267,21 +273,18 @@
                 </div>
 
             </div>
-            <div class="col-sm-12 text-center">
-                <img src="~/assets/images/page-img/page-load-loader.gif" alt="loader" style="height: 100px;">
-            </div>
+         
         </div>
     </div>
 </div>
 
-<!-- Wrapper End-->
 <script>
     function toggleReplyInput(element) {
         const replyInput = element.closest('li').querySelector('.reply-input');
         if (replyInput.style.display === 'none' || replyInput.style.display === '') {
             replyInput.style.display = 'flex'; // Görünür hale getir
         } else {
-            replyInput.style.display = 'none'; // Gizle
+            replyInput.style.display = 'none'; 
         }
     }
     function toggleComments(element) {
@@ -289,7 +292,7 @@
         if (commentList.style.display === 'none' || commentList.style.display === '') {
             commentList.style.display = 'block'; // Yorumları görünür yap
         } else {
-            commentList.style.display = 'none'; // Yorumları gizle
+            commentList.style.display = 'none'; 
         }
     }
 
@@ -300,9 +303,93 @@
     });
 
 
+    function postLike(element) {
+        const postId = element.getAttribute("data-post-id");
+
+        fetch(`/Like/PostLike?postId=${postId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-Requested-With": "XMLHttpRequest",
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.success) {
+                    const likeCountElement = document.querySelector(`#like-count-${postId}`);
+                    if (likeCountElement) {
+                        likeCountElement.textContent = `${data.likeCount} likes`;
+                    }
+                }
+            })
+            .catch((error) => {
+                console.error("Bir hata oluştu:", error);
+            });
+    }
 
 
 
+
+
+
+
+
+    const form = document.querySelector(".commentForm");
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const postId = form.querySelector("input[name='PostId']").value;
+        const text = form.querySelector("input[name='Text']").value;
+
+        try {
+            const response = await fetch('/Post/PostComment', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+                body: JSON.stringify({ PostId: postId, Text: text }),
+            });
+
+            if (!response.ok) {
+                console.error("Bir hata oluştu:", response.status);
+                return;
+            }
+
+            const data = await response.json();
+            if (data.success) {
+                console.log("Yorum başarıyla eklendi:", data.message);
+
+                // Yorumları DOM'a ekleyin
+                const commentList = form.closest(".comment-area").querySelector(".post-comments");
+                const newComment = document.createElement("li");
+                newComment.innerHTML = `
+                    <div class="d-flex">
+                        <div class="user-img">
+                            <img src="/path/to/profile-photo.jpg" alt="userimg" style="width: 50px; height: 50px; object-fit: cover;">
+                        </div>
+                        <div class="comment-data-block">
+                            <h6>Kullanıcı Adı</h6>
+                            <p>${text}</p>
+                            <div class="d-flex flex-wrap align-items-center comment-activity">
+                                <a href="javascript:void(0);">Like</a>
+                                <span>Az önce</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                commentList.appendChild(newComment);
+
+                // Formu temizle
+                form.reset();
+            } else {
+                console.error("Yorum eklenemedi:", data.message);
+            }
+        } catch (error) {
+            console.error("Bir hata oluştu:", error);
+        }
+    });
 
 
 </script>

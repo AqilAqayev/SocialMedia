@@ -17,18 +17,16 @@ public class FollowService : CrudService<Follow, CreateFollowDto, UpdateFollowDt
     private readonly IHttpContextAccessor _http;
     private readonly UserManager<AppUser> _userManager;
     private readonly IFollowRepository _followRepository;
-    private readonly IChatService _chatService;
     private readonly ISendNatficationService _sendNatficationService;
     private readonly IMapper _mapper;
 
 
-    public FollowService(IFollowRepository repository, IMapper mapper, IHttpContextAccessor http, IFollowRepository followRepository, UserManager<AppUser> userManager, IChatService chatService, ISendNatficationService sendNatficationService)
+    public FollowService(IFollowRepository repository, IMapper mapper, IHttpContextAccessor http, IFollowRepository followRepository, UserManager<AppUser> userManager,ISendNatficationService sendNatficationService)
         : base(repository, mapper)
     {
         _http = http;
         _followRepository = followRepository;
         _userManager = userManager;
-        _chatService = chatService;
         _mapper = mapper;
         _sendNatficationService = sendNatficationService;
     }
@@ -89,10 +87,7 @@ public class FollowService : CrudService<Follow, CreateFollowDto, UpdateFollowDt
         bool isMutualFollow = await _followRepository.AnyAsync(f =>
         f.FollowerId == followedId && f.FollowingId == userId);
 
-        if (!isMutualFollow)
-        {
-            await _chatService.CreateChatIfMutualFollowAsync(userId, followedId);
-        }
+       
     }
 
     public async Task Unfollow(string followedId)
@@ -203,10 +198,7 @@ public class FollowService : CrudService<Follow, CreateFollowDto, UpdateFollowDt
         bool isMutualFollow = await _followRepository.AnyAsync(f =>
             f.FollowerId == userId && f.FollowingId == receiverId);
 
-        if (isMutualFollow)
-        {
-            await _chatService.CreateChatIfMutualFollowAsync(userId, receiverId);
-        }
+
     }
 
     public async Task RejectRequest(string receiverId)

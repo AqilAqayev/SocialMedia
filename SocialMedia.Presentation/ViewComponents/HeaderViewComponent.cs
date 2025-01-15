@@ -39,9 +39,8 @@ public class HeaderViewComponent : ViewComponent
         }
 
         var userChats = await _chatService.GetUserChatsAsync(userId);
-        var followRequest = await _sendNatficationService.GetAllAsync(
-     x => x.UserId == userId,
-     include: query => query.Include(n => n.User));
+        var followRequest = await _sendNatficationService.GetAllAsync( x => x.UserId == userId,
+        include: query => query.Include(n => n.User));
 
         var headerDto = new HeaderDto
         {

@@ -5,4 +5,6 @@ namespace SocialMedia.DataAccess.Repositories.Abstraction;
 
 public interface IPostRepository : IRepository<Post>
 {
+    Task<Post?> GetPostWithCommentsAsync(int postId);
+
 }

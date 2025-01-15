@@ -2,8 +2,9 @@
 
 namespace SocalMedia.Business.Dtos.ProfileDtos;
 
-public class ProfileDto : IDto
+public class ProfileOther : IDto
 {
+    public string? userId { get; set;}
     public string? Name { get; set; }
     public string? UserName { get; set; }
     public string? Email { get; set; }
@@ -13,10 +14,9 @@ public class ProfileDto : IDto
     public List<PostDto> Posts { get; set; } = [];
     public string? ProfilePhoto { get; set; }
     public int PostCount { get; set; }
-    public string? BioNews { get; set; }
-    public List<string> ImageUrls { get; set; } = new List<string>();
-    public List<FriendClosed>? FriendCloseds { get; set; } = [];
-    public List<PostDto> PostDtos { get; set; } = [];
+    public bool Status { get; set; }
+    public bool FollowBtn { get; set; }
 
 }
+
 

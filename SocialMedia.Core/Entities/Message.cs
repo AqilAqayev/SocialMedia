@@ -10,5 +10,6 @@ public class Message : BaseEntity
     public string SenderId { get; set; } = null!;
     public Chat Chat { get; set; } = null!;
     public int ChatId { get; set; }
+    public bool IsRead { get; set; } = false;
     public bool IsDeleted { get; set; } = false;
 }

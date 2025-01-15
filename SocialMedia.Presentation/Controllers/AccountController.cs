@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SocalMedia.Business.Dtos.Account;
+using SocalMedia.Business.Dtos.ProfileDtos;
 using SocalMedia.Business.UiServices.Abstractions;
+using System.ComponentModel.DataAnnotations;
 
 namespace SocialMedia.Presentation.Controllers;
 
@@ -111,11 +113,6 @@ public class AccountController : Controller
             return View();
 
         var user = await _accountService.FindUserByEmailAsync(forgotPasswordDto.Email);
-        if (user == null)
-        {
-            ModelState.AddModelError("", "User with this email does not exist.");
-            return View();
-        }
 
         var token = await _accountService.GeneratePasswordResetTokenAsync(user);
 
@@ -124,7 +121,7 @@ public class AccountController : Controller
         await _accountService.SendEmailAsync(user.Email, "Password Reset",
             $"Click <a href='{resetLink}'>here</a> to reset your password.");
 
-        TempData["Message"] = "Password reset link has been sent to your email.";
+
         return RedirectToAction("Login");
     }
 
@@ -137,16 +134,14 @@ public class AccountController : Controller
         return View(model);
     }
 
-    
+
     [HttpPost]
     public async Task<IActionResult> ResetPassword(ResetPasswordDto resetPasswordDto)
     {
         if (!ModelState.IsValid)
             return View(resetPasswordDto);
 
-        var user = await _accountService.FindUserByEmailAsync(resetPasswordDto.Email);
-        if (user == null)
-            return BadRequest("User not found.");
+        var user = await _accountService.FindUser();
 
         var result = await _accountService.ResetPasswordAsync(user, resetPasswordDto.Token, resetPasswordDto.NewPassword);
         if (!result.Succeeded)
@@ -158,9 +153,83 @@ public class AccountController : Controller
             return View(resetPasswordDto);
         }
 
-        TempData["Message"] = "Your password has been reset successfully.";
         return RedirectToAction("Login");
     }
+
+
+    [HttpGet]
+    public async Task<IActionResult> EditProfile()
+    {
+        var user = await _accountService.FindUser();
+
+        var model = new EditProfileDto
+        {
+            UserName = user.UserName,
+            Bio = user.Biography,
+            PhoneNumber = user.PhoneNumber,
+            IsPrivate = user.IsPrivate
+        };
+
+        return View(model);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> EditProfile(EditProfileDto editProfileDto)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(editProfileDto);
+        }
+
+        var user = await _accountService.FindUser();
+
+        var success = await _accountService.EditProfileAsync(user, editProfileDto);
+
+        return RedirectToAction("Index", "Profile");
+    }
+
+
+    [HttpGet]
+    public async Task<IActionResult> ChangePassword()
+    {
+        var user = await _accountService.FindUser();
+        if (user == null)
+        {
+            return RedirectToAction("Login");
+        }
+
+        var hasPassword = await _accountService.UserHasPasswordAsync(user);
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ChangePassword(ChangePasswordDto model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+
+        var user = await _accountService.FindUser();
+        var result = await _accountService.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+
+        //if (!result.Succeeded)
+        //{
+        //    foreach (var error in result.Errors)
+        //    {
+        //        ModelState.AddModelError("", error.Description);
+        //    }
+        //    return View(model);
+        //}
+
+        return RedirectToAction("Index", "Home");
+
+    }
+
+
+
+
+
 }
 
 

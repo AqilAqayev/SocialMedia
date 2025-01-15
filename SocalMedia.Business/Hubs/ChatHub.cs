@@ -14,34 +14,45 @@ public class ChatHub : Hub
         _contextAccessor = contextAccessor;
     }
 
-    public async Task SendMessage(string message)
+    public async Task SendMessage(string chatId, string message, string senderId)
     {
-        await Clients.All.SendAsync("ReceiveMessage", message);
+        // Mesaj gönderildiğinde tüm kullanıcılara bildir
+        await Clients.Group(chatId).SendAsync("ReceiveMessage", new
+        {
+            ChatId = chatId,
+            Message = message,
+            SenderId = senderId,
+            CreatedTime = DateTime.UtcNow
+        });
     }
 
-    public override Task OnConnectedAsync()
+    public async Task MarkAsRead(string chatId, string userId)
     {
-        var userId = _contextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        var connection = HubDatas.Connections.FirstOrDefault(x => x.UserId == userId);
-        if (connection is { })
-        {
-            connection.ConnectionIds.Add(Context.ConnectionId);
-        }
-        else
-        {
-            HubDatas.Connections.Add(new() { UserId = userId!, ConnectionIds = [Context.ConnectionId] });
-        }
-
-        return base.OnConnectedAsync();
+        // Okunmamış mesajlar bildirimi
+        await Clients.Group(chatId).SendAsync("MessagesMarkedAsRead", chatId, userId);
     }
 
-    public override Task OnDisconnectedAsync(Exception exception)
+    public override async Task OnConnectedAsync()
     {
-        var userId = _contextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = _contextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        HubDatas.Connections.RemoveAll(x => x.UserId == userId);
+        if (!string.IsNullOrEmpty(userId))
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, userId);
+        }
 
-        return base.OnDisconnectedAsync(exception);
+        await base.OnConnectedAsync();
+    }
+
+    public override async Task OnDisconnectedAsync(Exception? exception)
+    {
+        var userId = _contextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (!string.IsNullOrEmpty(userId))
+        {
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, userId);
+        }
+
+        await base.OnDisconnectedAsync(exception);
     }
 }

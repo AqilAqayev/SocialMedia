@@ -5,7 +5,9 @@ namespace SocalMedia.Business.Dtos.ChatDtos;
 public class ChatDto : IDto
 {
     public int Id { get; set; }
-    public string Name { get; set; } = null!;
+    public string? Name { get; set; }
+    public int UnreadMessagesCount { get; set; }
+    public string? ProfileUrl { get; set; }
 }
 
 public class CreateChatDto : IDto

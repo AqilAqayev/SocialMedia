@@ -74,6 +74,10 @@ where TDto : IDto
         return _mapper.Map<TDto>(entity);
     }
 
-    
+    public async Task SaveChangesAsync()
+    {
+        await _repository.SaveChangesAsync();
+    }
+
 }
 

@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using SocalMedia.Business.Dtos.ChatDtos;
 using SocalMedia.Business.Exceptions;
+using SocalMedia.Business.Hubs;
 using SocalMedia.Business.Services.Abstractions;
 using SocalMedia.Business.Services.Implementations.Generic;
 using SocalMedia.Business.UiServices.Abstractions;
@@ -18,37 +21,52 @@ public class ChatService : CrudService<Chat, CreateChatDto, UpdateChatDto, ChatD
     private readonly UserManager<AppUser> _userManager;
     private readonly IMapper _mapper;
     private readonly IFollowRepository _followRepository;
+    private readonly IHttpContextAccessor _http;
+    private readonly IMessageService _messageService;
+    private readonly IHubContext<ChatHub> _chatHub;
 
-    public ChatService(IChatRepository repository, IMapper mapper, IFriendService friendService, IChatRepository chatRepository, UserManager<AppUser> userManager, IFollowRepository followRepository/*, IFollowService followService*/) : base(repository, mapper)
+
+    public ChatService(IChatRepository repository, IMapper mapper, IFriendService friendService, IChatRepository chatRepository, UserManager<AppUser> userManager, IFollowRepository followRepository/*, IFollowService followService*/, IHttpContextAccessor http, IMessageService messageService, IHubContext<ChatHub> chatHub) : base(repository, mapper)
     {
         _friendService = friendService;
         _chatRepository = chatRepository;
         _userManager = userManager;
         _mapper = mapper;
         _followRepository = followRepository;
-        //_followService = followService;
+        _http = http;
+        _messageService = messageService;
+        _chatHub = chatHub;
     }
-    //public async Task DeleteChatIfNoMutualFollowAsync(string userId, string otherUserId)
-    //{
-    //    bool isMutualFollow = await _followRepository.AnyAsync(f =>
-    //        (f.FollowerId == userId && f.FollowingId == otherUserId) ||
-    //        (f.FollowerId == otherUserId && f.FollowingId == userId));
-
-    //    if (!isMutualFollow)
-    //    {
-    //        var chat = await _chatRepository.GetAll()
-    //            .FirstOrDefaultAsync(c => c.AppUserChats.Any(ac => ac.AppUserId == userId) &&
-    //                                      c.AppUserChats.Any(ac => ac.AppUserId == otherUserId));
-    //        if (chat != null)
-    //        {
-    //            _chatRepository.Delete(chat);
-    //            await _chatRepository.SaveChangesAsync();
-    //        }
-    //    }
-    //}
-
-    public async Task CreateChatIfMutualFollowAsync(string userId, string friendId)
+    public async Task DeleteChatIfNoMutualFollowAsync(string otherUserId)
     {
+        string userId = _http.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "";
+
+        bool isMutualFollow = await _followRepository.AnyAsync(f =>
+            (f.FollowerId == userId && f.FollowingId == otherUserId) ||
+            (f.FollowerId == otherUserId && f.FollowingId == userId));
+
+        if (!isMutualFollow)
+        {
+            var chat = await _chatRepository.GetAll()
+                .FirstOrDefaultAsync(c => c.AppUserChats.Any(ac => ac.AppUserId == userId) &&
+                                          c.AppUserChats.Any(ac => ac.AppUserId == otherUserId));
+            if (chat != null)
+            {
+                _chatRepository.Delete(chat);
+                await _chatRepository.SaveChangesAsync();
+            }
+        }
+    }
+
+    public async Task<ChatDto> CreateChatIfMutualFollowAsync(string friendId)
+    {
+        if (string.IsNullOrEmpty(friendId))
+        {
+            throw new NotFoundException("Friend not found");
+        }
+
+        string userId = _http.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "";
+
         var user = await _userManager.FindByIdAsync(userId);
         var friend = await _userManager.FindByIdAsync(friendId);
 
@@ -60,33 +78,86 @@ public class ChatService : CrudService<Chat, CreateChatDto, UpdateChatDto, ChatD
         var existingChat = await _chatRepository.GetAll()
             .Where(c => c.AppUserChats.Any(ac => ac.AppUserId == userId) &&
                         c.AppUserChats.Any(ac => ac.AppUserId == friendId))
-            .AnyAsync();
+            .FirstOrDefaultAsync();
 
-        if (!existingChat)
+        if (existingChat != null)
         {
-           
-            var chatName = $"{user.UserName}-{friend.UserName}";
-
-            var chat = new Chat
-            {
-                Name = chatName,
-                CreatedTime = DateTime.UtcNow
-            };
-
-            chat.AppUserChats.Add(new AppUserChat { AppUserId = userId });
-            chat.AppUserChats.Add(new AppUserChat { AppUserId = friendId });
-
-            await _chatRepository.CreateAsync(chat);
-            await _chatRepository.SaveChangesAsync();
+            return _mapper.Map<ChatDto>(existingChat);
         }
-    }
 
+        var chatName = $"{user.UserName}-{friend.UserName}";
+
+        var chat = new Chat
+        {
+            Name = chatName,
+            CreatedTime = DateTime.UtcNow,
+            AppUserChats = new List<AppUserChat>
+            {
+                new AppUserChat { AppUserId = userId },
+                new AppUserChat { AppUserId = friendId }
+            }
+        };
+
+        await _chatRepository.CreateAsync(chat);
+        await _chatRepository.SaveChangesAsync();
+
+        return _mapper.Map<ChatDto>(chat);
+    }
     public async Task<List<ChatDto>> GetUserChatsAsync(string userId)
     {
         var chats = await _chatRepository.GetAll()
-        .Where(c => c.AppUserChats.Any(ac => ac.AppUserId == userId))
-        .ToListAsync();
+            .Include(c => c.AppUserChats)
+            .ThenInclude(ac => ac.AppUser)
+            .Include(c => c.Messages)
+            .Where(c => c.AppUserChats.Any(ac => ac.AppUserId == userId))
+            .ToListAsync();
 
-        return  _mapper.Map<List<ChatDto>>(chats);
+        return chats.Select(chat =>
+        {
+            var otherUser = chat.AppUserChats
+                .FirstOrDefault(ac => ac.AppUserId != userId)?.AppUser;
+
+            var unreadMessagesCount = chat.Messages
+                .Where(m => m.SenderId != userId && !m.IsRead)
+                .Count();
+
+            return new ChatDto
+            {
+                Id = chat.Id,
+                Name = chat.Name,
+                ProfileUrl = otherUser?.ProfilePhotoUrl,
+                UnreadMessagesCount = unreadMessagesCount
+            };
+        }).ToList();
+
+
     }
+
+
+    public async Task MarkMessagesAsReadAsync(int chatId, string userId)
+    {
+        var messages = await _messageService.GetAllAsync(m => m.ChatId == chatId && m.SenderId != userId && !m.IsRead);
+
+        if (messages.Any())
+        {
+            foreach (var message in messages)
+            {
+                message.IsRead = true;
+            }
+
+
+        }
+        await _messageService.SaveChangesAsync();
+    }
+
+    public async Task MarkMessagesAsReadAndNotifyAsync(int chatId, string userId)
+    {
+        await MarkMessagesAsReadAsync(chatId, userId);
+
+      
+        await _chatHub.Clients.Group(chatId.ToString())
+            .SendAsync("MessagesMarkedAsRead", chatId, userId);
+    }
+
+
 }

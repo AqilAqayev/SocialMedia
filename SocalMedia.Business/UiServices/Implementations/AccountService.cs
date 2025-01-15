@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using SocalMedia.Business.Dtos.Account;
+using SocalMedia.Business.Dtos.ProfileDtos;
+using SocalMedia.Business.Exceptions;
 using SocalMedia.Business.UiServices.Abstractions;
 using SocialMedia.Core.Entities;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
 public class AccountService : IAccountService
@@ -11,13 +15,31 @@ public class AccountService : IAccountService
     private readonly SignInManager<AppUser> _signInManager;
     private readonly IEmailService _emailService;
     private readonly ICloudinaryManager _cloudinaryManager;
+    private readonly IHttpContextAccessor _http;
 
-    public AccountService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailService emailService, ICloudinaryManager cloudinaryManager)
+    public AccountService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailService emailService, ICloudinaryManager cloudinaryManager, IHttpContextAccessor http)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _emailService = emailService;
         _cloudinaryManager = cloudinaryManager;
+        _http = http;
+    }
+
+    public async Task<AppUser> FindUser()
+    {
+        var userid = _http.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if(userid is null)
+        {
+            throw new NotFoundException("user not found");
+
+        }
+        var user = await FindUserByIdAsync(userid);
+        if (user == null)
+        {
+            throw new NotFoundException("user not found");
+        }
+        return user;
     }
 
     public async Task<bool> UserHasPasswordAsync(AppUser user)
@@ -49,11 +71,37 @@ public class AccountService : IAccountService
     public async Task<string> GenerateEmailConfirmationTokenAsync(AppUser user) =>
         await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-    public async Task<AppUser> FindUserByEmailAsync(string email) =>
-        await _userManager.FindByEmailAsync(email);
+    public async Task<AppUser> FindUserByEmailAsync(string email) 
+    {
+        if (email == null)
+        {
+            throw new NotFoundException("not found");
+        }
 
-    public async Task<AppUser> FindUserByIdAsync(string userId) =>
-        await _userManager.FindByIdAsync(userId);
+        var user =   await _userManager.FindByEmailAsync(email);
+
+        if (user is null)
+        {
+            throw new NotFoundException("not found");
+        }
+
+        return user;
+    }
+
+    public async Task<AppUser> FindUserByIdAsync(string userId)
+    {
+        if(userId== null)
+        {
+            throw new NotFoundException("not found");
+        }
+        var user =await _userManager.FindByIdAsync(userId);
+        if (user is null)
+        {
+            throw new NotFoundException("not found"); 
+        
+        }
+        return user;
+    }   
 
     public async Task<IdentityResult> ConfirmEmailAsync(AppUser user, string token) =>
         await _userManager.ConfirmEmailAsync(user, token);
@@ -125,4 +173,39 @@ public class AccountService : IAccountService
     public async Task<IdentityResult> ResetPasswordAsync(AppUser user, string token, string newPassword) =>
         await _userManager.ResetPasswordAsync(user, token, newPassword);
 
+    public async Task<bool> EditProfileAsync(AppUser user, EditProfileDto editProfileDto)
+    {
+        if (editProfileDto.ProfilePhoto != null)
+        {
+            user.ProfilePhotoUrl = await _cloudinaryManager.FileCreateAsync(editProfileDto.ProfilePhoto);
+        }
+
+        user.UserName = editProfileDto.UserName ?? user.UserName;
+        user.Biography = editProfileDto.Bio ?? user.Biography;
+        user.PhoneNumber = editProfileDto.PhoneNumber ?? user.PhoneNumber;
+        user.UpdateTime = DateTime.UtcNow;
+        user.IsPrivate= editProfileDto.IsPrivate;
+
+        var result = await _userManager.UpdateAsync(user);
+        return result.Succeeded;
+    }
+
+    public async Task<IdentityResult> ChangePasswordAsync(AppUser user, string oldPassword, string newPassword)
+    {
+        var hasPassword = await UserHasPasswordAsync(user);
+        if (hasPassword)
+        {
+            if (string.IsNullOrEmpty(oldPassword))
+            {
+                throw new NullException("Old password is required.");
+            }
+
+            return await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+        }
+        else
+        {
+          
+            return await _userManager.AddPasswordAsync(user, newPassword);
+        }
+    }
 }

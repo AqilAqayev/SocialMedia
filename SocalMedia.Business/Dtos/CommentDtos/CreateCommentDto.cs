@@ -5,7 +5,6 @@ namespace SocalMedia.Business.Dtos.CommentDtos;
 public class CreateCommentDto : IDto
 {
     public string Text { get; set; } = null!;   
-    public int Rating { get; set; }
     public int PostId { get; set; }
 }
 

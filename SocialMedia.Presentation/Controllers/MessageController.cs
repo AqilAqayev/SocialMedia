@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using SocalMedia.Business.Dtos.HomeDtos;
+using SocalMedia.Business.Exceptions;
 using SocalMedia.Business.Hubs;
+using SocalMedia.Business.Services.Abstractions;
 using SocalMedia.Business.StaticFiles;
 using SocialMedia.Core.Entities;
 using SocialMedia.DataAccess.Context;
@@ -16,12 +18,14 @@ namespace SocialMedia.Presentation.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly AppDbContext _context;
         private readonly IHubContext<ChatHub> _chatHubContext;
+        private readonly IChatService _chatService;
 
-        public MessageController(UserManager<AppUser> userManager, AppDbContext context, IHubContext<ChatHub> chatHubContext)
+        public MessageController(UserManager<AppUser> userManager, AppDbContext context, IHubContext<ChatHub> chatHubContext, IChatService chatService)
         {
             _userManager = userManager;
             _context = context;
             _chatHubContext = chatHubContext;
+            _chatService = chatService;
         }
 
         public async Task<IActionResult> Index()
@@ -106,10 +110,19 @@ namespace SocialMedia.Presentation.Controllers
                     }
                 }
             }
-
-
-
             return Json(message);
+        }
+
+        public async  Task<IActionResult> CreateChat(string userId)
+        {
+           if(userId is null)
+            {
+                throw new NotFoundException();
+            }
+           var chat = await _chatService.CreateChatIfMutualFollowAsync(userId);
+
+            return RedirectToAction("Detail", new { id = chat.Id });
+
         }
     }
 }
