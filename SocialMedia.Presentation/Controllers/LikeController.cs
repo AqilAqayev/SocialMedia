@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
 using SocalMedia.Business.Services.Abstractions;
 
 namespace SocialMedia.Presentation.Controllers;

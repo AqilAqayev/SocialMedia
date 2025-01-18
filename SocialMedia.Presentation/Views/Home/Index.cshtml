@@ -73,11 +73,12 @@
         overflow-wrap: break-word;
     }
 
-    /* Çocuk yorum düzeni */
     .child-comment {
-        margin-left: 40px;
+        margin-left: 20px; /* Parent şərhdən sağa doğru məsafə */
         border-left: 2px solid #ddd;
         padding-left: 15px;
+        gap: 20px; /* Şərhlər arasındakı məsafə */
+        margin-top: 15px; /* Üst boşluq */
     }
 
     .post-comments {
@@ -233,101 +234,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-    .slider {
-        width: 90%;
-        max-width: 1200px;
-        background-color: #fff;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
-        overflow: hidden;
-        position: relative;
-    }
-
-    .slides {
-        display: flex;
-        transition: transform 0.5s ease-in-out;
-    }
-
-    .profile-container {
-        width: 30%;
-        margin: 0 5px;
-        background-color: #fff;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
-        text-align: center;
-    }
-
-    .profile-header {
-        padding: 10px;
-        background-color: #007bff;
-        color: white;
-    }
-
-        .profile-header img {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-        }
-
-        .profile-header h2 {
-            margin: 0;
-            font-size: 14px;
-        }
-
-    .media-slider {
-        position: relative;
-        overflow: hidden;
-        width: 100%;
-        height: 200px;
-    }
-
-    .media-slides {
-        display: flex;
-        transition: transform 0.5s ease-in-out;
-    }
-
-    .media-slide {
-        min-width: 100%;
-        height: 200px;
-    }
-
-        .media-slide img, .media-slide video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-    .controls {
-        position: absolute;
-        top: 50%;
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        transform: translateY(-50%);
-    }
-
-    .control {
-        background-color: rgba(0, 0, 0, 0.5);
-        color: white;
-        border: none;
-        padding: 10px;
-        cursor: pointer;
-    }
-
-        .control:hover {
-            background-color: rgba(0, 0, 0, 0.8);
-        }
 </style>
 
 <div id="content-page" class="content-page">
@@ -351,43 +257,7 @@
                 </form>
                 <div>
 
-                    <div class="slider">
-                        <div class="slides">
-                            @foreach (var story in Model.Stories)
-                            {
-                                <div class="profile-container">
-                                    <div class="profile-header">
-                                        <img src="~/assets/images/badges/01.png" alt="Profile Picture">
-                                        <h2>1</h2>
-                                    </div>
-                                    <div class="media-slider">
-                                        <div class="media-slides">
-                                            @foreach (var media in story.StoryImages.Concat(story.StoryVideos))
-                                            {
-                                                <div class="media-slide">
-                                                    @if (media.EndsWith(".mp4"))
-                                                    {
-                                                        <video controls>
-                                                            <source src="@media" type="video/mp4">
-                                                            Your browser does not support the video tag.
-                                                        </video>
-                                                    }
-                                                    else
-                                                    {
-                                                        <img src="@media" alt="Story Image">
-                                                    }
-                                                </div>
-                                            }
-                                        </div>
-                                        <button class="control prev">❮</button>
-                                        <button class="control next">❯</button>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                        <button class="control prev">❮</button>
-                        <button class="control next">❯</button>
-                    </div>
+               
 
                     @foreach (var post in Model.Posts)
                     {
@@ -699,7 +569,18 @@
                     if (data.success) {
                         const likeCountElement = document.querySelector(`#like-count-${postId}`);
                         if (likeCountElement) {
-                            likeCountElement.textContent = `${data.likeCount} likes`;
+                            // Mövcud like sayını dəyişdir
+                            const currentLikes = parseInt(likeCountElement.textContent) || 0;
+                            const newLikes = currentLikes + (data.isLiked ? 1 : -1);
+                            likeCountElement.textContent = `${newLikes} Likes`;
+                        }
+
+                        // İstifadəçinin like statusunu dəyişdir
+                        const likeImage = element.querySelector("img");
+                        if (data.isLiked) {
+                            likeImage.src = "../assets/images/icon/01.png"; // Bəyəndiyi hal
+                        } else {
+                            likeImage.src = "../assets/images/icon/01.png"; // Bəyənmədiyi hal
                         }
                     }
                 })
@@ -713,103 +594,128 @@
 
 
 
+        document.addEventListener("DOMContentLoaded", () => {
+            const commentForms = document.querySelectorAll(".commentForm");
+            const replyForms = document.querySelectorAll(".reply-input");
 
+            // Əsas şərh əlavə etmə
+            commentForms.forEach((form) => {
+                form.addEventListener("submit", async (e) => {
+                    e.preventDefault();
 
-        const forms = document.querySelectorAll(".commentForm");
-        const commentsAreas = document.querySelectorAll(".post-comments");
+                    const postId1 = form.querySelector("input[name='PostId']").value;
+                    const text2 = form.querySelector("input[name='Text']").value;
 
+                    try {
+                        const response = await fetch('/Post/PostComment', {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-Requested-With": "XMLHttpRequest",
+                            },
+                            body: JSON.stringify({ PostId: postId1, Text: text2 }),
+                        });
 
-        forms.forEach((form, i) => {
-            form.addEventListener("submit", async (e) => {
-                e.preventDefault();
+                        if (!response.ok) throw new Error("Şərh əlavə olunmadı!");
 
-                const postId = form.querySelector("input[name='PostId']").value;
-                const text = form.querySelector("input[name='Text']").value;
+                        const data = await response.text();
 
-                try {
-                    const response = await fetch('/Post/PostComment', {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-Requested-With": "XMLHttpRequest",
-                        },
-                        body: JSON.stringify({ PostId: postId, Text: text }),
-                    });
+                        // Şərhi siyahıya əlavə et
+                        const commentList = form.closest(".comment-area").querySelector(".post-comments");
+                        const newComment = document.createElement("li");
+                        newComment.innerHTML = data;
+                        commentList.prepend(newComment);
 
-                    if (!response.ok) {
-                        console.error("Bir hata oluştu:", response.status);
-                        return;
+                        // Şərh siyahısını göstər
+                        commentList.style.display = "block";
+
+                        // Formu təmizlə
+                        form.reset();
+
+                        Swal.fire({
+                            position: "center",
+                            icon: "success",
+                            showConfirmButton: false,
+                            timer: 1500,
+                        });
+                    } catch (error) {
+                        console.error(error);
                     }
-
-                    const data = await response.text();
-                    console.log("Yorum başarıyla eklendi:", data.message);
-
-
-
-                    commentsAreas[i].innerHTML += data;
-
-
-                    // Formu temizle
-                    form.reset();
-
-
-                    Swal.fire({
-                        position: "center",
-                        icon: "success",
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-
-                } catch (error) {
-                    console.error("Bir hata oluştu:", error);
-                }
+                });
             });
-        })
 
+            // Reply (alt şərh) əlavə etmə
+            replyForms.forEach((form) => {
+                form.addEventListener("submit", async (e) => {
+                    e.preventDefault();
 
+                    const postId = form.querySelector("input[name='PostId']").value;
+                    const parentId = form.querySelector("input[name='ParentId']").value;
+                    const text = form.querySelector("input[name='Text']").value;
 
+                    try {
+                        const response = await fetch('/Post/ReplyComment', {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-Requested-With": "XMLHttpRequest",
+                            },
+                            body: JSON.stringify({ PostId: postId, ParentId: parentId, Text: text }),
+                        });
 
+                        if (!response.ok) throw new Error("Reply əlavə olunmadı!");
 
+                        const data = await response.text();
 
+                        // Yeni reply-i parent şərhə əlavə et
+                        const parentComment = form.closest("li");
+                        const childComments = parentComment.querySelector("ul") || document.createElement("ul");
+                        childComments.classList.add("child-comments");
+                        const newReply = document.createElement("li");
+                        newReply.classList.add("child-comment");
+                        newReply.innerHTML = data;
 
+                        childComments.appendChild(newReply);
+                        parentComment.appendChild(childComments);
 
+                        // Formu gizlət və təmizlə
+                        form.reset();
+                        form.style.display = "none";
 
+                        Swal.fire({
+                            position: "center",
+                            icon: "success",
+                            showConfirmButton: false,
+                            timer: 1500,
+                        });
+                    } catch (error) {
+                        console.error(error);
+                    }
+                });
+            });
+        });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        const slides = document.querySelector('.slides');
-        const slide = document.querySelectorAll('.profile-container');
-        const prev = document.querySelector('.slider > .controls .prev');
-        const next = document.querySelector('.slider > .controls .next');
-
-        let index = 0;
-        const itemsPerView = 3;
-
-        function showSlide(index) {
-            slides.style.transform = `translateX(-${index * (100 / itemsPerView)}%)`;
+        // Reply formunu göstər/gizlət
+        function toggleReplyInput(element) {
+            const replyForm = element.closest("li").querySelector(".reply-input");
+            if (replyForm.style.display === "none" || replyForm.style.display === "") {
+                replyForm.style.display = "flex";
+            } else {
+                replyForm.style.display = "none";
+            }
         }
 
-        prev.addEventListener('click', () => {
-            index = (index > 0) ? index - 1 : slide.length - itemsPerView;
-            showSlide(index);
-        });
+        // Şərh siyahısını göstər/gizlət
+        function toggleComments(element) {
+            const commentList = element.closest(".comment-area").querySelector(".post-comments");
+            if (commentList.style.display === "none" || commentList.style.display === "") {
+                commentList.style.display = "block";
+            } else {
+                commentList.style.display = "none";
+            }
+        }
 
-        next.addEventListener('click', () => {
-            index = (index < slide.length - itemsPerView) ? index + 1 : 0;
-            showSlide(index);
-        });
+       
     </script>
+   
 }

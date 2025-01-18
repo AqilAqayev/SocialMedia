@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SocialMedia.DataAccess.Context;
 using SocialMedia.DataAccess.DataInitalizers;
+using SocialMedia.DataAccess.Interceptors;
 using SocialMedia.DataAccess.Repositories.Abstraction;
 using SocialMedia.DataAccess.Repositories.Abstraction.Generic;
 using SocialMedia.DataAccess.Repositories.Implementations;
@@ -49,6 +50,8 @@ namespace SocialMedia.DataAccess.ServiceRegistrations
             services.AddScoped<IPostLikeRepository,PostLikeRepository>();
 
             services.AddScoped<ISendNatficationRepository, SendNatficationRepository>();
+            services.AddScoped<BaseAuditableInterceptor>();
+
 
 
         }

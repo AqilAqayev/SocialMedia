@@ -8,6 +8,7 @@ using SocalMedia.Business.Exceptions;
 using SocalMedia.Business.Hubs;
 using SocalMedia.Business.Services.Abstractions;
 using SocalMedia.Business.Services.Implementations.Generic;
+using SocalMedia.Business.StaticFiles;
 using SocalMedia.Business.UiServices.Abstractions;
 using SocialMedia.Core.Entities;
 using SocialMedia.DataAccess.Repositories.Abstraction;
@@ -24,6 +25,7 @@ public class ChatService : CrudService<Chat, CreateChatDto, UpdateChatDto, ChatD
     private readonly IHttpContextAccessor _http;
     private readonly IMessageService _messageService;
     private readonly IHubContext<ChatHub> _chatHub;
+    private readonly IMessageRepository _messageRepository;
 
 
     public ChatService(IChatRepository repository, IMapper mapper, IFriendService friendService, IChatRepository chatRepository, UserManager<AppUser> userManager, IFollowRepository followRepository/*, IFollowService followService*/, IHttpContextAccessor http, IMessageService messageService, IHubContext<ChatHub> chatHub) : base(repository, mapper)
@@ -52,7 +54,7 @@ public class ChatService : CrudService<Chat, CreateChatDto, UpdateChatDto, ChatD
                                           c.AppUserChats.Any(ac => ac.AppUserId == otherUserId));
             if (chat != null)
             {
-                _chatRepository.Delete(chat);
+               await _chatRepository.Delete(chat);
                 await _chatRepository.SaveChangesAsync();
             }
         }
@@ -154,10 +156,47 @@ public class ChatService : CrudService<Chat, CreateChatDto, UpdateChatDto, ChatD
     {
         await MarkMessagesAsReadAsync(chatId, userId);
 
-      
+
         await _chatHub.Clients.Group(chatId.ToString())
             .SendAsync("MessagesMarkedAsRead", chatId, userId);
     }
 
+    public async Task<Chat?> GetChatIfExistsAsync(int id, string userId)
+    {
+        return await _chatRepository.GetChatByIdAndUserIdAsync(id, userId);
 
+    }
+    public async Task<Message?> SendMessageAsync(int chatId, string text, string userId)
+    {
+        var chat = await _chatRepository.GetChatByIdAndUserIdAsync(chatId, userId);
+
+        if (chat is null)
+            return null;
+
+        var message = new Message
+        {
+            Text = text,
+            ChatId = chatId,
+            SenderId = userId,
+        };
+
+        await _messageRepository.CreateAsync(message);
+        await _messageRepository.SaveChangesAsync();
+
+        message.Chat = null;
+
+        foreach (var userChat in chat.AppUserChats.Where(x => x.AppUserId != userId))
+        {
+            var connection = HubDatas.Connections.FirstOrDefault(x => x.UserId == userChat.AppUserId);
+            if (connection is { })
+            {
+                foreach (var id in connection.ConnectionIds)
+                {
+                    await _chatHub.Clients.Client(id).SendAsync("ReceiveMessage", message);
+                }
+            }
+        }
+
+        return message;
+    }
 }

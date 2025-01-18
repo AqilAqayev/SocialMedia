@@ -1,15 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using SocalMedia.Business;
 using SocalMedia.Business.Dtos.CommentDtos;
-using SocalMedia.Business.Dtos.StoryDtos;
 using SocalMedia.Business.Services.Abstractions;
 using SocalMedia.Business.UiServices.Abstractions;
 using SocialMedia.Core.Entities;
 using SocialMedia.DataAccess.Context;
-using SocialMedia.Presentation.Extensions;
 using System.Security.Claims;
 
 namespace SocialMedia.Presentation.Controllers;
@@ -18,16 +15,14 @@ public class PostController : Controller
 {
     private readonly IPostService _postService;
     private readonly UserManager<AppUser> _userManager;
-    private readonly AppDbContext _context;
     private readonly IAccountService _accountService;
     private readonly IStoryService _storyService;
 
 
-    public PostController(IPostService postService, UserManager<AppUser> userManager, AppDbContext context, IAccountService accountService, IStoryService storyService)
+    public PostController(IPostService postService, UserManager<AppUser> userManager, IAccountService accountService, IStoryService storyService)
     {
         _postService = postService;
         _userManager = userManager;
-        _context = context;
         _accountService = accountService;
         _storyService = storyService;
     }
@@ -71,13 +66,16 @@ public class PostController : Controller
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> ReplyComment(CommentReplyDto dto)
+    public async Task<IActionResult> ReplyComment([FromBody]CommentReplyDto dto)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "";
-        if (string.IsNullOrEmpty(userId)) return Unauthorized();
+        if (string.IsNullOrEmpty(userId))
+            return Unauthorized();
 
-        await _postService.AddReplyAsync(dto, userId);
-        return Redirect(Request.Headers["Referer"].ToString());
+        var newDto = await _postService.AddReplyAsync(dto, userId);
+
+        return PartialView("_ReplyCommentPartial", newDto);
     }
+
 
 }

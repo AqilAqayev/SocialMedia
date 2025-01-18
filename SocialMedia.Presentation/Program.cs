@@ -47,7 +47,6 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.MapHub<ChatHub>("/chathub");
-app.MapHub<CommentHub>("/postHub");
 
 
 app.UseRouting();

@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using SocialMedia.Core.Entities.Base;
 using System.Security.Claims;
 
-namespace EduHome.DataAccess.Interceptors;
+
+namespace SocialMedia.DataAccess.Interceptors;
 
 public class BaseAuditableInterceptor : SaveChangesInterceptor
 {

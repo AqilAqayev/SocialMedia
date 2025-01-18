@@ -2,57 +2,36 @@
 using Microsoft.AspNetCore.SignalR;
 using SocalMedia.Business.StaticFiles;
 using System.Security.Claims;
-
 namespace SocalMedia.Business.Hubs;
-
 public class ChatHub : Hub
 {
     private readonly IHttpContextAccessor _contextAccessor;
-
     public ChatHub(IHttpContextAccessor contextAccessor)
     {
         _contextAccessor = contextAccessor;
     }
-
-    public async Task SendMessage(string chatId, string message, string senderId)
+    public async Task SendMessage(string message)
     {
-        // Mesaj gönderildiğinde tüm kullanıcılara bildir
-        await Clients.Group(chatId).SendAsync("ReceiveMessage", new
-        {
-            ChatId = chatId,
-            Message = message,
-            SenderId = senderId,
-            CreatedTime = DateTime.UtcNow
-        });
+        await Clients.All.SendAsync("ReceiveMessage", message);
     }
-
-    public async Task MarkAsRead(string chatId, string userId)
+    public override Task OnConnectedAsync()
     {
-        // Okunmamış mesajlar bildirimi
-        await Clients.Group(chatId).SendAsync("MessagesMarkedAsRead", chatId, userId);
-    }
-
-    public override async Task OnConnectedAsync()
-    {
-        var userId = _contextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        if (!string.IsNullOrEmpty(userId))
+        var userId = _contextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var connection = HubDatas.Connections.FirstOrDefault(x => x.UserId == userId);
+        if (connection is { })
         {
-            await Groups.AddToGroupAsync(Context.ConnectionId, userId);
+            connection.ConnectionIds.Add(Context.ConnectionId);
         }
-
-        await base.OnConnectedAsync();
-    }
-
-    public override async Task OnDisconnectedAsync(Exception? exception)
-    {
-        var userId = _contextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        if (!string.IsNullOrEmpty(userId))
+        else
         {
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, userId);
+            HubDatas.Connections.Add(new() { UserId = userId!, ConnectionIds = [Context.ConnectionId] });
         }
-
-        await base.OnDisconnectedAsync(exception);
+        return base.OnConnectedAsync();
+    }
+    public override Task OnDisconnectedAsync(Exception exception)
+    {
+        var userId = _contextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        HubDatas.Connections.RemoveAll(x => x.UserId == userId);
+        return base.OnDisconnectedAsync(exception);
     }
 }

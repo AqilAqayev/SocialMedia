@@ -14,10 +14,17 @@ namespace SocialMedia.Presentation.Controllers
             _storyService = storyService;
         }
 
+        public async Task<IActionResult> Index()
+        {
+            var story = await _storyService.GetAllActiveStoriesAsync();
+            return View(story);
+        }
+
+
         [HttpPost]
         [Authorize]
 
-        public  async Task<IActionResult> storyCreate(CreateStoryDto createStoryDto)
+        public async Task<IActionResult> storyCreate(CreateStoryDto createStoryDto)
         {
             //if (!ModelState.IsValid)
             //{
@@ -26,6 +33,14 @@ namespace SocialMedia.Presentation.Controllers
             int storyId = await _storyService.CreatStoryAsync(createStoryDto);
 
             return RedirectToAction("Index", "Home");
+        }
+
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _storyService.DeleteAsync(id);
+
+            return RedirectToAction("Index", "Profile");
         }
     }
 }

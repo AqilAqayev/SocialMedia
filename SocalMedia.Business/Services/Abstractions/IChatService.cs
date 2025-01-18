@@ -9,5 +9,9 @@ public interface IChatService : ICrudService<Chat, CreateChatDto, UpdateChatDto,
     Task<ChatDto> CreateChatIfMutualFollowAsync(string friendId);
     Task DeleteChatIfNoMutualFollowAsync(string otherUserId);
     Task<List<ChatDto>> GetUserChatsAsync(string userId);
+    Task<Chat?> GetChatIfExistsAsync(int id, string userId);
+    Task<Message?> SendMessageAsync(int chatId, string text, string userId);
+
+
 
 }

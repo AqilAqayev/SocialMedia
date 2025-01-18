@@ -16,5 +16,5 @@ public interface IPostService : ICrudService<Post, CreatePostDto, UpdatePostDto,
     Task<int> GetPostLikeCountAsync(int postId);
 
     Task<CommentDto> AddCommentAsync(CreateCommentDto dto, string userId);
-    Task AddReplyAsync(CommentReplyDto dto, string userId);
+    Task<CommentDto> AddReplyAsync(CommentReplyDto dto, string userId);
 }

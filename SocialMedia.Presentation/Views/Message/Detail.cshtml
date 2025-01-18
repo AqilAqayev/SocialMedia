@@ -1,5 +1,4 @@
-﻿@using SocalMedia.Business.Dtos.HomeDtos
-@using SocialMedia.Core.Entities
+﻿@using SocialMedia.Core.Entities
 @using System.Security.Claims
 @{
     Layout = null;
@@ -208,11 +207,10 @@
 
             const data = await response.json();
 
-            const li = `
-            <li class="message sent">
-                <div class="text">${data.text}</div>
-                <time>${new Date(data.createdTime).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}</time>
-            </li>`;
+            const li = ` <li class="message sent">
+                                            <div class="text">${data.text}</div>
+                                            <time>${data.createdTime}</time>
+                                        </li>`;
 
             chat.innerHTML += li;
 
@@ -220,43 +218,6 @@
             messageInput.blur();
         })
 
-
-
-
-        const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/chathub")
-            .build();
-
-        connection.on("ReceiveMessage", (data) => {
-            console.log("Yeni Mesaj Geldi:", data);
-
-            // Mesaj bildirimini güncelleyin
-            const chatElement = document.querySelector(`#chat-${data.chatId}`);
-            if (chatElement) {
-                const notification = chatElement.querySelector(".notification-indicator");
-                if (notification) {
-                    notification.innerText = parseInt(notification.innerText || 0) + 1;
-                } else {
-                    const newNotification = document.createElement("span");
-                    newNotification.className = "notification-indicator";
-                    newNotification.innerText = "1";
-                    chatElement.appendChild(newNotification);
-                }
-            }
-        });
-
-        connection.on("MessagesMarkedAsRead", (chatId) => {
-            const chatElement = document.querySelector(`#chat-${chatId}`);
-            if (chatElement) {
-                const notificationIndicator = chatElement.querySelector(".notification-indicator");
-                if (notificationIndicator) {
-                    notificationIndicator.remove(); // Bildirimi temizle
-                }
-            }
-        });
-
-
-        connection.start().catch(err => console.error(err.toString()));
 
 
     </script>

@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using SocalMedia.Business.Dtos.HomeDtos;
 using SocalMedia.Business.Services.Abstractions;
 using SocalMedia.Business.UiServices.Abstractions;
 using SocialMedia.Core.Entities;
-using static System.Net.WebRequestMethods;
 
 namespace SocialMedia.Presentation.Controllers;
 

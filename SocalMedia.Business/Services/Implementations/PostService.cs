@@ -14,6 +14,7 @@ using SocialMedia.DataAccess.Repositories.Abstraction;
 using SocialMedia.DataAccess.Repositories.Abstraction.Generic;
 using System.Linq.Expressions;
 using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
 
 namespace SocalMedia.Business.Services.Implementations;
 
@@ -46,14 +47,16 @@ public class PostService : CrudService<Post, CreatePostDto, UpdatePostDto, PostD
         var entity = await _postRepository.GetAll()
         .Include(p => p.PostImages)
         .Include(p => p.PostVideos)
-        .Include(p => p.Comments).ThenInclude(c => c.User)
+        .Include(p => p.Comments.OrderByDescending(c => c.CreatedTime)) // Əsas şərhləri tərs sırala
+            .ThenInclude(c => c.Children.OrderByDescending(c => c.CreatedTime)) // Cavabları da tərs sırala
+        .Include(p => p.Comments)
+            .ThenInclude(c => c.User)
         .Include(p => p.User)
         .Where(predicate)
         .ToListAsync();
 
-        var dto = _mapper.Map<List<PostDto>>(entity);
-
-        return dto;
+    var dto = _mapper.Map<List<PostDto>>(entity);
+    return dto;
     }
 
     public async Task<int> CreatePostAsync(CreatePostDto createPostDto)
@@ -102,31 +105,46 @@ public class PostService : CrudService<Post, CreatePostDto, UpdatePostDto, PostD
     public async Task<bool> LikePostAsync(int postId)
     {
         string userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "";
-        if (userId == null)
+        if (string.IsNullOrEmpty(userId))
             return false;
-        var post = await _postRepository.GetAsync(postId, include: x => x.Include(x => x.PostLikes));
 
+        var post = await _postRepository.GetAsync(postId, include: x => x.Include(x => x.PostLikes));
         if (post == null)
             return false;
 
-        var existingLike = post.PostLikes.FirstOrDefault(like => like.UserId == userId);
+        // Mövcud like yoxlanışı, həmçinin `IsDeleted` dəyəri
+        var existingLike = post.PostLikes.FirstOrDefault(like => like.UserId == userId && like.PostId == postId);
 
         if (existingLike != null)
         {
-            await _postLikeRepository.Delete(existingLike);
-            post.Count--;
+            if (!existingLike.IsDeleted)
+            {
+                // Mövcud və aktiv bəyənməni sil (soft delete)
+                existingLike.IsDeleted = true;
+                post.Count = Math.Max(post.Count - 1, 0); // Mənfi dəyərin qarşısını al
+            }
+            else
+            {
+                // Mövcud, lakin silinmiş bəyənməni bərpa et
+                existingLike.IsDeleted = false;
+                post.Count++;
+            }
 
+            _postLikeRepository.Update(existingLike);
             _postRepository.Update(post);
 
             await _postLikeRepository.SaveChangesAsync();
             await _postRepository.SaveChangesAsync();
-            return true;
+
+            return !existingLike.IsDeleted; // Əgər aktivdirsə true, silinibsə false qaytar
         }
 
+        // Yeni like əlavə olunur
         var postLike = new PostLike
         {
             PostId = postId,
-            UserId = userId
+            UserId = userId,
+            IsDeleted = false
         };
 
         await _postLikeRepository.CreateAsync(postLike);
@@ -137,11 +155,9 @@ public class PostService : CrudService<Post, CreatePostDto, UpdatePostDto, PostD
         _postRepository.Update(post);
         await _postRepository.SaveChangesAsync();
 
-
-
-
-        return true;
+        return true; // Yeni bəyənmə əlavə edildi
     }
+
     public async Task<int> GetPostCountAsync()
     {
         return await Task.Run(() => _postRepository.GetAll().Count());
@@ -149,13 +165,19 @@ public class PostService : CrudService<Post, CreatePostDto, UpdatePostDto, PostD
 
     public async Task<int> GetPostLikeCountAsync(int postId)
     {
-        var post = await _postRepository.GetAsync(p => p.Id == postId, include: query => query.Include(p => p.PostLikes));
+        var post = await _postRepository.GetAsync(
+            p => p.Id == postId,
+            include: query => query.Include(p => p.PostLikes.Where(pl => !pl.IsDeleted))
+        );
+
         if (post == null)
         {
             throw new NotFoundException("Post not found");
         }
+
         return post.PostLikes.Count;
     }
+
 
     public async Task<CommentDto> AddCommentAsync(CreateCommentDto dto, string userId)
     {
@@ -187,10 +209,11 @@ public class PostService : CrudService<Post, CreatePostDto, UpdatePostDto, PostD
         return newDto;
     }
 
-    public async Task AddReplyAsync(CommentReplyDto dto, string userId)
+    public async Task<CommentDto> AddReplyAsync(CommentReplyDto dto, string userId)
     {
         var post = await _postRepository.GetPostWithCommentsAsync(dto.PostId);
         if (post == null) throw new NotFoundException("Post not found");
+        var user = await _accountService.FindUserByIdAsync(userId);
 
         var parentComment = await _commentRepository.GetAsync(c => c.Id == dto.ParentId && c.ParentId == null);
         if (parentComment == null) throw new NotFoundException("Parent comment not found");
@@ -206,8 +229,13 @@ public class PostService : CrudService<Post, CreatePostDto, UpdatePostDto, PostD
 
         await _commentRepository.CreateAsync(replyComment);
         post.CommentCount++;
-
+        var newDto = _mapper.Map<CommentDto>(replyComment);
+        newDto.UserName = user.UserName;
+        newDto.ProfilePhotoUrl = user.ProfilePhotoUrl;
         await _postRepository.SaveChangesAsync();
+
+
+        return newDto;
     }
 
 

@@ -3,14 +3,14 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SocialMedia.Core.Entities;
 using System.Reflection;
-using System.Reflection.Emit;
-
+using SocialMedia.DataAccess.Interceptors;
 namespace SocialMedia.DataAccess.Context;
 public class AppDbContext : IdentityDbContext<AppUser>
 {
-    public AppDbContext(DbContextOptions options) : base(options)
+    private readonly BaseAuditableInterceptor _baseAuditableInterceptor;
+    public AppDbContext(DbContextOptions options, BaseAuditableInterceptor baseAuditableInterceptor) : base(options)
     {
-        
+        _baseAuditableInterceptor = baseAuditableInterceptor;
     }
     public DbSet<Post> Posts { get; set; }
     public DbSet<PostImage> PostImages { get; set; }
@@ -27,8 +27,22 @@ public class AppDbContext : IdentityDbContext<AppUser>
     public DbSet<FollowConnection> FollowConnections { get; set; }
     public DbSet<SendNatfication> SendNatfications { get; set; }
 
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.AddInterceptors(_baseAuditableInterceptor);
+
+        base.OnConfiguring(optionsBuilder);
+    }
+  
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        modelBuilder.Entity<Post>().HasQueryFilter(x => !x.IsDeleted);
+
+
+
+
         modelBuilder.Entity<PostLike>()
            .HasOne(pl => pl.Post)
            .WithMany(p => p.PostLikes)
