@@ -213,20 +213,9 @@ public class AccountController : Controller
         var user = await _accountService.FindUser();
         var result = await _accountService.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
 
-        //if (!result.Succeeded)
-        //{
-        //    foreach (var error in result.Errors)
-        //    {
-        //        ModelState.AddModelError("", error.Description);
-        //    }
-        //    return View(model);
-        //}
-
         return RedirectToAction("Index", "Home");
 
     }
-
-
 
 
 

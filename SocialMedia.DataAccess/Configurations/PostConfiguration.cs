@@ -12,7 +12,6 @@ internal class PostConfiguration : IEntityTypeConfiguration<Post>
            .IsRequired()
            .HasMaxLength(200000);
 
-        builder.Property(p => p.IsDelete)
-            .HasDefaultValue(false);
+       
     }
 }

@@ -2,7 +2,7 @@
 
 namespace SocialMedia.Core.Entities
 {
-    public class CommentLike : BaseEntity
+    public class CommentLike : BaseAuditableEntity
     {
         public int CommentId { get; set; }
         public string UserId { get; set; } = null!;

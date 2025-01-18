@@ -2,7 +2,7 @@
 
 namespace SocialMedia.Core.Entities
 {
-    public class Comment : BaseEntity
+    public class Comment : BaseAuditableEntity
     {
         public AppUser User { get; set; } = null!;
         public string AppUserId { get; set; } = null!;
@@ -13,10 +13,6 @@ namespace SocialMedia.Core.Entities
         public int? ParentId { get; set; }
         public Comment? Parent { get; set; } = null!;
         public List<Comment> Children { get; set; } = [];
-        public bool IsDeleted { get; set; } = false;
-        public DateTime CreatedTime { get; set; }
-        public DateTime UpdatedTime { get; set; }
-        public string? CreatedBy { get; set; }
-        public string? UpdatedBy { get; set; }
+
     }
 }

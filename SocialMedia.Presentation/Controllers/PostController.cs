@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SocalMedia.Business;
 using SocalMedia.Business.Dtos.CommentDtos;
+using SocalMedia.Business.Dtos.StoryDtos;
 using SocalMedia.Business.Services.Abstractions;
 using SocalMedia.Business.UiServices.Abstractions;
 using SocialMedia.Core.Entities;
@@ -19,14 +20,16 @@ public class PostController : Controller
     private readonly UserManager<AppUser> _userManager;
     private readonly AppDbContext _context;
     private readonly IAccountService _accountService;
+    private readonly IStoryService _storyService;
 
 
-    public PostController(IPostService postService, UserManager<AppUser> userManager, AppDbContext context, IAccountService accountService)
+    public PostController(IPostService postService, UserManager<AppUser> userManager, AppDbContext context, IAccountService accountService, IStoryService storyService)
     {
         _postService = postService;
         _userManager = userManager;
         _context = context;
         _accountService = accountService;
+        _storyService = storyService;
     }
 
     [HttpPost]
@@ -43,6 +46,15 @@ public class PostController : Controller
 
         return RedirectToAction("Index", "Home");
     }
+
+    public async Task<IActionResult> Delete(int id)
+    {
+        await _postService.DeleteAsync(id);
+
+        return RedirectToAction("Index", "Profile");
+    }
+
+
     [HttpPost]
     [Authorize]
     public async Task<IActionResult> PostComment([FromBody] CreateCommentDto dto)
@@ -51,9 +63,9 @@ public class PostController : Controller
         if (string.IsNullOrEmpty(userId))
             return Unauthorized(new { success = false, message = "Unauthorized" });
 
-        await _postService.AddCommentAsync(dto, userId);
+        var newDto = await _postService.AddCommentAsync(dto, userId);
 
-        return Json(new { success = true, message = "Comment added successfully" });
+        return PartialView("_CommentPartial", newDto);
     }
 
 

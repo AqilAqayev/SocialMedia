@@ -1,4 +1,5 @@
-﻿using SocalMedia.Business.Dtos.ChatDtos;
+﻿using SocalMedia.Business.Dtos;
+using SocalMedia.Business.Dtos.ChatDtos;
 using SocalMedia.Business.Dtos.CommentDtos;
 using SocalMedia.Business.Dtos.Generic;
 

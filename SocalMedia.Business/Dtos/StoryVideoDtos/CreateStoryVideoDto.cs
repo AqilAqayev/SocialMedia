@@ -1,10 +1,9 @@
 ﻿using SocalMedia.Business.Dtos.Generic;
 
-namespace SocalMedia.Business.Dtos.StoryVideoDtos
+namespace SocalMedia.Business.Dtos.StoryVideoDtos;
+
+public class CreateStoryVideoDto: IDto
 {
-    public class CreateStoryVideoDto: IDto
-    {
-        public int Id { get; set; }
-        public string VideoUrl { get; set; } = null!;
-    }
+    public int Id { get; set; }
+    public string VideoUrl { get; set; } = null!;
 }

@@ -83,7 +83,7 @@ public class FollowService : CrudService<Follow, CreateFollowDto, UpdateFollowDt
 
 
         await _followRepository.CreateAsync(following);
-        await _followRepository.SaveChangesAsync();
+
         bool isMutualFollow = await _followRepository.AnyAsync(f =>
         f.FollowerId == followedId && f.FollowingId == userId);
 
@@ -119,7 +119,7 @@ public class FollowService : CrudService<Follow, CreateFollowDto, UpdateFollowDt
 
         if (foll != null)
         {
-            _followRepository.Delete(foll);
+            await _followRepository.Delete(foll);
             await _followRepository.SaveChangesAsync();
         }
     }
@@ -192,13 +192,6 @@ public class FollowService : CrudService<Follow, CreateFollowDto, UpdateFollowDt
             await _sendNatficationService.DeleteAsync(notification.Id);
         }
 
-        await _followRepository.SaveChangesAsync();
-
-        
-        bool isMutualFollow = await _followRepository.AnyAsync(f =>
-            f.FollowerId == userId && f.FollowingId == receiverId);
-
-
     }
 
     public async Task RejectRequest(string receiverId)
@@ -227,8 +220,8 @@ public class FollowService : CrudService<Follow, CreateFollowDto, UpdateFollowDt
             await _sendNatficationService.DeleteAsync(notification.Id);
         }
 
-        _followRepository.Delete(followRequest);
-        await _followRepository.SaveChangesAsync();
+        await _followRepository.Delete(followRequest);
+
     }
 
 

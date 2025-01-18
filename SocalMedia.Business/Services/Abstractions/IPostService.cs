@@ -1,4 +1,5 @@
-﻿using SocalMedia.Business.Dtos.CommentDtos;
+﻿using SocalMedia.Business.Dtos;
+using SocalMedia.Business.Dtos.CommentDtos;
 using SocalMedia.Business.Dtos.PostDtos;
 using SocalMedia.Business.Services.Abstractions.Generic;
 using SocialMedia.Core.Entities;
@@ -14,6 +15,6 @@ public interface IPostService : ICrudService<Post, CreatePostDto, UpdatePostDto,
     Task<bool> LikePostAsync(int postId);
     Task<int> GetPostLikeCountAsync(int postId);
 
-    Task AddCommentAsync(CreateCommentDto dto, string userId);
+    Task<CommentDto> AddCommentAsync(CreateCommentDto dto, string userId);
     Task AddReplyAsync(CommentReplyDto dto, string userId);
 }

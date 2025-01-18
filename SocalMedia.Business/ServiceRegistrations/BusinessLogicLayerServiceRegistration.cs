@@ -35,8 +35,8 @@ namespace SocalMedia.Business.ServiceRegistrations
             services.AddScoped<IMessageService, MessageService>();
 
             services.AddScoped<IStoryService, StoryService>();
-
             services.AddScoped<IStoryVideoService, StoryVideoService>();
+            services.AddScoped<IStoryImageService, StoryImageService>();
 
             services.AddScoped<IFollowService, FollowService>();
 

@@ -20,9 +20,10 @@ namespace SocalMedia.Business.UiServices.Implementations
         private readonly IPostService _postService;
         private readonly ICommentService _commentService;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IStoryService _storyService;
 
 
-        public HomeService(IUserRepository userRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor, IPostService postService, ICommentService commentService, UserManager<AppUser> userManager)
+        public HomeService(IUserRepository userRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor, IPostService postService, ICommentService commentService, UserManager<AppUser> userManager, IStoryService storyService)
         {
             _userRepository = userRepository;
             _mapper = mapper;
@@ -30,6 +31,7 @@ namespace SocalMedia.Business.UiServices.Implementations
             _postService = postService;
             _commentService = commentService;
             _userManager = userManager;
+            _storyService = storyService;
         }
 
         public async Task<HomeDto> GetHomeDto()
@@ -38,10 +40,12 @@ namespace SocalMedia.Business.UiServices.Implementations
             var posts = (await _postService.GetAllPostAsync(x => x.UserId != userId))
                .OrderByDescending(p => p.CreatedTime) 
                .ToList();
+            var story =await _storyService.GetAllActiveStoriesAsync();
             var user = await _userManager.FindByIdAsync(userId);
             HomeDto homeDto = new HomeDto
             {
                 Posts = posts,
+                Stories= story
 
             };
             return homeDto;

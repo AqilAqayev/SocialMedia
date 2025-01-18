@@ -2,7 +2,7 @@
 
 namespace SocialMedia.Core.Entities;
 
-public class Follow : BaseEntity
+public class Follow : BaseAuditableEntity
 {
     public string FollowerId { get; set; } = null!;
     public string FollowingId { get; set; } = null!;

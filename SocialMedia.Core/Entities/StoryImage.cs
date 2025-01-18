@@ -2,9 +2,9 @@
 
 namespace SocialMedia.Core.Entities;
 
-public class StoryVideo : BaseAuditableEntity
+public class StoryImage: BaseAuditableEntity
 {
     public int StoryId { get; set; }
-    public string VideoUrl { get; set; } = null!;
+    public string ImageUrl { get; set; } = null!;
     public Story Story { get; set; } = null!;
 }

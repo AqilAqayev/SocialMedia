@@ -1,4 +1,5 @@
 ﻿using SocalMedia.Business.Dtos.Generic;
+using SocalMedia.Business.Dtos.StoryImageDtos;
 using SocalMedia.Business.Dtos.StoryVideoDtos;
 
 namespace SocalMedia.Business.Dtos.StoryDtos;
@@ -9,5 +10,6 @@ public class StoryDto : IDto
     public string UserId { get; set; } = null!;
     public DateTime CreatedTime { get; set; }
     public bool IsPrivate { get; set; }
-    public ICollection<StoryVideoDto> StoryVideos { get; set; } = new List<StoryVideoDto>();
+    public ICollection<string> StoryVideos { get; set; } = [];
+    public ICollection<string> StoryImages { get; set; } = [];
 }

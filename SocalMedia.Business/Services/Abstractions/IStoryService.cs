@@ -6,4 +6,7 @@ namespace SocalMedia.Business.Services.Abstractions;
 
 public interface IStoryService : ICrudService<Story, CreateStoryDto, UpdateStoryDto, StoryDto>
 {
+    Task<int> CreatStoryAsync(CreateStoryDto createStoryDto);
+    Task<List<StoryDto>> GetAllActiveStoriesAsync();
+
 }

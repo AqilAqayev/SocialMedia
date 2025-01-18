@@ -2,7 +2,7 @@
 
 namespace SocialMedia.Core.Entities;
 
-public class FollowConnection : BaseEntity
+public class FollowConnection : BaseAuditableEntity
 {
     public string? UserId { get; set; }
     public string? ConnectionId { get; set; }

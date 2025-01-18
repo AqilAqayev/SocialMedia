@@ -34,6 +34,12 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
     @await RenderSectionAsync("Scripts", required: false)
     @await Component.InvokeAsync("Footer")
 
@@ -51,7 +57,6 @@
     <script src="~/assets/js/app.js"></script>
     <script src="../vendor/vanillajs-datepicker/dist/js/datepicker.min.js"></script>
     <script src="~/assets/js/lottie.js"></script>
-
     <script>
         window.addEventListener('scroll', () => {
             sessionStorage.setItem(`scrollPosition-${window.location.pathname}`, window.scrollY);

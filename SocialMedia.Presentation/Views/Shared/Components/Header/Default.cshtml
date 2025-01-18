@@ -80,7 +80,7 @@
                                                 <div class="d-flex align-items-center">
                                                     <a asp-controller="Follow" asp-action="Accept" asp-route-id="@request.SenderId"
                                                        class="me-3 btn btn-primary rounded">Confirm</a>
-                                                    <a href="javascript:void();"
+                                                    <a asp-controller="Follow" asp-action="Reject" asp-route-id="@request.SenderId"
                                                        class="me-3 btn btn-secondary rounded">Delete Request</a>
                                                 </div>
                                             </div>

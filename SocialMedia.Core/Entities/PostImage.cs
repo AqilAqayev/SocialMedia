@@ -2,7 +2,7 @@
 
 namespace SocialMedia.Core.Entities
 {
-    public class PostImage : BaseEntity
+    public class PostImage : BaseAuditableEntity
     {
         public int PostId { get; set; }
         public string ImageUrl { get; set; } = null!;

@@ -1,8 +1,335 @@
 ﻿@using SocalMedia.Business.Dtos.HomeDtos
 @model HomeDto
-<style>
 
+<style>
+    /* Post Kartları */
+    .card_card-block_card-stretch_card-height {
+        background: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        overflow: hidden; /* Kart dışına taşmayı engelle */
+    }
+
+        /* Uzun metni sarmalama */
+        .card_card-block_card-stretch_card-height p {
+            word-wrap: break-word; /* Uzun kelimelerin taşmasını önle */
+            overflow-wrap: break-word; /* Eski tarayıcılar için destek */
+        }
+
+    /* Görseller ve Videolar */
+    .user-post img,
+    .user-post video {
+        width: 100%;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin-bottom: 0; /* Medya elementleri arasındaki boşluk */
+    }
+
+    /* Altındaki fazla boşluğu engelle */
+    .user-post {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+        margin-top: 15px;
+        margin-bottom: 0; /* Alt boşluğu sıfırla */
+        padding-bottom: 0; /* Fazla içeriği engelle */
+    }
+
+    /* Kart içindeki medya ve metin düzeni */
+    .user-post-data {
+        margin-bottom: 10px;
+    }
+
+        .user-post-data p {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 5px; /* Fazla boşluğu azalt */
+        }
+
+    /* Genel margin ve padding ayarları */
+    .comment-area {
+        margin-top: 20px;
+        padding: 20px;
+        background: #f9f9f9;
+        border-radius: 8px;
+    }
+
+    .post-comments > li {
+        margin-bottom: 20px;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 15px;
+    }
+
+    /* Uzun metinli yorumlar için düzenleme */
+    .comment-data-block {
+        margin-left: 10px;
+        background: #fff;
+        border-radius: 8px;
+        padding: 10px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        word-wrap: break-word; /* Uzun kelimeler için sarma */
+        overflow-wrap: break-word;
+    }
+
+    /* Çocuk yorum düzeni */
+    .child-comment {
+        margin-left: 40px;
+        border-left: 2px solid #ddd;
+        padding-left: 15px;
+    }
+
+    .post-comments {
+        display: none; /* Başlangıçta gizli */
+        transition: all 0.3s ease-in-out; /* Geçiş animasyonu */
+    }
+
+    .reply-input {
+        display: none; /* Başlangıçta gizli */
+        flex-direction: column; /* Dikey hizalama */
+        margin-top: 10px;
+    }
+
+        .reply-input input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+            font-size: 14px;
+        }
+
+        .reply-input button {
+            padding: 10px 20px;
+            background-color: #007bff; /* Mavi ton */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+            .reply-input button:hover {
+                background-color: #0056b3; /* Daha koyu mavi */
+            }
+
+    /* Yanıt Butonu */
+    .reply-toggle {
+        color: #007bff;
+        cursor: pointer;
+        font-size: 14px;
+        margin-right: 10px;
+        text-decoration: none;
+        transition: color 0.3s ease-in-out;
+    }
+
+        .reply-toggle:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+
+    /* Main Stories Slider */
+    .main-stories-slider {
+        margin-bottom: 30px;
+        padding: 15px;
+        background: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .stories-row {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    /* Story Container */
+    .story-container {
+        flex: 0 0 30%;
+        max-width: 30%;
+        background: #f9f9f9;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        text-align: center;
+    }
+
+    /* Story Media */
+    .story-media {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+    }
+
+    /* User Info */
+    .story-user-info {
+        padding: 10px 0;
+        background: #fff;
+    }
+
+        .story-user-info img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 5px;
+        }
+
+        .story-user-info p {
+            font-size: 14px;
+            color: #333;
+            margin: 0;
+        }
+
+    /* Slider Buttons */
+    .main-control .carousel-control-prev-icon,
+    .main-control .carousel-control-next-icon,
+    .story-control .carousel-control-prev-icon,
+    .story-control .carousel-control-next-icon {
+        background-color: rgba(0, 0, 0, 0.5);
+        border-radius: 50%;
+    }
+
+    .main-control {
+        width: 30px;
+        height: 30px;
+    }
+
+    .story-control {
+        width: 20px;
+        height: 20px;
+    }
+
+    /* Slider Row Overflow */
+    .carousel-inner {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .story-container .carousel-inner {
+        height: 150px;
+    }
+
+    .story-container .carousel-control-prev,
+    .story-container .carousel-control-next {
+        top: 50%;
+        transform: translateY(-50%);
+        width: 20px;
+        height: 20px;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .slider {
+        width: 90%;
+        max-width: 1200px;
+        background-color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .slides {
+        display: flex;
+        transition: transform 0.5s ease-in-out;
+    }
+
+    .profile-container {
+        width: 30%;
+        margin: 0 5px;
+        background-color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        text-align: center;
+    }
+
+    .profile-header {
+        padding: 10px;
+        background-color: #007bff;
+        color: white;
+    }
+
+        .profile-header img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+        }
+
+        .profile-header h2 {
+            margin: 0;
+            font-size: 14px;
+        }
+
+    .media-slider {
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        height: 200px;
+    }
+
+    .media-slides {
+        display: flex;
+        transition: transform 0.5s ease-in-out;
+    }
+
+    .media-slide {
+        min-width: 100%;
+        height: 200px;
+    }
+
+        .media-slide img, .media-slide video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .controls {
+        position: absolute;
+        top: 50%;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        transform: translateY(-50%);
+    }
+
+    .control {
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+    }
+
+        .control:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
 </style>
+
 <div id="content-page" class="content-page">
     <div class="container">
         <div class="row">
@@ -23,6 +350,45 @@
                     <button type="submit" class="btn btn-primary d-block w-100 mt-3">Post</button>
                 </form>
                 <div>
+
+                    <div class="slider">
+                        <div class="slides">
+                            @foreach (var story in Model.Stories)
+                            {
+                                <div class="profile-container">
+                                    <div class="profile-header">
+                                        <img src="~/assets/images/badges/01.png" alt="Profile Picture">
+                                        <h2>1</h2>
+                                    </div>
+                                    <div class="media-slider">
+                                        <div class="media-slides">
+                                            @foreach (var media in story.StoryImages.Concat(story.StoryVideos))
+                                            {
+                                                <div class="media-slide">
+                                                    @if (media.EndsWith(".mp4"))
+                                                    {
+                                                        <video controls>
+                                                            <source src="@media" type="video/mp4">
+                                                            Your browser does not support the video tag.
+                                                        </video>
+                                                    }
+                                                    else
+                                                    {
+                                                        <img src="@media" alt="Story Image">
+                                                    }
+                                                </div>
+                                            }
+                                        </div>
+                                        <button class="control prev">❮</button>
+                                        <button class="control next">❯</button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <button class="control prev">❮</button>
+                        <button class="control next">❯</button>
+                    </div>
+
                     @foreach (var post in Model.Posts)
                     {
                         <div class="card_card-block_card-stretch_card-height">
@@ -125,7 +491,7 @@
                                                            data-bs-toggle="tooltip"
                                                            data-bs-placement="top"
                                                            title="Like">
-                                                            <img src="../assets/images/icon/01.png" class="img-fluid"/>
+                                                            <img src="../assets/images/icon/01.png" class="img-fluid" />
                                                         </a>
 
                                                     </div>
@@ -225,9 +591,9 @@
                             </div>
                         </div>
                     }
- 
+
                 </div>
-             
+
 
             </div>
             <div class="col-lg-4">
@@ -237,289 +603,213 @@
                             <h4 class="card-title">Stories</h4>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <ul class="media-story list-inline m-0 p-0">
-                            <li class="d-flex mb-3 align-items-center">
-                                <i class="ri-add-line"></i>
-                                <div class="stories-data ms-3">
-                                    <h5>Creat Your Story</h5>
-                                    <p class="mb-0">time to story</p>
+
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between">
+                                <div class="header-title">
+                                    <h4 class="card-title">Stories</h4>
                                 </div>
-                            </li>
-                            <li class="d-flex mb-3 align-items-center active">
-                                <img src="~/assets/images/page-img/s2.jpg" alt="story-img" class="rounded-circle img-fluid">
-                                <div class="stories-data ms-3">
-                                    <h5>Anna Mull</h5>
-                                    <p class="mb-0">1 hour ago</p>
-                                </div>
-                            </li>
-                            <li class="d-flex mb-3 align-items-center">
-                                <img src="~/assets/images/page-img/s3.jpg" alt="story-img" class="rounded-circle img-fluid">
-                                <div class="stories-data ms-3">
-                                    <h5>Ira Membrit</h5>
-                                    <p class="mb-0">4 hour ago</p>
-                                </div>
-                            </li>
-                            <li class="d-flex align-items-center">
-                                <img src="~/assets/images/page-img/s1.jpg" alt="story-img" class="rounded-circle img-fluid">
-                                <div class="stories-data ms-3">
-                                    <h5>Bob Frapples</h5>
-                                    <p class="mb-0">9 hour ago</p>
-                                </div>
-                            </li>
-                        </ul>
-                        <a href="#" class="btn btn-primary d-block mt-3">See All</a>
+                            </div>
+
+                            <div class="card-body">
+                                <form asp-controller="Story" asp-action="storyCreate" method="post" as enctype="multipart/form-data">
+                                    <div class="form-group mb-3">
+                                        <label for="IsPrivate">Private Story</label>
+                                        <select class="form-control" id="IsPrivate" name="IsPrivate">
+                                            <option value="false">Public</option>
+                                            <option value="true">Private</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label for="VideoUrls">Upload Videos</label>
+                                        <input type="file" class="form-control" id="VideoUrls" name="VideoUrls" accept="video/*" multiple>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary">Create Story</button>
+                                </form>
+
+                                <ul class="media-story list-inline m-0 p-0">
+                                    <li class="d-flex mb-3 align-items-center">
+                                        <i class="ri-add-line"></i>
+                                        <div class="stories-data ms-3">
+                                            <h5>Create Your Story</h5>
+                                            <p class="mb-0">Time to story</p>
+                                        </div>
+                                    </li>
+
+
+
+
+                                </ul>
+                                <a href="#" class="btn btn-primary d-block mt-3">See All</a>
+                            </div>
+                        </div>
+
                     </div>
+
                 </div>
 
             </div>
-         
+
         </div>
     </div>
 </div>
 
-<script>
-    function toggleReplyInput(element) {
-        const replyInput = element.closest('li').querySelector('.reply-input');
-        if (replyInput.style.display === 'none' || replyInput.style.display === '') {
-            replyInput.style.display = 'flex'; // Görünür hale getir
-        } else {
-            replyInput.style.display = 'none'; 
+@section Scripts {
+
+    <script>
+        function toggleReplyInput(element) {
+            const replyInput = element.closest('li').querySelector('.reply-input');
+            if (replyInput.style.display === 'none' || replyInput.style.display === '') {
+                replyInput.style.display = 'flex'; // Görünür hale getir
+            } else {
+                replyInput.style.display = 'none';
+            }
         }
-    }
-    function toggleComments(element) {
-        const commentList = element.closest('.comment-area').querySelector('.post-comments');
-        if (commentList.style.display === 'none' || commentList.style.display === '') {
-            commentList.style.display = 'block'; // Yorumları görünür yap
-        } else {
-            commentList.style.display = 'none'; 
+        function toggleComments(element) {
+            const commentList = element.closest('.comment-area').querySelector('.post-comments');
+            if (commentList.style.display === 'none' || commentList.style.display === '') {
+                commentList.style.display = 'block'; // Yorumları görünür yap
+            } else {
+                commentList.style.display = 'none';
+            }
         }
-    }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('.post-comments').forEach(commentList => {
-            commentList.style.display = 'none';
-        });
-    });
-
-
-    function postLike(element) {
-        const postId = element.getAttribute("data-post-id");
-
-        fetch(`/Like/PostLike?postId=${postId}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-Requested-With": "XMLHttpRequest",
-            },
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.success) {
-                    const likeCountElement = document.querySelector(`#like-count-${postId}`);
-                    if (likeCountElement) {
-                        likeCountElement.textContent = `${data.likeCount} likes`;
-                    }
-                }
-            })
-            .catch((error) => {
-                console.error("Bir hata oluştu:", error);
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.post-comments').forEach(commentList => {
+                commentList.style.display = 'none';
             });
-    }
+        });
 
 
+        function postLike(element) {
+            const postId = element.getAttribute("data-post-id");
 
-
-
-
-
-
-    const form = document.querySelector(".commentForm");
-
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        const postId = form.querySelector("input[name='PostId']").value;
-        const text = form.querySelector("input[name='Text']").value;
-
-        try {
-            const response = await fetch('/Post/PostComment', {
+            fetch(`/Like/PostLike?postId=${postId}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "X-Requested-With": "XMLHttpRequest",
                 },
-                body: JSON.stringify({ PostId: postId, Text: text }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        const likeCountElement = document.querySelector(`#like-count-${postId}`);
+                        if (likeCountElement) {
+                            likeCountElement.textContent = `${data.likeCount} likes`;
+                        }
+                    }
+                })
+                .catch((error) => {
+                    console.error("Bir hata oluştu:", error);
+                });
+        }
+
+
+
+
+
+
+
+
+        const forms = document.querySelectorAll(".commentForm");
+        const commentsAreas = document.querySelectorAll(".post-comments");
+
+
+        forms.forEach((form, i) => {
+            form.addEventListener("submit", async (e) => {
+                e.preventDefault();
+
+                const postId = form.querySelector("input[name='PostId']").value;
+                const text = form.querySelector("input[name='Text']").value;
+
+                try {
+                    const response = await fetch('/Post/PostComment', {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-Requested-With": "XMLHttpRequest",
+                        },
+                        body: JSON.stringify({ PostId: postId, Text: text }),
+                    });
+
+                    if (!response.ok) {
+                        console.error("Bir hata oluştu:", response.status);
+                        return;
+                    }
+
+                    const data = await response.text();
+                    console.log("Yorum başarıyla eklendi:", data.message);
+
+
+
+                    commentsAreas[i].innerHTML += data;
+
+
+                    // Formu temizle
+                    form.reset();
+
+
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                } catch (error) {
+                    console.error("Bir hata oluştu:", error);
+                }
             });
-
-            if (!response.ok) {
-                console.error("Bir hata oluştu:", response.status);
-                return;
-            }
-
-            const data = await response.json();
-            if (data.success) {
-                console.log("Yorum başarıyla eklendi:", data.message);
-
-                // Yorumları DOM'a ekleyin
-                const commentList = form.closest(".comment-area").querySelector(".post-comments");
-                const newComment = document.createElement("li");
-                newComment.innerHTML = `
-                    <div class="d-flex">
-                        <div class="user-img">
-                            <img src="/path/to/profile-photo.jpg" alt="userimg" style="width: 50px; height: 50px; object-fit: cover;">
-                        </div>
-                        <div class="comment-data-block">
-                            <h6>Kullanıcı Adı</h6>
-                            <p>${text}</p>
-                            <div class="d-flex flex-wrap align-items-center comment-activity">
-                                <a href="javascript:void(0);">Like</a>
-                                <span>Az önce</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                commentList.appendChild(newComment);
-
-                // Formu temizle
-                form.reset();
-            } else {
-                console.error("Yorum eklenemedi:", data.message);
-            }
-        } catch (error) {
-            console.error("Bir hata oluştu:", error);
-        }
-    });
+        })
 
 
-</script>
 
-<style>
-    /* Post Kartları */
-    .card_card-block_card-stretch_card-height {
-        background: #fff;
-        border-radius: 8px;
-        padding: 20px;
-        margin-bottom: 20px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        overflow: hidden; /* Kart dışına taşmayı engelle */
-    }
 
-        /* Uzun metni sarmalama */
-        .card_card-block_card-stretch_card-height p {
-            word-wrap: break-word; /* Uzun kelimelerin taşmasını önle */
-            overflow-wrap: break-word; /* Eski tarayıcılar için destek */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        const slides = document.querySelector('.slides');
+        const slide = document.querySelectorAll('.profile-container');
+        const prev = document.querySelector('.slider > .controls .prev');
+        const next = document.querySelector('.slider > .controls .next');
+
+        let index = 0;
+        const itemsPerView = 3;
+
+        function showSlide(index) {
+            slides.style.transform = `translateX(-${index * (100 / itemsPerView)}%)`;
         }
 
-    /* Görseller ve Videolar */
-    .user-post img,
-    .user-post video {
-        width: 100%;
-        border-radius: 8px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        margin-bottom: 0; /* Medya elementleri arasındaki boşluk */
-    }
+        prev.addEventListener('click', () => {
+            index = (index > 0) ? index - 1 : slide.length - itemsPerView;
+            showSlide(index);
+        });
 
-    /* Altındaki fazla boşluğu engelle */
-    .user-post {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 10px;
-        margin-top: 15px;
-        margin-bottom: 0; /* Alt boşluğu sıfırla */
-        padding-bottom: 0; /* Fazla içeriği engelle */
-    }
-
-    /* Kart içindeki medya ve metin düzeni */
-    .user-post-data {
-        margin-bottom: 10px;
-    }
-
-        .user-post-data p {
-            font-size: 14px;
-            color: #555;
-            margin-bottom: 5px; /* Fazla boşluğu azalt */
-        }
-
-    /* Genel margin ve padding ayarları */
-    .comment-area {
-        margin-top: 20px;
-        padding: 20px;
-        background: #f9f9f9;
-        border-radius: 8px;
-    }
-
-    .post-comments > li {
-        margin-bottom: 20px;
-        border-bottom: 1px solid #ddd;
-        padding-bottom: 15px;
-    }
-
-    /* Uzun metinli yorumlar için düzenleme */
-    .comment-data-block {
-        margin-left: 10px;
-        background: #fff;
-        border-radius: 8px;
-        padding: 10px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        word-wrap: break-word; /* Uzun kelimeler için sarma */
-        overflow-wrap: break-word;
-    }
-
-    /* Çocuk yorum düzeni */
-    .child-comment {
-        margin-left: 40px;
-        border-left: 2px solid #ddd;
-        padding-left: 15px;
-    }
-
-    .post-comments {
-        display: none; /* Başlangıçta gizli */
-        transition: all 0.3s ease-in-out; /* Geçiş animasyonu */
-    }
-    .reply-input {
-        display: none; /* Başlangıçta gizli */
-        flex-direction: column; /* Dikey hizalama */
-        margin-top: 10px;
-    }
-
-    .reply-input input[type="text"] {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-        font-size: 14px;
-    }
-
-    .reply-input button {
-        padding: 10px 20px;
-        background-color: #007bff; /* Mavi ton */
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        font-size: 14px;
-        cursor: pointer;
-        transition: background-color 0.3s ease-in-out;
-    }
-
-        .reply-input button:hover {
-            background-color: #0056b3; /* Daha koyu mavi */
-        }
-
-    /* Yanıt Butonu */
-    .reply-toggle {
-        color: #007bff;
-        cursor: pointer;
-        font-size: 14px;
-        margin-right: 10px;
-        text-decoration: none;
-        transition: color 0.3s ease-in-out;
-    }
-
-        .reply-toggle:hover {
-            color: #0056b3;
-            text-decoration: underline;
-        }
-</style>
+        next.addEventListener('click', () => {
+            index = (index < slide.length - itemsPerView) ? index + 1 : 0;
+            showSlide(index);
+        });
+    </script>
+}

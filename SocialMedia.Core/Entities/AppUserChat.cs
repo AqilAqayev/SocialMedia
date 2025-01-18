@@ -2,7 +2,7 @@
 
 namespace SocialMedia.Core.Entities;
 
-public class AppUserChat : BaseEntity
+public class AppUserChat : BaseAuditableEntity
 {
     public int ChatId { get; set; }
     public Chat Chat { get; set; } = null!;

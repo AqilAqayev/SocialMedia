@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocialMedia.DataAccess.Context;
 
@@ -11,9 +12,11 @@ using SocialMedia.DataAccess.Context;
 namespace SocialMedia.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250116113929_storyImages")]
+    partial class storyImages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -269,23 +272,6 @@ namespace SocialMedia.DataAccess.Migrations
                     b.Property<int>("ChatId")
                         .HasColumnType("int");
 
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedTime")
-                        .HasColumnType("datetime2");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AppUserId");
@@ -303,10 +289,6 @@ namespace SocialMedia.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("datetime2");
 
@@ -315,13 +297,6 @@ namespace SocialMedia.DataAccess.Migrations
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedTime")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -341,7 +316,6 @@ namespace SocialMedia.DataAccess.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedTime")
@@ -365,7 +339,6 @@ namespace SocialMedia.DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UpdatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedTime")
@@ -393,23 +366,6 @@ namespace SocialMedia.DataAccess.Migrations
                     b.Property<int>("CommentId")
                         .HasColumnType("int");
 
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -431,13 +387,6 @@ namespace SocialMedia.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("FollowerId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -446,18 +395,8 @@ namespace SocialMedia.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
-
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedTime")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -478,23 +417,6 @@ namespace SocialMedia.DataAccess.Migrations
 
                     b.Property<string>("ConnectionId")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -517,10 +439,6 @@ namespace SocialMedia.DataAccess.Migrations
                     b.Property<int>("ChatId")
                         .HasColumnType("int");
 
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("datetime2");
 
@@ -538,13 +456,6 @@ namespace SocialMedia.DataAccess.Migrations
                         .IsRequired()
                         .HasMaxLength(200000)
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedTime")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -569,27 +480,18 @@ namespace SocialMedia.DataAccess.Migrations
                     b.Property<int>("Count")
                         .HasColumnType("int");
 
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                    b.Property<bool>("IsDelete")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasMaxLength(200000)
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -610,30 +512,13 @@ namespace SocialMedia.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasMaxLength(50000)
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<int>("PostId")
                         .HasColumnType("int");
-
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedTime")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -650,25 +535,8 @@ namespace SocialMedia.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<int>("PostId")
                         .HasColumnType("int");
-
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -691,25 +559,8 @@ namespace SocialMedia.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<int>("PostId")
                         .HasColumnType("int");
-
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("VideoUrl")
                         .IsRequired()
@@ -731,26 +582,9 @@ namespace SocialMedia.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<string>("SenderId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -771,25 +605,11 @@ namespace SocialMedia.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsPrivate")
                         .HasColumnType("bit");
-
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -810,29 +630,12 @@ namespace SocialMedia.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<int>("StoryId")
                         .HasColumnType("int");
-
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedTime")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -849,25 +652,8 @@ namespace SocialMedia.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<int>("StoryId")
                         .HasColumnType("int");
-
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("VideoUrl")
                         .IsRequired()

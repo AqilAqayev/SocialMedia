@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using SocalMedia.Business.Dtos.StoryVideoDtos;
+using SocalMedia.Business.Dtos.StoryImageDtos;
 using SocalMedia.Business.Services.Abstractions;
 using SocalMedia.Business.Services.Implementations.Generic;
 using SocialMedia.Core.Entities;
@@ -7,9 +7,9 @@ using SocialMedia.DataAccess.Repositories.Abstraction;
 
 namespace SocalMedia.Business.Services.Implementations;
 
-public class StoryVideoService : CrudService<StoryVideo, CreateStoryVideoDto, UpdateStoryVideoDto, StoryVideoDto>, IStoryVideoService
+public class StoryImageService : CrudService<StoryImage, CreateStoryImageDto, UpdateStoryImageDto, StoryImageDto>, IStoryImageService
 {
-    public StoryVideoService(IStoryVideoRepository repository, IMapper mapper) : base(repository, mapper)
+    public StoryImageService(IStoryImageRepository repository, IMapper mapper) : base(repository, mapper)
     {
     }
 }

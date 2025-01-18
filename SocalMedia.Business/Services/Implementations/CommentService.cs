@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using SocalMedia.Business.Dtos;
 using SocalMedia.Business.Dtos.CommentDtos;
 using SocalMedia.Business.Services.Abstractions;
 using SocalMedia.Business.Services.Implementations.Generic;

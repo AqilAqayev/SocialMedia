@@ -2,7 +2,7 @@
 
 namespace SocialMedia.Core.Entities;
 
-public class PostLike : BaseEntity
+public class PostLike : BaseAuditableEntity
 {
     public int PostId { get; set; }
     public string UserId { get; set; } = null!;

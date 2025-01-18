@@ -12,7 +12,7 @@ public interface IRepository<T> where T : BaseEntity
     IQueryable<T> GetFilter(Expression<Func<T, bool>> expression, Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null, bool ignoreQueryFilter = false, bool asNotTracking = true);
     Task CreateAsync(T entity);
     void Update(T entity);
-    void Delete(T entity);
+    Task Delete(T entity);
     Task<int> SaveChangesAsync();
     Task<bool> IsExistAsync(Expression<Func<T, bool>> expression);
     IQueryable<T> PaginateQuery(IQueryable<T> query, int limit, int page);

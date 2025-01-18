@@ -3,7 +3,6 @@ using SocialMedia.DataAccess.Repositories.Abstraction.Generic;
 
 namespace SocialMedia.DataAccess.Repositories.Abstraction;
 
-public interface IStoryRepository : IRepository<Story>
+public interface IStoryImageRepository : IRepository<StoryImage>
 {
-        Task<List<Story>> GetAllActiveStoriesAsync();
 }

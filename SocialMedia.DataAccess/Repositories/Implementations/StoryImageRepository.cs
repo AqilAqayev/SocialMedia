@@ -5,9 +5,9 @@ using SocialMedia.DataAccess.Repositories.Implementations.Generic;
 
 namespace SocialMedia.DataAccess.Repositories.Implementations;
 
-internal class StoryVideoRepository : Repository<StoryVideo>, IStoryVideoRepository
+internal class StoryImageRepository : Repository<StoryImage>, IStoryImageRepository
 {
-    public StoryVideoRepository(AppDbContext context) : base(context)
+    public StoryImageRepository(AppDbContext context) : base(context)
     {
     }
 }

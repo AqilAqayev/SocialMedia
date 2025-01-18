@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using SocalMedia.Business.Dtos.Generic;
+using SocalMedia.Business.Exceptions;
 using SocalMedia.Business.Services.Abstractions.Generic;
 using SocialMedia.Core.Entities.Base;
 using SocialMedia.DataAccess.Repositories.Abstraction.Generic;
@@ -34,9 +35,9 @@ where TDto : IDto
     public async Task<TDto> DeleteAsync(int id)
     {
         var entity = await _repository.GetAsync(e => e.Id == id);
-        if (entity == null) throw new KeyNotFoundException("Entity not found");
+        if (entity == null) throw new NotFoundException("Entity not found");
 
-         _repository.Delete(entity);
+        await _repository.Delete(entity);
         return _mapper.Map<TDto>(entity);
     }
 
@@ -53,7 +54,7 @@ where TDto : IDto
         var entities = await entitiesQuery.ToListAsync();
         var dto = _mapper.Map<List<TDto>>(entities);
         return dto;
-    } 
+    }
 
     public async Task<TDto?> GetAsync(int id)
     {
@@ -70,7 +71,7 @@ where TDto : IDto
     public async Task<TDto> UpdateAsync(TUpdateDto entity)
     {
         var entityEntry = _mapper.Map<TEntity>(entity);
-         _repository.Update(entityEntry);
+        _repository.Update(entityEntry);
         return _mapper.Map<TDto>(entity);
     }
 

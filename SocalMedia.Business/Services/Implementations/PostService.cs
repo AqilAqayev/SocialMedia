@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using SocalMedia.Business.Dtos;
 using SocalMedia.Business.Dtos.CommentDtos;
 using SocalMedia.Business.Dtos.PostDtos;
-using SocalMedia.Business.Dtos.PostImageDtos;
-using SocalMedia.Business.Dtos.PostVideoDtos;
 using SocalMedia.Business.Exceptions;
 using SocalMedia.Business.Services.Abstractions;
 using SocalMedia.Business.Services.Implementations.Generic;
@@ -26,29 +25,29 @@ public class PostService : CrudService<Post, CreatePostDto, UpdatePostDto, PostD
     private readonly ICloudinaryManager _cloudinaryManager;
     private readonly IPostLikeRepository _postLikeRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly AppDbContext _appDbContext;
     private readonly IMapper _mapper;
+    private readonly IAccountService _accountService;
     private readonly ICommentRepository _commentRepository;
 
-    public PostService(IPostRepository repository, IMapper mapper, IPostRepository postRepository, IRepository<PostImage> postImageRepository, IRepository<PostVideo> postVideoRepository, ICloudinaryManager cloudinaryManager, IHttpContextAccessor httpContextAccessor, AppDbContext appDbContext, IPostLikeRepository postLikeRepository, ICommentRepository commentRepository) : base(repository, mapper)
+    public PostService(IPostRepository repository, IMapper mapper, IPostRepository postRepository, IRepository<PostImage> postImageRepository, IRepository<PostVideo> postVideoRepository, ICloudinaryManager cloudinaryManager, IHttpContextAccessor httpContextAccessor, AppDbContext appDbContext, IPostLikeRepository postLikeRepository, ICommentRepository commentRepository, IAccountService accountService) : base(repository, mapper)
     {
         _postRepository = postRepository;
         _postImageRepository = postImageRepository;
         _postVideoRepository = postVideoRepository;
         _cloudinaryManager = cloudinaryManager;
         _httpContextAccessor = httpContextAccessor;
-        _appDbContext = appDbContext;
         _mapper = mapper;
         _postLikeRepository = postLikeRepository;
         _commentRepository = commentRepository;
+        _accountService = accountService;
     }
     public async Task<List<PostDto>> GetAllPostAsync(Expression<Func<Post, bool>>? predicate)
     {
-        var entity = await _appDbContext.Posts
+        var entity = await _postRepository.GetAll()
         .Include(p => p.PostImages)
         .Include(p => p.PostVideos)
         .Include(p => p.Comments).ThenInclude(c => c.User)
-        .Include(p=>p.User)
+        .Include(p => p.User)
         .Where(predicate)
         .ToListAsync();
 
@@ -99,12 +98,13 @@ public class PostService : CrudService<Post, CreatePostDto, UpdatePostDto, PostD
         return post.Id;
     }
 
+
     public async Task<bool> LikePostAsync(int postId)
     {
         string userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "";
         if (userId == null)
             return false;
-        var post = await _postRepository.GetAsync(postId,include:x=>x.Include(x=>x.PostLikes));
+        var post = await _postRepository.GetAsync(postId, include: x => x.Include(x => x.PostLikes));
 
         if (post == null)
             return false;
@@ -113,7 +113,7 @@ public class PostService : CrudService<Post, CreatePostDto, UpdatePostDto, PostD
 
         if (existingLike != null)
         {
-            _postLikeRepository.Delete(existingLike);
+            await _postLikeRepository.Delete(existingLike);
             post.Count--;
 
             _postRepository.Update(post);
@@ -136,9 +136,9 @@ public class PostService : CrudService<Post, CreatePostDto, UpdatePostDto, PostD
 
         _postRepository.Update(post);
         await _postRepository.SaveChangesAsync();
-        
 
-      
+
+
 
         return true;
     }
@@ -157,10 +157,12 @@ public class PostService : CrudService<Post, CreatePostDto, UpdatePostDto, PostD
         return post.PostLikes.Count;
     }
 
-    public async Task AddCommentAsync(CreateCommentDto dto, string userId)
+    public async Task<CommentDto> AddCommentAsync(CreateCommentDto dto, string userId)
     {
         var post = await _postRepository.GetPostWithCommentsAsync(dto.PostId);
         if (post == null) throw new NotFoundException("Post not found");
+
+        var user = await _accountService.FindUserByIdAsync(userId);
 
         Comment comment = new()
         {
@@ -176,6 +178,13 @@ public class PostService : CrudService<Post, CreatePostDto, UpdatePostDto, PostD
         await _commentRepository.CreateAsync(comment);
 
         await _postRepository.SaveChangesAsync();
+
+
+        var newDto = _mapper.Map<CommentDto>(comment);
+        newDto.UserName = user.UserName;
+        newDto.ProfilePhotoUrl = user.ProfilePhotoUrl;
+
+        return newDto;
     }
 
     public async Task AddReplyAsync(CommentReplyDto dto, string userId)

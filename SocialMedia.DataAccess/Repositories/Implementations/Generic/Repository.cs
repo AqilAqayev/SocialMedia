@@ -24,9 +24,11 @@ internal  class Repository<T> : IRepository<T> where T : BaseEntity
         await _context.SaveChangesAsync();
     }
 
-    public void Delete(T entity)
+    public async Task Delete(T entity)
     {
         _table.Remove(entity);
+        await _context.SaveChangesAsync();
+
     }
 
     public IQueryable<T> GetAll(Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null, bool ignoreQueryFilter = false, bool asNotTracking = true)

@@ -33,6 +33,7 @@ namespace SocialMedia.DataAccess.ServiceRegistrations
             services.AddScoped<ICommentRepository,CommentRepository>();
 
             services.AddScoped<IStoryRepository,StoryRepository>();
+            services.AddScoped<IStoryImageRepository,StoryImageRepository>();
             services.AddScoped<IStoryVideoRepository,StoryVideoRepository>();
 
             services.AddScoped<IPostRepository,PostRepository>();
@@ -48,6 +49,7 @@ namespace SocialMedia.DataAccess.ServiceRegistrations
             services.AddScoped<IPostLikeRepository,PostLikeRepository>();
 
             services.AddScoped<ISendNatficationRepository, SendNatficationRepository>();
+
 
         }
     }

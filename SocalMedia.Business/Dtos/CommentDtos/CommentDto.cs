@@ -1,7 +1,7 @@
 ﻿using SocalMedia.Business.Dtos.Generic;
 using SocialMedia.Core.Entities;
 
-namespace SocalMedia.Business.Dtos.CommentDtos;
+namespace SocalMedia.Business.Dtos;
 
 public class CommentDto : IDto
 {
