@@ -132,107 +132,134 @@
             text-decoration: underline;
         }
 
-    /* Main Stories Slider */
-    .main-stories-slider {
-        margin-bottom: 30px;
-        padding: 15px;
-        background: #ffffff;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /* Adjusting the Story Section Alignment */
+    .card {
+        margin: 0 auto; /* Centers the card horizontally */
+        border: none;
         border-radius: 15px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        background: #ffffff;
         overflow: hidden;
     }
 
-    .stories-row {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
+    /* Ensure Proper Width for the Story Section */
+    .col-lg-4 {
+        max-width: 100%; /* Ensures it doesn't shrink */
+        flex: 0 0 auto; /* Prevent it from collapsing */
+        padding: 15px;
     }
 
-    /* Story Container */
-    .story-container {
-        flex: 0 0 30%;
-        max-width: 30%;
-        background: #f9f9f9;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-        text-align: center;
+    /* Card Header */
+    .card-header {
+        padding: 15px;
+        background-color: #f9f9f9;
+        border-bottom: 1px solid #ddd;
+        border-radius: 15px 15px 0 0;
     }
 
-    /* Story Media */
-    .story-media {
-        width: 100%;
-        height: 150px;
-        object-fit: cover;
-    }
-
-    /* User Info */
-    .story-user-info {
-        padding: 10px 0;
-        background: #fff;
-    }
-
-        .story-user-info img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 5px;
-        }
-
-        .story-user-info p {
-            font-size: 14px;
+        .card-header h4 {
+            font-size: 18px;
+            font-weight: 600;
             color: #333;
             margin: 0;
         }
 
-    /* Slider Buttons */
-    .main-control .carousel-control-prev-icon,
-    .main-control .carousel-control-next-icon,
-    .story-control .carousel-control-prev-icon,
-    .story-control .carousel-control-next-icon {
-        background-color: rgba(0, 0, 0, 0.5);
-        border-radius: 50%;
+    /* Card Body */
+    .card-body {
+        padding: 20px;
     }
 
-    .main-control {
-        width: 30px;
-        height: 30px;
+    /* Media Story List */
+    .media-story {
+        list-style: none;
+        margin: 0;
+        padding: 0;
     }
 
-    .story-control {
-        width: 20px;
-        height: 20px;
+        .media-story li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+            .media-story li i {
+                font-size: 24px;
+                color: #007bff;
+                margin-right: 10px;
+            }
+
+        .media-story .stories-data h5 {
+            font-size: 16px;
+            color: #333;
+            font-weight: 600;
+            margin: 0 0 5px;
+        }
+
+        .media-story .stories-data p {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+        }
+
+    /* Buttons */
+    .btn {
+        width: 100%;
+        margin-top: 15px;
+        font-size: 14px;
+        font-weight: 600;
     }
 
-    /* Slider Row Overflow */
-    .carousel-inner {
-        display: flex;
-        justify-content: space-between;
+    /* Form Adjustments */
+    .form-group label {
+        font-size: 14px;
+        font-weight: 500;
+        color: #555;
+        margin-bottom: 5px;
+        display: block;
     }
 
-    .story-container .carousel-inner {
-        height: 150px;
+    .form-group select,
+    .form-group input[type="file"] {
+        width: 100%;
+        padding: 10px;
+        font-size: 14px;
+        color: #555;
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        transition: border-color 0.3s ease-in-out;
     }
 
-    .story-container .carousel-control-prev,
-    .story-container .carousel-control-next {
-        top: 50%;
-        transform: translateY(-50%);
-        width: 20px;
-        height: 20px;
-    }
-
-
-
-
-
-
-
-
-
-
-
+        .form-group select:hover,
+        .form-group input[type="file"]:hover {
+            border-color: #007bff;
+        }
 
 </style>
 
@@ -257,7 +284,7 @@
                 </form>
                 <div>
 
-               
+
 
                     @foreach (var post in Model.Posts)
                     {
@@ -474,50 +501,25 @@
                         </div>
                     </div>
 
-                    <div class="col-lg-4">
-                        <div class="card">
-                            <div class="card-header d-flex justify-content-between">
-                                <div class="header-title">
-                                    <h4 class="card-title">Stories</h4>
-                                </div>
+                    <div class="card-body">
+                        <form asp-controller="Story" asp-action="storyCreate" method="post" as enctype="multipart/form-data">
+
+                            <div class="form-group mb-3">
+                                <label for="VideoUrls">Upload Videos</label>
+                                <input type="file" class="form-control" id="VideoUrls" name="VideoUrls" accept="video/*" multiple>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="VideoUrls">Upload Images</label>
+                                <input type="file" class="form-control" id="ImagesUrls" name="ImagesUrls" accept="image/*" multiple>
                             </div>
 
-                            <div class="card-body">
-                                <form asp-controller="Story" asp-action="storyCreate" method="post" as enctype="multipart/form-data">
-                                    <div class="form-group mb-3">
-                                        <label for="IsPrivate">Private Story</label>
-                                        <select class="form-control" id="IsPrivate" name="IsPrivate">
-                                            <option value="false">Public</option>
-                                            <option value="true">Private</option>
-                                        </select>
-                                    </div>
+                            <button type="submit" class="btn btn-primary">Create Story</button>
+                        </form>
 
-                                    <div class="form-group mb-3">
-                                        <label for="VideoUrls">Upload Videos</label>
-                                        <input type="file" class="form-control" id="VideoUrls" name="VideoUrls" accept="video/*" multiple>
-                                    </div>
-
-                                    <button type="submit" class="btn btn-primary">Create Story</button>
-                                </form>
-
-                                <ul class="media-story list-inline m-0 p-0">
-                                    <li class="d-flex mb-3 align-items-center">
-                                        <i class="ri-add-line"></i>
-                                        <div class="stories-data ms-3">
-                                            <h5>Create Your Story</h5>
-                                            <p class="mb-0">Time to story</p>
-                                        </div>
-                                    </li>
-
-
-
-
-                                </ul>
-                                <a href="#" class="btn btn-primary d-block mt-3">See All</a>
-                            </div>
-                        </div>
 
                     </div>
+
+
 
                 </div>
 
@@ -594,128 +596,126 @@
 
 
 
-        document.addEventListener("DOMContentLoaded", () => {
-            const commentForms = document.querySelectorAll(".commentForm");
-            const replyForms = document.querySelectorAll(".reply-input");
+        const forms = document.querySelectorAll(".commentForm");
+        const commentsAreas = document.querySelectorAll(".post-comments");
 
-            // Əsas şərh əlavə etmə
-            commentForms.forEach((form) => {
-                form.addEventListener("submit", async (e) => {
-                    e.preventDefault();
+        forms.forEach((form, i) => {
+            form.addEventListener("submit", async (e) => {
+                e.preventDefault();
 
-                    const postId1 = form.querySelector("input[name='PostId']").value;
-                    const text2 = form.querySelector("input[name='Text']").value;
+                const postId = form.querySelector("input[name='PostId']").value;
+                const text = form.querySelector("input[name='Text']").value;
 
-                    try {
-                        const response = await fetch('/Post/PostComment', {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                                "X-Requested-With": "XMLHttpRequest",
-                            },
-                            body: JSON.stringify({ PostId: postId1, Text: text2 }),
-                        });
+                try {
+                    const response = await fetch('/Post/PostComment', {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-Requested-With": "XMLHttpRequest",
+                        },
+                        body: JSON.stringify({ PostId: postId, Text: text }),
+                    });
 
-                        if (!response.ok) throw new Error("Şərh əlavə olunmadı!");
-
-                        const data = await response.text();
-
-                        // Şərhi siyahıya əlavə et
-                        const commentList = form.closest(".comment-area").querySelector(".post-comments");
-                        const newComment = document.createElement("li");
-                        newComment.innerHTML = data;
-                        commentList.prepend(newComment);
-
-                        // Şərh siyahısını göstər
-                        commentList.style.display = "block";
-
-                        // Formu təmizlə
-                        form.reset();
-
-                        Swal.fire({
-                            position: "center",
-                            icon: "success",
-                            showConfirmButton: false,
-                            timer: 1500,
-                        });
-                    } catch (error) {
-                        console.error(error);
+                    if (!response.ok) {
+                        console.error("Bir hata oluştu:", response.status);
+                        return;
                     }
-                });
-            });
 
-            // Reply (alt şərh) əlavə etmə
-            replyForms.forEach((form) => {
-                form.addEventListener("submit", async (e) => {
-                    e.preventDefault();
+                    const data = await response.text();
 
-                    const postId = form.querySelector("input[name='PostId']").value;
-                    const parentId = form.querySelector("input[name='ParentId']").value;
-                    const text = form.querySelector("input[name='Text']").value;
+                    // Yeni əsas şərhi əlavə et
+                    const commentList = commentsAreas[i];
+                    const newComment = document.createElement("li");
+                    newComment.innerHTML = data; // Serverdən gələn HTML
+                    commentList.prepend(newComment); // Əvvələ əlavə et
 
-                    try {
-                        const response = await fetch('/Post/ReplyComment', {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                                "X-Requested-With": "XMLHttpRequest",
-                            },
-                            body: JSON.stringify({ PostId: postId, ParentId: parentId, Text: text }),
-                        });
+                    // Formu təmizlə
+                    form.reset();
 
-                        if (!response.ok) throw new Error("Reply əlavə olunmadı!");
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
 
-                        const data = await response.text();
-
-                        // Yeni reply-i parent şərhə əlavə et
-                        const parentComment = form.closest("li");
-                        const childComments = parentComment.querySelector("ul") || document.createElement("ul");
-                        childComments.classList.add("child-comments");
-                        const newReply = document.createElement("li");
-                        newReply.classList.add("child-comment");
-                        newReply.innerHTML = data;
-
-                        childComments.appendChild(newReply);
-                        parentComment.appendChild(childComments);
-
-                        // Formu gizlət və təmizlə
-                        form.reset();
-                        form.style.display = "none";
-
-                        Swal.fire({
-                            position: "center",
-                            icon: "success",
-                            showConfirmButton: false,
-                            timer: 1500,
-                        });
-                    } catch (error) {
-                        console.error(error);
-                    }
-                });
+                } catch (error) {
+                    console.error("Bir hata oluştu:", error);
+                }
             });
         });
 
-        // Reply formunu göstər/gizlət
-        function toggleReplyInput(element) {
-            const replyForm = element.closest("li").querySelector(".reply-input");
-            if (replyForm.style.display === "none" || replyForm.style.display === "") {
-                replyForm.style.display = "flex";
-            } else {
-                replyForm.style.display = "none";
-            }
-        }
 
-        // Şərh siyahısını göstər/gizlət
-        function toggleComments(element) {
-            const commentList = element.closest(".comment-area").querySelector(".post-comments");
-            if (commentList.style.display === "none" || commentList.style.display === "") {
-                commentList.style.display = "block";
-            } else {
-                commentList.style.display = "none";
-            }
-        }
 
-       
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        const replyForms1 = document.querySelectorAll(".reply-input");
+        replyForms1.forEach((form) => {
+            form.addEventListener("submit", async (e) => {
+                e.preventDefault();
+
+                const postId1 = form.querySelector("input[name='PostId']").value;
+                const parentId2 = form.querySelector("input[name='ParentId']").value;
+                const text3 = form.querySelector("input[name='Text']").value;
+
+                try {
+                    const response = await fetch('/Post/ReplyComment', {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-Requested-With": "XMLHttpRequest",
+                        },
+                        body: JSON.stringify({ PostId: postId1, ParentId: parentId2, Text: text3 }),
+                    });
+
+                    if (!response.ok) {
+                        console.error("Bir hata oluştu:", response.status);
+                        return;
+                    }
+
+                    const data = await response.text();
+
+                    // Yeni şərhi əlavə edin
+                    const commentContainer = form.closest('li');
+                    const newChildComment = document.createElement('li');
+                    newChildComment.classList.add('child-comment'); // Boşluq təmin edən CSS sinfi əlavə edilir
+                    newChildComment.innerHTML = data;
+
+                    commentContainer.appendChild(newChildComment); // Yeni şərh əlavə edilir
+
+                    // Formu təmizlə və gizlə
+                    form.reset();
+                    form.style.display = 'none';
+
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+
+                } catch (error) {
+                    console.error("Bir hata oluştu:", error);
+                }
+            });
+        });
+
+
+
+
     </script>
-   
+
 }

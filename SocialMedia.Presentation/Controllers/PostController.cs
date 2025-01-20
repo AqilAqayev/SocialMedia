@@ -75,7 +75,7 @@ public class PostController : Controller
         var newDto = await _postService.AddReplyAsync(dto, userId);
 
         return PartialView("_ReplyCommentPartial", newDto);
-    }
+    }   
 
 
 }

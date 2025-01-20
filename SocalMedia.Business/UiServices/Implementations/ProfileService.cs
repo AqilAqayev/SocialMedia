@@ -139,6 +139,7 @@ internal class ProfileService : IProfileService
 
     public async Task BioCreate(string bio)
     {
+
         string userId = _http.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "";
 
         if (string.IsNullOrEmpty(userId))
@@ -146,7 +147,7 @@ internal class ProfileService : IProfileService
             throw new NotFoundException("User not found");
         }
 
-        AppUser user = await _userManager.FindByIdAsync(userId);
+        var user = await _userManager.FindByIdAsync(userId);
         if (user == null)
         {
             throw new NotFoundException("User not found");

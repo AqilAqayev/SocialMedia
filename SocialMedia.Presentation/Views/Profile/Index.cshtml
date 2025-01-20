@@ -146,7 +146,7 @@
                                                                                             </div>
                                                                                         </div>
                                                                                     </a>
-                                                                                    <a class="dropdown-item p-3" asp-controller="Post" asp-action="Delete" asp-route-id="@post.Id">
+                                                                                    <a class="dropdown-item p-3" href="#">
                                                                                         <div class="d-flex align-items-top">
                                                                                             <i class="ri-close-circle-line h4"></i>
                                                                                             <div class="data ms-2">
@@ -208,15 +208,21 @@
                                                                     <div class="d-flex align-items-center">
                                                                         <div class="like-data">
                                                                             <div class="dropdown">
-                                                                                <a asp-controller="Like" asp-action="PostLike" asp-route-postId="@post.Id" class="ms-2 me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Like">
-                                                                                    <img src="../assets/images/icon/01.png" class="img-fluid" alt="">
+                                                                                <a href="javascript:void(0);"
+                                                                                   onclick="postLike(this)"
+                                                                                   data-post-id="@post.Id"
+                                                                                   class="like-link"
+                                                                                   data-bs-toggle="tooltip"
+                                                                                   data-bs-placement="top"
+                                                                                   title="Like">
+                                                                                    <img src="../assets/images/icon/01.png" class="img-fluid" />
                                                                                 </a>
 
                                                                             </div>
                                                                         </div>
                                                                         <div class="total-like-block ms-2 me-3">
                                                                             <div class="dropdown">
-                                                                                <span class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
+                                                                                <span id="like-count-@post.Id" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
                                                                                     @post.Count Likes
                                                                                 </span>
                                                                                 <div class="dropdown-menu">
@@ -298,7 +304,7 @@
                                                             <form class="commentForm" asp-controller="Post" asp-action="PostComment" method="post">
                                                                 <input type="hidden" name="PostId" value="@post.Id" />
                                                                 <div class="form-group">
-                                                                    <input type="text" name="Text" class="form-control rounded" placeholder="Enter Your Comment" required />
+                                                                    <input type="text" name="Text" id="commentSubmit" class="form-control rounded" placeholder="Enter Your Comment" required />
                                                                 </div>
                                                                 <div class="form-group">
                                                                     <label for="Rating">Rating</label>
@@ -906,31 +912,196 @@
     </div>
 </div>
 
+@section Scripts {
 
-<script>
-    function toggleReplyInput(element) {
-        const replyInput = element.closest('li').querySelector('.reply-input');
-        if (replyInput.style.display === 'none' || replyInput.style.display === '') {
-            replyInput.style.display = 'flex'; // Görünür hale getir
-        } else {
-            replyInput.style.display = 'none'; // Gizle
+    <script>
+        function toggleReplyInput(element) {
+            const replyInput = element.closest('li').querySelector('.reply-input');
+            if (replyInput.style.display === 'none' || replyInput.style.display === '') {
+                replyInput.style.display = 'flex'; // Görünür hale getir
+            } else {
+                replyInput.style.display = 'none';
+            }
         }
-    }
-    function toggleComments(element) {
-        const commentList = element.closest('.comment-area').querySelector('.post-comments');
-        if (commentList.style.display === 'none' || commentList.style.display === '') {
-            commentList.style.display = 'block'; // Yorumları görünür yap
-        } else {
-            commentList.style.display = 'none'; // Yorumları gizle
+        function toggleComments(element) {
+            const commentList = element.closest('.comment-area').querySelector('.post-comments');
+            if (commentList.style.display === 'none' || commentList.style.display === '') {
+                commentList.style.display = 'block'; // Yorumları görünür yap
+            } else {
+                commentList.style.display = 'none';
+            }
         }
-    }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('.post-comments').forEach(commentList => {
-            commentList.style.display = 'none';
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.post-comments').forEach(commentList => {
+                commentList.style.display = 'none';
+            });
         });
-    });
-</script>
+
+
+        function postLike(element) {
+            const postId = element.getAttribute("data-post-id");
+
+            fetch(`/Like/PostLike?postId=${postId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        const likeCountElement = document.querySelector(`#like-count-${postId}`);
+                        if (likeCountElement) {
+                            // Mövcud like sayını dəyişdir
+                            const currentLikes = parseInt(likeCountElement.textContent) || 0;
+                            const newLikes = currentLikes + (data.isLiked ? 1 : -1);
+                            likeCountElement.textContent = `${newLikes} Likes`;
+                        }
+
+                        // İstifadəçinin like statusunu dəyişdir
+                        const likeImage = element.querySelector("img");
+                        if (data.isLiked) {
+                            likeImage.src = "../assets/images/icon/01.png"; // Bəyəndiyi hal
+                        } else {
+                            likeImage.src = "../assets/images/icon/01.png"; // Bəyənmədiyi hal
+                        }
+                    }
+                })
+                .catch((error) => {
+                    console.error("Bir hata oluştu:", error);
+                });
+        }
+
+
+
+
+
+
+        const forms = document.querySelectorAll(".commentForm");
+        const commentsAreas = document.querySelectorAll(".post-comments");
+
+        forms.forEach((form, i) => {
+            form.addEventListener("submit", async (e) => {
+                e.preventDefault();
+
+                const postId = form.querySelector("input[name='PostId']").value;
+                const text = form.querySelector("input[name='Text']").value;
+
+                try {
+                    const response = await fetch('/Post/PostComment', {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-Requested-With": "XMLHttpRequest",
+                        },
+                        body: JSON.stringify({ PostId: postId, Text: text }),
+                    });
+
+                    if (!response.ok) {
+                        console.error("Bir hata oluştu:", response.status);
+                        return;
+                    }
+
+                    const data = await response.text();
+
+                    // Yeni əsas şərhi əlavə et
+                    const commentList = commentsAreas[i];
+                    const newComment = document.createElement("li");
+                    newComment.innerHTML = data; // Serverdən gələn HTML
+                    commentList.prepend(newComment); // Əvvələ əlavə et
+
+                    // Formu təmizlə
+                    form.reset();
+
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+
+                } catch (error) {
+                    console.error("Bir hata oluştu:", error);
+                }
+            });
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        const replyForms1 = document.querySelectorAll(".reply-input");
+        replyForms1.forEach((form) => {
+            form.addEventListener("submit", async (e) => {
+                e.preventDefault();
+
+                const postId1 = form.querySelector("input[name='PostId']").value;
+                const parentId2 = form.querySelector("input[name='ParentId']").value;
+                const text3 = form.querySelector("input[name='Text']").value;
+
+                try {
+                    const response = await fetch('/Post/ReplyComment', {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-Requested-With": "XMLHttpRequest",
+                        },
+                        body: JSON.stringify({ PostId: postId1, ParentId: parentId2, Text: text3 }),
+                    });
+
+                    if (!response.ok) {
+                        console.error("Bir hata oluştu:", response.status);
+                        return;
+                    }
+
+                    const data = await response.text();
+
+                    // Yeni şərhi əlavə edin
+                    const commentContainer = form.closest('li');
+                    const newChildComment = document.createElement('li');
+                    newChildComment.classList.add('child-comment'); // Boşluq təmin edən CSS sinfi əlavə edilir
+                    newChildComment.innerHTML = data;
+
+                    commentContainer.appendChild(newChildComment); // Yeni şərh əlavə edilir
+
+                    // Formu təmizlə və gizlə
+                    form.reset();
+                    form.style.display = 'none';
+
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+
+                } catch (error) {
+                    console.error("Bir hata oluştu:", error);
+                }
+            });
+        });
+
+
+
+       
+    </script>
+   
+}
 
 <style>
     /* Post Kartları */

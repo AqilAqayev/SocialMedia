@@ -1,6 +1,6 @@
 ﻿@model CommentDto
-
-<li class="child-comment">
+<p>_CommentPartial.cshtml</p>
+<li>
     <div class="d-flex">
         <div class="user-img">
             <img src="@Model.ProfilePhotoUrl" alt="userimg" style="width: 50px; height: 50px; object-fit: cover;">
@@ -9,10 +9,40 @@
             <h6>@Model.UserName</h6>
             <p>@Model.Text</p>
             <div class="d-flex flex-wrap align-items-center comment-activity">
+                <a href="javascript:void(0);" class="reply-toggle" onclick="toggleReplyInput(this);">Reply</a>
                 <a href="javascript:void();">Like</a>
-                <a href="javascript:void();">Reply</a>
+                <a href="javascript:void();">Translate</a>
                 <span>@Model.CreatedTime</span>
             </div>
         </div>
     </div>
-</li>
+
+    <!-- Reply Input -->
+    <form class="reply-input" asp-controller="Post" asp-action="ReplyComment" method="post" style="display: none;">
+        <input type="hidden" name="PostId" value="@Model.Id" />
+        <input type="hidden" name="ParentId" value="@Model.Id" />
+        <input type="text" name="Text" placeholder="Reply to this comment" required />
+        <button type="submit">Reply</button>
+    </form>
+
+    <!-- Child Comments -->
+    @foreach (var child in Model.Children)
+    {
+    <li class="child-comment">
+        <div class="d-flex">
+            <div class="user-img">
+                <img src="@Model.ProfilePhotoUrl" alt="userimg" style="width: 50px; height: 50px; object-fit: cover;">
+            </div>
+            <div class="comment-data-block">
+                <h6>@child.UserName</h6>
+                <p>@child.Text</p>
+                <div class="d-flex flex-wrap align-items-center comment-activity">
+                    <a href="javascript:void();">Like</a>
+                    <a href="javascript:void();">Reply</a>
+                    <span>@child.CreatedTime</span>
+                </div>
+            </div>
+        </div>
+    </li>
+    }
+                                            </li>

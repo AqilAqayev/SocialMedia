@@ -1,0 +1,87 @@
+﻿@using SocalMedia.Business.Dtos.AdminDtos
+@model List<UserDto>
+
+
+<div class="container-fluid">
+    <div class="page-inner">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+            <div>
+                <h3 class="fw-bold mb-3">Dashboard</h3>
+                <h6 class="op-7 mb-2">Free Bootstrap 5 Admin Dashboard</h6>
+            </div>
+            <div class="ms-md-auto py-2 py-md-0">
+                <a href="#" class="btn btn-label-info btn-round me-2">Manage</a>
+                <a href="#" class="btn btn-primary btn-round">Add Customer</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-round">
+                    <div class="card-header">
+                        <div class="card-head-row card-tools-still-right">
+                            <div class="card-title">User List</div>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table align-items-center mb-0 w-100">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th class="text-end">Email</th>
+                                        <th class="text-end">Phone Number</th>
+                                        <th class="text-end">Isdisable</th>
+                                        <th class="text-end">IsEmailConfirmed</th>
+                                        <th class="text-end">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var user in Model)
+                                    {
+                                        <tr>
+                                            <th>@user.UserName</th>
+                                            <td class="text-end">@user.Email</td>
+                                            <td class="text-end">@user.PhoneNumber</td>
+                                            <td class="text-end">@user.IsDisabled</td>
+                                            <td class="text-end">@user.IsEmailConfirmed</td>
+                                            <td class="text-end">
+                                                <a  asp-controller="Dashboard" asp-action="update" asp-route-id="@user.Id" class="btn btn-success btn-sm">Update</a>
+                                            </td>
+                                            
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+  /*   th, td {
+        padding: 10px 8px;
+        text-align: left; 
+    }
+
+        th.text-end, td.text-end {
+            text-align: right;
+        }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        margin: 0; 
+    } */
+
+    .table {
+        width: 100%;
+        margin: 0; 
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+
+</style>

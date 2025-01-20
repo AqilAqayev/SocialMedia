@@ -15,7 +15,7 @@ public class DbContextInitalizer
     private readonly IConfiguration _configuration;
     private readonly AppUser _admin;
 
-    public DbContextInitalizer(AppDbContext context, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, AppUser admin)
+    public DbContextInitalizer(AppDbContext context, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
     {
         _context = context;
         _userManager = userManager;
@@ -43,6 +43,7 @@ public class DbContextInitalizer
             await _roleManager.CreateAsync(identityRole);
         }
     }
+
 
     private async Task _createAdminAsync()
     {

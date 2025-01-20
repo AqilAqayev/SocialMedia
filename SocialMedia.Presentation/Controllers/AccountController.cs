@@ -74,7 +74,10 @@ public class AccountController : Controller
             return View();
         }
 
-        return RedirectToAction("Index", "Home");
+        var user = await _accountService.FindUserByEmailAsync(loginDto.Email);
+        var redirectUrl = await _accountService.GetRedirectUrlAfterLogin(user);
+
+        return Redirect(redirectUrl);
     }
 
     public async Task<IActionResult> Logout()

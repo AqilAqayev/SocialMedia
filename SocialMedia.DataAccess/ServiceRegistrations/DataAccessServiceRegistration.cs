@@ -18,7 +18,7 @@ namespace SocialMedia.DataAccess.ServiceRegistrations
         {
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("Default")));
 
-            //services.AddScoped<DbContextInitalizer>();
+            services.AddScoped<DbContextInitalizer>();
 
             AddRepositories(services);
 

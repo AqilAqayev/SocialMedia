@@ -16,9 +16,21 @@ namespace SocialMedia.Presentation.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var story = await _storyService.GetAllActiveStoriesAsync();
-            return View(story);
+            var userStories = await _storyService.GetAllUserStoriesAsync();
+
+            var allStories = userStories.Select(user => new
+            {
+                userName = user.UserName,
+                profilePicture = user.ProfilePhotoUrl,
+                stories = user.Stories.SelectMany(story => story.StoryImages.Select(image => new { url = image, type = "image" })
+                                     .Concat(story.StoryVideos.Select(video => new { url = video, type = "video" })))
+            }).ToList();
+
+            ViewBag.AllStoriesJson = Newtonsoft.Json.JsonConvert.SerializeObject(allStories);
+
+            return View(userStories);
         }
+
 
 
         [HttpPost]

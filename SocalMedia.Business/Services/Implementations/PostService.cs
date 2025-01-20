@@ -47,8 +47,8 @@ public class PostService : CrudService<Post, CreatePostDto, UpdatePostDto, PostD
         var entity = await _postRepository.GetAll()
         .Include(p => p.PostImages)
         .Include(p => p.PostVideos)
-        .Include(p => p.Comments.OrderByDescending(c => c.CreatedTime)) // Əsas şərhləri tərs sırala
-            .ThenInclude(c => c.Children.OrderByDescending(c => c.CreatedTime)) // Cavabları da tərs sırala
+        .Include(p => p.Comments.OrderByDescending(c => c.CreatedTime)) 
+            .ThenInclude(c => c.Children.OrderByDescending(c => c.CreatedTime)) 
         .Include(p => p.Comments)
             .ThenInclude(c => c.User)
         .Include(p => p.User)

@@ -5,9 +5,9 @@ using SocalMedia.Business.Services.Abstractions;
 using SocalMedia.Business.Services.Implementations.Generic;
 using SocalMedia.Business.UiServices.Abstractions;
 using SocialMedia.Core.Entities;
-using SocialMedia.DataAccess.Migrations;
 using SocialMedia.DataAccess.Repositories.Abstraction;
-using SocialMedia.DataAccess.Repositories.Abstraction.Generic;
+
+
 using System.Security.Claims;
 
 namespace SocalMedia.Business.Services.Implementations;
@@ -80,4 +80,31 @@ public class StoryService : CrudService<Story, CreateStoryDto, UpdateStoryDto, S
         var dto = _mapper.Map<List<StoryDto>>(activeStories);
         return dto;
     }
+
+
+    public async Task<List<UserStoriesDto>> GetAllUserStoriesAsync()
+    {
+        var activeStories = await _storyRepository.GetAllActiveStoriesAsync();
+
+        if (activeStories == null || !activeStories.Any())
+        {
+            return new List<UserStoriesDto>();
+        }
+
+        var groupedStories = activeStories
+            .GroupBy(s => s.UserId)
+            .Select(group => new UserStoriesDto
+            {
+                UserId = group.Key,
+                UserName = group.First().User?.UserName ?? "Unknown",
+                ProfilePhotoUrl = group.First().User?.ProfilePhotoUrl ?? "",
+                Stories = _mapper.Map<List<StoryDto>>(group.ToList())
+            })
+            .ToList();
+
+        return groupedStories;
+    }
+
+
+
 }

@@ -6,7 +6,6 @@ using SocalMedia.Business.Dtos.ProfileDtos;
 using SocalMedia.Business.Exceptions;
 using SocalMedia.Business.UiServices.Abstractions;
 using SocialMedia.Core.Entities;
-using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
 public class AccountService : IAccountService
@@ -24,6 +23,17 @@ public class AccountService : IAccountService
         _emailService = emailService;
         _cloudinaryManager = cloudinaryManager;
         _http = http;
+    }
+
+
+    public async Task<string> GetRedirectUrlAfterLogin(AppUser user)
+    {
+        if (await _userManager.IsInRoleAsync(user, "Admin"))
+        {
+            return "/Admin/Dashboard"; 
+        }
+
+        return "/Home/Index"; 
     }
 
     public async Task<AppUser> FindUser()

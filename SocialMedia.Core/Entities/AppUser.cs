@@ -15,7 +15,9 @@ namespace SocialMedia.Core.Entities
         public string? Biography { get; set; } 
         public bool IsActive { get; set; }
         public GenderType Gender { get; set; }
-        public bool IsPrivate { get; set; } = false;    
+        public bool IsPrivate { get; set; } = false;
+        public bool IsDisabled { get; set; } = false;
+
     }
 
 }

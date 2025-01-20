@@ -36,7 +36,7 @@ namespace SocalMedia.Business.UiServices.Implementations
 
         public async Task<HomeDto> GetHomeDto()
         {
-            string userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            string userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var posts = (await _postService.GetAllPostAsync(x => x.UserId != userId))
                .OrderByDescending(p => p.CreatedTime) 
                .ToList();

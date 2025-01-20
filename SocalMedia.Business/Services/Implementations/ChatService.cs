@@ -126,7 +126,7 @@ public class ChatService : CrudService<Chat, CreateChatDto, UpdateChatDto, ChatD
             return new ChatDto
             {
                 Id = chat.Id,
-                Name = chat.Name,
+                Name = otherUser?.UserName,
                 ProfileUrl = otherUser?.ProfilePhotoUrl,
                 UnreadMessagesCount = unreadMessagesCount
             };

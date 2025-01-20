@@ -192,6 +192,9 @@ namespace SocialMedia.DataAccess.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsDisabled")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsPrivate")
                         .HasColumnType("bit");
 

@@ -20,6 +20,7 @@ internal class StoryRepository : Repository<Story>, IStoryRepository
         var now = DateTime.UtcNow;
         var story =  _context.Set<Story>()
             .Where(story => story.CreatedTime.AddHours(24) > now).Include(x=>x.StoryVideos).Include(x=>x.StoryImages)
+            .Include(s=>s.User)
             .ToListAsync();
 
         return story;

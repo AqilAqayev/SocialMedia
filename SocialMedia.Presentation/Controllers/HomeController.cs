@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using SocalMedia.Business.Dtos;
 using SocalMedia.Business.Services.Abstractions;
 using SocalMedia.Business.UiServices.Abstractions;
 using SocialMedia.Core.Entities;
@@ -43,6 +45,26 @@ public class HomeController : Controller
         var users = await _homeService.SearchUsersAsync(query);
         return View(users);
     }
+
+
+    public IActionResult Error(string? json)
+    {
+        if (!string.IsNullOrEmpty(json))
+        {
+
+            string decodedJson = Uri.UnescapeDataString(json);
+
+            var dto = JsonConvert.DeserializeObject<ErrorDto>(decodedJson);
+            return View(dto);
+        }
+
+        return View(new ErrorDto
+        {
+            StatusCode = 404,
+            Message = "Error"
+        });
+    }
+
     [HttpGet]
     public async Task<IActionResult> GetMorePosts(int page = 1, int pageSize = 10)
     {

@@ -8,5 +8,6 @@ public interface IStoryService : ICrudService<Story, CreateStoryDto, UpdateStory
 {
     Task<int> CreatStoryAsync(CreateStoryDto createStoryDto);
     Task<List<StoryDto>> GetAllActiveStoriesAsync();
+    Task<List<UserStoriesDto>> GetAllUserStoriesAsync();
 
 }
