@@ -1,4 +1,4 @@
-﻿@using SocialMedia.Core.Entities
+﻿﻿@using SocialMedia.Core.Entities
 @using System.Security.Claims
 @{
     Layout = null;
@@ -145,18 +145,10 @@
 </head>
 <body>
     <div class="chat-container">
-        <div class="chat-list">
-            <ul>
-                <li>Chat 1</li>
-                <li>Chat 2</li>
-                <li>Chat 3</li>
-                <li>Chat 4</li>
-            </ul>
-        </div>
+
         <div class="chat-content">
             <div class="chat-header">
                 <span>Chat Adı</span>
-                <button>📞 Görüntü Zəngi</button>
             </div>
             <div class="chat-messages">
                 <ol class="messages-list">
@@ -181,7 +173,7 @@
                 </ol>
             </div>
             <div class="chat-input">
-                <form method="post" class="sendMessageForm" asp-action="SendMessage" asp-route-chatId="@Model.Id">
+                <form method="post" class="sendMessageForm" asp-action="SendMessage" data-chatId="@Model.Id">
                     <input class="messageInput" type="text" required name="text" placeholder="Say something" />
                     <button type="submit" class="send">Send</button>
                 </form>
@@ -189,39 +181,96 @@
         </div>
     </div>
     <script>
+
         const form = document.querySelector(".sendMessageForm");
         const messageInput = document.querySelector(".messageInput");
-        const chat = document.querySelector(".messages-list");
+        const chat = document.querySelector(".chat-messages");
+        chat.scrollTop = chat.scrollHeight;
+
 
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
 
-            const response = await fetch(`/Message/SendMessage?chatId=@Model.Id&text=${messageInput.value}`,
+            const response = await fetch(`/Message/SendMessage  `,
                 {
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'
                     },
                     method: "POST",
+                    body: JSON.stringify({ ChatId: @Model.Id, Text: messageInput.value })
+
                 });
+            const message = await response.json();
 
-            const data = await response.json();
+            const utcDateString = message.createdTime;
+            const date = new Date(utcDateString);
 
-            const li = ` <li class="message sent">
-                                            <div class="text">${data.text}</div>
-                                            <time>${data.createdTime}</time>
-                                        </li>`;
+            const hours = date.getUTCHours();
+            const minutes = date.getUTCMinutes().toString().padStart(2, "0");
+
+            const ampm = hours >= 12 ? "PM" : "AM";
+            const formattedHours = hours % 12 || 12;
+            const formattedTime = `${formattedHours}:${minutes} ${ampm}`;
+
+            const li = `
+
+                                      <li class="message sent">
+                                                        <div class="text">${message.text}</div>
+                                                        <time>${formattedTime}</time>
+                                                    </li>
+
+                            `
+
 
             chat.innerHTML += li;
+
+            chat.scrollTop = chat.scrollHeight;
 
             messageInput.value = "";
             messageInput.blur();
         })
 
 
-
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.7/signalr.min.js"></script>
-    <script src="~/assets/js/chat.js"></script>
+    <script>
+
+        const chat2 = document.querySelector(".chat-messages");
+
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chatHub")
+            .build();
+
+        connection.on("ReceiveMessage", function (message) {
+
+            const utcDateString = message.createdTime;
+            const date = new Date(utcDateString);
+
+            const hours = date.getUTCHours();
+            const minutes = date.getUTCMinutes().toString().padStart(2, "0");
+
+            const ampm = hours >= 12 ? "PM" : "AM";
+            const formattedHours = hours % 12 || 12;
+            const formattedTime = `${formattedHours}:${minutes} ${ampm}`;
+
+            const li = `
+
+                                                       <li class="message received">
+                                                        <div class="text">${message.text}</div>
+                                                        <time>${formattedTime}</time>
+                                                    </li>
+
+                                    `
+
+
+            chat2.innerHTML += li;
+
+            chat2.scrollTop = chat2.scrollHeight;
+
+        });
+
+        connection.start().catch(err => console.error(err));
+    </script>
 </body>
 </html>

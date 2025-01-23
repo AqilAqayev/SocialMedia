@@ -2,7 +2,6 @@
 using SocalMedia.Business.Services.Abstractions;
 
 namespace SocialMedia.Presentation.Controllers;
-
 public class LikeController : Controller
 {
     private readonly IPostService _postService;

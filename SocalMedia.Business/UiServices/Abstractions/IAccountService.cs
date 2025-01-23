@@ -7,6 +7,7 @@ using SocialMedia.Core.Entities;
 namespace SocalMedia.Business.UiServices.Abstractions;
 public interface IAccountService
 {
+    string GetId();
     Task<string> GetRedirectUrlAfterLogin(AppUser user);
     Task<AppUser> FindUser();
     Task<bool> UserHasPasswordAsync(AppUser user);

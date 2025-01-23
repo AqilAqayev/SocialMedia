@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using SocalMedia.Business.Dtos.ChatDtos;
 using SocalMedia.Business.Exceptions;
 using SocalMedia.Business.Hubs;
@@ -12,6 +13,8 @@ using SocalMedia.Business.StaticFiles;
 using SocalMedia.Business.UiServices.Abstractions;
 using SocialMedia.Core.Entities;
 using SocialMedia.DataAccess.Repositories.Abstraction;
+using SocialMedia.DataAccess.Repositories.Abstraction.Generic;
+using System.Security.Claims;
 
 namespace SocalMedia.Business.Services.Implementations;
 
@@ -28,7 +31,7 @@ public class ChatService : CrudService<Chat, CreateChatDto, UpdateChatDto, ChatD
     private readonly IMessageRepository _messageRepository;
 
 
-    public ChatService(IChatRepository repository, IMapper mapper, IFriendService friendService, IChatRepository chatRepository, UserManager<AppUser> userManager, IFollowRepository followRepository/*, IFollowService followService*/, IHttpContextAccessor http, IMessageService messageService, IHubContext<ChatHub> chatHub) : base(repository, mapper)
+    public ChatService(IChatRepository repository, IMapper mapper, IFriendService friendService, IChatRepository chatRepository, UserManager<AppUser> userManager, IFollowRepository followRepository/*, IFollowService followService*/, IHttpContextAccessor http, IMessageService messageService, IHubContext<ChatHub> chatHub, IMessageRepository messageRepository) : base(repository, mapper)
     {
         _friendService = friendService;
         _chatRepository = chatRepository;
@@ -38,10 +41,39 @@ public class ChatService : CrudService<Chat, CreateChatDto, UpdateChatDto, ChatD
         _http = http;
         _messageService = messageService;
         _chatHub = chatHub;
+        _messageRepository = messageRepository;
+    }
+
+    public async Task<Message> CreateMessage(string text, int chatId)
+    {
+        var chat = await GetChatIfExistsAsync(chatId);
+
+        var userId = _http.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user is null)
+            throw new NotFoundException("User not found");
+
+        Message message = new()
+        {
+            Text = text,
+            ChatId = chatId,
+            SenderId = userId,
+        };
+
+        message.Chats = null;
+
+        await _messageRepository.CreateAsync(message);
+        await _messageRepository.SaveChangesAsync();
+
+        return message;
     }
     public async Task DeleteChatIfNoMutualFollowAsync(string otherUserId)
     {
-        string userId = _http.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "";
+        if (otherUserId == null)
+        {
+            throw new NotFoundException();
+        }
+        string userId = _http.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
 
         bool isMutualFollow = await _followRepository.AnyAsync(f =>
             (f.FollowerId == userId && f.FollowingId == otherUserId) ||
@@ -54,7 +86,7 @@ public class ChatService : CrudService<Chat, CreateChatDto, UpdateChatDto, ChatD
                                           c.AppUserChats.Any(ac => ac.AppUserId == otherUserId));
             if (chat != null)
             {
-               await _chatRepository.Delete(chat);
+                await _chatRepository.Delete(chat);
                 await _chatRepository.SaveChangesAsync();
             }
         }
@@ -67,7 +99,7 @@ public class ChatService : CrudService<Chat, CreateChatDto, UpdateChatDto, ChatD
             throw new NotFoundException("Friend not found");
         }
 
-        string userId = _http.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "";
+        string userId = _http.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
 
         var user = await _userManager.FindByIdAsync(userId);
         var friend = await _userManager.FindByIdAsync(friendId);
@@ -161,29 +193,25 @@ public class ChatService : CrudService<Chat, CreateChatDto, UpdateChatDto, ChatD
             .SendAsync("MessagesMarkedAsRead", chatId, userId);
     }
 
-    public async Task<Chat?> GetChatIfExistsAsync(int id, string userId)
+    public async Task<Chat?> GetChatIfExistsAsync(int id)
     {
-        return await _chatRepository.GetChatByIdAndUserIdAsync(id, userId);
-
+        var userId = _http.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "";
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user is null)
+            throw new NotFoundException();
+        var chat = await _chatRepository.GetChatByIdAndUserIdAsync(id, userId);
+        if (chat is null)
+        {
+            throw new NotFoundException();
+        }
+        return chat;
     }
-    public async Task<Message?> SendMessageAsync(int chatId, string text, string userId)
+    public async Task<Message?> SendMessageAsync(int chatId, string text, string userId, Message message)
     {
         var chat = await _chatRepository.GetChatByIdAndUserIdAsync(chatId, userId);
 
-        if (chat is null)
-            return null;
+       
 
-        var message = new Message
-        {
-            Text = text,
-            ChatId = chatId,
-            SenderId = userId,
-        };
-
-        await _messageRepository.CreateAsync(message);
-        await _messageRepository.SaveChangesAsync();
-
-        message.Chat = null;
 
         foreach (var userChat in chat.AppUserChats.Where(x => x.AppUserId != userId))
         {

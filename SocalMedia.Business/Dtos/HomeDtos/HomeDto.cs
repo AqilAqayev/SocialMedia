@@ -7,7 +7,7 @@ namespace SocalMedia.Business.Dtos.HomeDtos;
 public class HomeDto : IDto
 {
     public List<PostDto> Posts { get; set; } = [];
-    public List<StoryDto> Stories { get; set; } = [];
+    public List<UserStoriesDto> Stories { get; set; } = [];
     public CreatePostDto? CreatePostDto { get; set; }
     public CreateStoryDto? CreateStoryDto { get; set; }
     public CreateCommentDto? createCommentDto { get; set; }

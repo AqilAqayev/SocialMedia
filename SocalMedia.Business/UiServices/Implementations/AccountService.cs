@@ -135,6 +135,16 @@ public class AccountService : IAccountService
     public async Task<ExternalLoginInfo> GetExternalLoginInfoAsync() =>
         await _signInManager.GetExternalLoginInfoAsync();
 
+    public  string GetId()
+    {
+        var userid = _http.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if(userid is null)
+        {
+            throw new NotFoundException("user not found");
+        }
+        return userid;
+
+    }
     public async Task<AppUser> HandleGoogleLoginAsync(ExternalLoginInfo info)
     {
         var email = info.Principal.FindFirstValue(ClaimTypes.Email);

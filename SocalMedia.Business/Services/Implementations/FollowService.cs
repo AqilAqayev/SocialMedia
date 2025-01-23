@@ -7,7 +7,6 @@ using SocalMedia.Business.Exceptions;
 using SocalMedia.Business.Services.Abstractions;
 using SocalMedia.Business.Services.Implementations.Generic;
 using SocialMedia.Core.Entities;
-using SocialMedia.Core.Entities.Base;
 using SocialMedia.DataAccess.Repositories.Abstraction;
 
 namespace SocalMedia.Business.Services.Implementations;
@@ -21,11 +20,10 @@ public class FollowService : CrudService<Follow, CreateFollowDto, UpdateFollowDt
     private readonly IMapper _mapper;
 
 
-    public FollowService(IFollowRepository repository, IMapper mapper, IHttpContextAccessor http, IFollowRepository followRepository, UserManager<AppUser> userManager,ISendNatficationService sendNatficationService)
-        : base(repository, mapper)
+    public FollowService(IFollowRepository repository, IMapper mapper, IHttpContextAccessor http, UserManager<AppUser> userManager,ISendNatficationService sendNatficationService) : base(repository, mapper)
     {
         _http = http;
-        _followRepository = followRepository;
+        _followRepository = repository;
         _userManager = userManager;
         _mapper = mapper;
         _sendNatficationService = sendNatficationService;
@@ -53,7 +51,7 @@ public class FollowService : CrudService<Follow, CreateFollowDto, UpdateFollowDt
         }
 
         bool isAlreadyFollowing = await _followRepository.AnyAsync(f =>
-            f.FollowerId == userId && f.FollowingId == followedId);
+            f.FollowerId == userId && f.FollowingId == followedId && f.IsDeleted == false);
 
         if (isAlreadyFollowing)
         {
@@ -120,7 +118,6 @@ public class FollowService : CrudService<Follow, CreateFollowDto, UpdateFollowDt
         if (foll != null)
         {
             await _followRepository.Delete(foll);
-            await _followRepository.SaveChangesAsync();
         }
     }
 
@@ -162,7 +159,7 @@ public class FollowService : CrudService<Follow, CreateFollowDto, UpdateFollowDt
         }
 
         var followRequest = await _followRepository.GetAsync(f =>
-            f.FollowerId == receiverId && f.FollowingId == userId && !f.Status);
+            f.FollowerId == receiverId && f.FollowingId == userId && !f.Status && f.IsDeleted== false);
 
         if (followRequest == null)
         {

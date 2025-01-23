@@ -25,9 +25,10 @@ internal class FriendService : IFriendService
         }
 
         return await _friendRepository.AnyAsync(f =>
-          f.FollowingId == userId &&
-          f.FollowerId == followerId &&
-          f.Status == true);
+            f.FollowingId == userId &&
+            f.FollowerId == followerId &&
+            f.Status == true &&
+            f.IsDeleted == false); 
     }
 
     public async Task<bool> IFollowerAsync(string userId, string followerId)
@@ -38,7 +39,9 @@ internal class FriendService : IFriendService
         }
 
         return await _friendRepository.AnyAsync(f =>
-          f.FollowingId == userId &&
-          f.FollowerId == followerId);
+            f.FollowingId == userId &&
+            f.FollowerId == followerId &&
+            f.IsDeleted == false); 
     }
+
 }

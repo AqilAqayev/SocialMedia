@@ -39,13 +39,13 @@ public class HeaderViewComponent : ViewComponent
         }
 
         var userChats = await _chatService.GetUserChatsAsync(userId);
-        var followRequest = await _sendNatficationService.GetAllAsync( x => x.UserId == userId,
+        var followRequest = await _sendNatficationService.GetAllAsync( x => x.UserId == userId && x.IsDeleted== false,
         include: query => query.Include(n => n.User));
 
         var headerDto = new HeaderDto
         {
             Chats = userChats,
-
+            
             Username = user.UserName,
             ProfileUrl = user.ProfilePhotoUrl,
             SendNatfication = followRequest,

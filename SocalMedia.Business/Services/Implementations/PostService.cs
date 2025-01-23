@@ -112,20 +112,17 @@ public class PostService : CrudService<Post, CreatePostDto, UpdatePostDto, PostD
         if (post == null)
             return false;
 
-        // Mövcud like yoxlanışı, həmçinin `IsDeleted` dəyəri
         var existingLike = post.PostLikes.FirstOrDefault(like => like.UserId == userId && like.PostId == postId);
 
         if (existingLike != null)
         {
             if (!existingLike.IsDeleted)
             {
-                // Mövcud və aktiv bəyənməni sil (soft delete)
                 existingLike.IsDeleted = true;
-                post.Count = Math.Max(post.Count - 1, 0); // Mənfi dəyərin qarşısını al
+                post.Count = Math.Max(post.Count - 1, 0); 
             }
             else
             {
-                // Mövcud, lakin silinmiş bəyənməni bərpa et
                 existingLike.IsDeleted = false;
                 post.Count++;
             }
@@ -136,10 +133,9 @@ public class PostService : CrudService<Post, CreatePostDto, UpdatePostDto, PostD
             await _postLikeRepository.SaveChangesAsync();
             await _postRepository.SaveChangesAsync();
 
-            return !existingLike.IsDeleted; // Əgər aktivdirsə true, silinibsə false qaytar
+            return !existingLike.IsDeleted; 
         }
 
-        // Yeni like əlavə olunur
         var postLike = new PostLike
         {
             PostId = postId,

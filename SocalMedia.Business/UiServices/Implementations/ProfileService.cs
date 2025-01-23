@@ -95,15 +95,15 @@ internal class ProfileService : IProfileService
 
         bool isAcceptedFollower = true;
 
-        var posts = await _postService.GetAllPostAsync(x => x.UserId == userId);
-
-        var postDto = _mapper.Map<List<PostDto>>(posts);
-      
+  
         if (user.IsPrivate)
         {
             isAcceptedFollower = await _friendService.IsAcceptedFollowerAsync(userId, currentUserId);
         }
+
         bool btn = await _friendService.IFollowerAsync(userId, currentUserId);
+
+
         if (user.IsPrivate && !isAcceptedFollower)
         {
             return new ProfileOther
@@ -111,15 +111,16 @@ internal class ProfileService : IProfileService
                 userId = user.Id,
                 UserName = user.UserName,
                 ProfilePhoto = user.ProfilePhotoUrl,
-                PostCount = posts.Count,
+                PostCount = 0,
                 FollowCount = user.FollowerCount,
                 FollowingCount = user.FollowingCount,
-                Status = false ,
-                FollowBtn= btn
-               
+                Status = false,
+                FollowBtn = btn
             };
         }
 
+        var posts = await _postService.GetAllPostAsync(x => x.UserId == userId);
+        var postDto = _mapper.Map<List<PostDto>>(posts);
 
         return new ProfileOther
         {

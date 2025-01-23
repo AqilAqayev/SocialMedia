@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SocialMedia.Core.Entities;
 using System.Reflection;
 using SocialMedia.DataAccess.Interceptors;
+using System.Runtime.InteropServices;
 namespace SocialMedia.DataAccess.Context;
 public class AppDbContext : IdentityDbContext<AppUser>
 {
@@ -38,7 +39,20 @@ public class AppDbContext : IdentityDbContext<AppUser>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
         modelBuilder.Entity<Post>().HasQueryFilter(x => !x.IsDeleted);
+        modelBuilder.Entity<SendNatfication>().HasQueryFilter(x => !x.IsDeleted);
+        modelBuilder.Entity<Comment>().HasQueryFilter(x => !x.IsDeleted);
+        modelBuilder.Entity<Chat>().HasQueryFilter(x => !x.IsDeleted);
+        modelBuilder.Entity<CommentLike>().HasQueryFilter(x => !x.IsDeleted);
+        modelBuilder.Entity<Message>().HasQueryFilter(x => !x.IsDeleted);
+        modelBuilder.Entity<PostImage>().HasQueryFilter(x => !x.IsDeleted);
+        modelBuilder.Entity<PostLike>().HasQueryFilter(x => !x.IsDeleted);
+        modelBuilder.Entity<PostVideo>().HasQueryFilter(x => !x.IsDeleted);
+        modelBuilder.Entity<Story>().HasQueryFilter(x => !x.IsDeleted);
+        modelBuilder.Entity<StoryVideo>().HasQueryFilter(x => !x.IsDeleted);
+        modelBuilder.Entity<StoryImage>().HasQueryFilter(x => !x.IsDeleted);
+        modelBuilder.Entity<Follow>().HasQueryFilter(x => !x.IsDeleted);
 
 
 

@@ -23,7 +23,7 @@ internal  class Repository<T> : IRepository<T> where T : BaseEntity
         await _table.AddAsync(entity);
         await _context.SaveChangesAsync();
     }
-
+            
     public async Task Delete(T entity)
     {
         _table.Remove(entity);

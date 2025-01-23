@@ -1,4 +1,4 @@
-﻿    using SocalMedia.Business.Dtos.Generic;
+﻿using SocalMedia.Business.Dtos.Generic;
 
 namespace SocalMedia.Business.Dtos.MessageDtos;
 

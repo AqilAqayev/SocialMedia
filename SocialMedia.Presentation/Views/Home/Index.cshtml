@@ -152,12 +152,6 @@
 
 
 
-
-
-
-
-
-
     /* Adjusting the Story Section Alignment */
     .card {
         margin: 0 auto; /* Centers the card horizontally */
@@ -261,6 +255,111 @@
             border-color: #007bff;
         }
 
+
+
+
+
+
+
+
+    .modal-content {
+        position: relative;
+        max-width: 90%; /* Maksimum genişlik */
+        max-height: 90%; /* Maksimum hündürlük */
+        overflow: hidden; /* Artıqları gizlə */
+        border-radius: 10px; /* Küncləri yumru */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: black;
+    }
+
+
+
+
+    .story-container {
+        display: flex;
+        gap: 10px;
+        padding: 20px;
+        overflow-x: auto;
+    }
+
+    .story {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        overflow: hidden;
+        cursor: pointer;
+        border: 3px solid #ff4500;
+    }
+
+        .story img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-content img {
+        max-width: 100%; /* Modalın eni ilə uyğunlaş */
+        max-height: 100%; /* Modalın hündürlüyü ilə uyğunlaş */
+        object-fit: contain; /* Şəkilin nisbətini qoruyaraq tam göstər */
+    }
+     
+
+    .close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 24px;
+        color: white;
+        cursor: pointer;
+    }
+
+    .prev, .next {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        color: white;
+        font-size: 30px;
+        cursor: pointer;
+    }
+
+    .prev {
+        left: 15px;
+    }
+
+    .next {
+        right: 15px;
+    }
+
+    .modal {
+        display: none; /* Əsasda gizli */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8); /* Qara fon */
+        z-index: 1000; /* Üst qat */
+        align-items: center; /* Şaquli mərkəzləşdirmə */
+        justify-content: center; /* Üfüqi mərkəzləşdirmə */
+    }
+    .modal img{
+        height:auto;
+        width:auto;
+    }
 </style>
 
 <div id="content-page" class="content-page">
@@ -284,7 +383,30 @@
                 </form>
                 <div>
 
+                    <div class="story-container" id="stories">
+                        @foreach (var story in Model.Stories)
+                        {
+                            <div class="story-container" id="stories">
+                                <div class="story">
+                                    <img src="@story.Stories.FirstOrDefault()?.StoryImages.FirstOrDefault()" onclick="openStory(['@(string.Join("' , '",story.Stories.Select(x=>x.StoryImages.FirstOrDefault())))'])">
+                                </div>
+                               
+                            </div>
+                            <div class="modal" id="storyModal">
+                                <span class="close" onclick="closeStory()">&times;</span>
+                                <img id="storyImage" src="">
+                            </div>
+                        }
+                    </div>
 
+                    <div class="modal" id="storyModal">
+                        <div class="modal-content">
+                            <span class="close" onclick="closeStory()">&times;</span>
+                            <span class="prev" onclick="prevStory()">&#10094;</span>
+                            <img id="storyImage" src="">
+                            <span class="next" onclick="nextStory()">&#10095;</span>
+                        </div>
+                    </div>
 
                     @foreach (var post in Model.Posts)
                     {
@@ -595,6 +717,60 @@
 
 
 
+        function addEvents(array) {
+            array.forEach((form) => {
+                form.addEventListener("submit", async (e) => {
+                    e.preventDefault();
+
+                    const postId1 = form.querySelector("input[name='PostId']").value;
+                    const parentId2 = form.querySelector("input[name='ParentId']").value;
+                    const text3 = form.querySelector("input[name='Text']").value;
+
+                    try {
+                        const response = await fetch('/Post/ReplyComment', {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-Requested-With": "XMLHttpRequest",
+                            },
+                            body: JSON.stringify({ PostId: postId1, ParentId: parentId2, Text: text3 }),
+                        });
+
+                        if (!response.ok) {
+                            console.error("Bir hata oluştu:", response.status);
+                            return;
+                        }
+
+                        const data = await response.text();
+
+                        // Yeni şərhi əlavə edin
+                        const commentContainer = form.closest('li');
+                        const newChildComment = document.createElement('li');
+                        newChildComment.classList.add('child-comment'); // Boşluq təmin edən CSS sinfi əlavə edilir
+                        newChildComment.innerHTML = data;
+
+                        commentContainer.appendChild(newChildComment); // Yeni şərh əlavə edilir
+
+                        // Formu təmizlə və gizlə
+                        form.reset();
+                        form.style.display = 'none';
+
+                        Swal.fire({
+                            position: "center",
+                            icon: "success",
+                            showConfirmButton: false,
+                            timer: 1500,
+                        });
+
+                    } catch (error) {
+                        console.error("Bir hata oluştu:", error);
+                    }
+                });
+            });
+
+        }
+
+
 
         const forms = document.querySelectorAll(".commentForm");
         const commentsAreas = document.querySelectorAll(".post-comments");
@@ -629,6 +805,11 @@
                     newComment.innerHTML = data; // Serverdən gələn HTML
                     commentList.prepend(newComment); // Əvvələ əlavə et
 
+                    const newReplyInput = commentList.querySelector(".reply-input");
+
+                    let arr = [newReplyInput];
+
+                    addEvents(arr);
                     // Formu təmizlə
                     form.reset();
 
@@ -658,64 +839,108 @@
 
 
 
-
-
-
-
         const replyForms1 = document.querySelectorAll(".reply-input");
-        replyForms1.forEach((form) => {
-            form.addEventListener("submit", async (e) => {
-                e.preventDefault();
-
-                const postId1 = form.querySelector("input[name='PostId']").value;
-                const parentId2 = form.querySelector("input[name='ParentId']").value;
-                const text3 = form.querySelector("input[name='Text']").value;
-
-                try {
-                    const response = await fetch('/Post/ReplyComment', {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-Requested-With": "XMLHttpRequest",
-                        },
-                        body: JSON.stringify({ PostId: postId1, ParentId: parentId2, Text: text3 }),
-                    });
-
-                    if (!response.ok) {
-                        console.error("Bir hata oluştu:", response.status);
-                        return;
-                    }
-
-                    const data = await response.text();
-
-                    // Yeni şərhi əlavə edin
-                    const commentContainer = form.closest('li');
-                    const newChildComment = document.createElement('li');
-                    newChildComment.classList.add('child-comment'); // Boşluq təmin edən CSS sinfi əlavə edilir
-                    newChildComment.innerHTML = data;
-
-                    commentContainer.appendChild(newChildComment); // Yeni şərh əlavə edilir
-
-                    // Formu təmizlə və gizlə
-                    form.reset();
-                    form.style.display = 'none';
-
-                    Swal.fire({
-                        position: "center",
-                        icon: "success",
-                        showConfirmButton: false,
-                        timer: 1500,
-                    });
-
-                } catch (error) {
-                    console.error("Bir hata oluştu:", error);
-                }
-            });
-        });
 
 
 
 
+
+        addEvents(replyForms1);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        let allStories = [];
+        let currentStoryIndex = 0;
+        let autoChange;
+
+        // async function fetchStories() {
+        //     try {
+        //         const response = await fetch('story/index'); Backend URL
+        //         if (!response.ok) throw new Error("Network response was not ok");
+        //         const storiesData = await response.json();
+
+        //         const container = document.getElementById("stories");
+        //         storiesData.forEach(user => {
+        //             const storyElem = document.createElement("div");
+        //             storyElem.classList.add("story");
+        //             storyElem.innerHTML = `
+        //                                         <img src="${user.profilePicture}" alt="${user.userName}"
+        //                                              onclick="openStory(${JSON.stringify(user.stories).replace(/"/g, '&quot;')})">
+        //                                     `;
+        //             container.appendChild(storyElem);
+        //         });
+        //     } catch (error) {
+        //         console.error("Error fetching stories:", error);
+        //     }
+        // }
+
+
+        function openStory(stories) {
+            console.log(stories)
+            allStories = stories;
+            currentStoryIndex = 0;
+            document.getElementById("storyImage").src = allStories[currentStoryIndex];
+            document.getElementById("storyModal").style.display = "flex";
+            startAutoChange();
+        }
+
+        function closeStory() {
+            document.getElementById("storyModal").style.display = "none";
+            clearInterval(autoChange);
+        }
+
+        function nextStory() {
+            if (currentStoryIndex < allStories.length - 1) {
+                currentStoryIndex++;
+                document.getElementById("storyImage").src = allStories[currentStoryIndex].url;
+                resetAutoChange();
+            } else {
+                closeStory();
+            }
+        }
+
+        function prevStory() {
+            if (currentStoryIndex > 0) {
+                currentStoryIndex--;
+                document.getElementById("storyImage").src = allStories[currentStoryIndex].url;
+                resetAutoChange();
+            }
+        }
+
+        function startAutoChange() {
+            autoChange = setInterval(nextStory, 15000);
+        }
+
+        function resetAutoChange() {
+            clearInterval(autoChange);
+            startAutoChange();
+        }
+
+        fetchStories();
     </script>
 
 }

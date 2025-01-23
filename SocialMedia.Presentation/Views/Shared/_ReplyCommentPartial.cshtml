@@ -1,7 +1,7 @@
 ﻿@model CommentDto
 
 
-<li class="child-comment">
+
     <div class="d-flex">
         <div class="user-img">
             <img src="@Model.ProfilePhotoUrl" alt="userimg" style="width: 50px; height: 50px; object-fit: cover;">
@@ -16,4 +16,9 @@
             </div>
         </div>
     </div>
-</li>
+
+    <style>
+        .d-flex{
+            margin-top:10px;
+        }
+    </style>

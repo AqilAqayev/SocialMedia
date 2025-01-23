@@ -18,21 +18,21 @@ builder.Services.AddBllServices();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme =GoogleDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
 }).AddCookie()
-.AddGoogle(GoogleDefaults.AuthenticationScheme,options =>
+.AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
 {
     options.ClientId = builder.Configuration.GetSection("GoogleKeys:ClientId").Value ?? "";
     options.ClientSecret = builder.Configuration.GetSection("GoogleKeys:ClientSecret").Value ?? "";
 });
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {
-    options.Password.RequiredLength = 8;    
+    options.Password.RequiredLength = 8;
     options.Lockout.AllowedForNewUsers = true;
     options.Lockout.MaxFailedAccessAttempts = 10;
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
     options.Password.RequireNonAlphanumeric = true;
-    
+
     //options.SignIn.RequireConfirmedEmail = true;
 }).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 var app = builder.Build();
@@ -44,10 +44,14 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-app.UseMiddleware<GlobalExceptionHandler>();
+
+
+if (!app.Environment.IsDevelopment())
+    app.UseMiddleware<GlobalExceptionHandler>();
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.MapHub<ChatHub>("/chathub");
+app.MapHub<ChatHub>("/chatHub");
 
 await app.InitDatabaseAsync();
 
@@ -61,7 +65,7 @@ if (!app.Environment.IsDevelopment())
 app.UseRouting();
 
 app.UseAuthorization();
-
+app.UseCors();
 app.MapControllerRoute(
       name: "areas",
       pattern: "{area:exists}/{controller=dashboard}/{action=Index}/{id?}");

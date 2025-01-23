@@ -42,7 +42,7 @@ namespace SocialMedia.DataAccess.ServiceRegistrations
             services.AddScoped<IPostImageRepository,PostImageRepository>();
 
             services.AddScoped<IFollowRepository,FollowRepository>();
-
+                
             services.AddScoped<IUserRepository,UserRepository>();
 
             services.AddScoped<IChatRepository,ChatRepository>();

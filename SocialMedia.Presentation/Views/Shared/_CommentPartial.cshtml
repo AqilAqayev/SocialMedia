@@ -1,5 +1,4 @@
 ﻿@model CommentDto
-<p>_CommentPartial.cshtml</p>
 <li>
     <div class="d-flex">
         <div class="user-img">
@@ -19,7 +18,7 @@
 
     <!-- Reply Input -->
     <form class="reply-input" asp-controller="Post" asp-action="ReplyComment" method="post" style="display: none;">
-        <input type="hidden" name="PostId" value="@Model.Id" />
+        <input type="hidden" name="PostId" value="@Model.PostId" />
         <input type="hidden" name="ParentId" value="@Model.Id" />
         <input type="text" name="Text" placeholder="Reply to this comment" required />
         <button type="submit">Reply</button>

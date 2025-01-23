@@ -13,6 +13,7 @@ public class HomeController : Controller
     private readonly IPostImageService _postImageService;
     private readonly IPostVideoService _postVideoService;
     private readonly IHomeService _homeService;
+    
 
 
     public HomeController(IPostService postService, IPostImageService postImageService, IPostVideoService postVideoService, IHomeService homeService)
