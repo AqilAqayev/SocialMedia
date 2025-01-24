@@ -31,7 +31,6 @@ namespace SocialMedia.Presentation.Controllers
         {
             var chat = await _chatService.GetChatIfExistsAsync(id);
 
-            chat.Id = id;
             return View(chat);
         }
       

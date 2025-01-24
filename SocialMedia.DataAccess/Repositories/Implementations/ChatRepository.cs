@@ -19,6 +19,7 @@ internal class ChatRepository : Repository<Chat>, IChatRepository
         return await _context.Chats
             .Include(x => x.AppUserChats)
                 .ThenInclude(x => x.AppUser)
+                .Include(X => X.User)
             .Include(x => x.Messages)
             .FirstOrDefaultAsync(x => x.Id == id && x.AppUserChats.Any(x => x.AppUserId == userId));
     }

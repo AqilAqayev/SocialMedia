@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using SocalMedia.Business.Dtos.Generic;
-using SocalMedia.Business.Dtos.PostImageDtos;
-using SocalMedia.Business.Dtos.PostVideoDtos;
 
 namespace SocalMedia.Business;
 

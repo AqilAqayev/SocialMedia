@@ -1,0 +1,19 @@
+﻿using Microsoft.AspNetCore.Http;
+
+namespace SocalMedia.Business.Extensions;
+public static class FileValidator
+{
+    public static bool ValidateSize(this IFormFile file, int mb)
+    {
+        return file.Length <= mb * 1024 * 1024;
+    }
+
+    public static bool ValidateType(this IFormFile file, string type = "image")
+    {
+        return file.ContentType.Contains(type);
+    }
+    public static bool ValidateVideoType(this IFormFile file, string type = "video")
+    {
+        return file.ContentType.Contains(type, StringComparison.OrdinalIgnoreCase);
+    }
+}

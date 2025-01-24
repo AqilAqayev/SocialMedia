@@ -1,6 +1,4 @@
 ﻿using SocalMedia.Business.Dtos.Generic;
-using SocalMedia.Business.Dtos.StoryImageDtos;
-using SocalMedia.Business.Dtos.StoryVideoDtos;
 
 namespace SocalMedia.Business.Dtos.StoryDtos;
 

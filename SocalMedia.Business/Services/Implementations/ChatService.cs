@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using SocalMedia.Business.Dtos.ChatDtos;
+using SocalMedia.Business.Dtos.MessageDtos;
 using SocalMedia.Business.Exceptions;
 using SocalMedia.Business.Hubs;
 using SocalMedia.Business.Services.Abstractions;
@@ -48,7 +49,11 @@ public class ChatService : CrudService<Chat, CreateChatDto, UpdateChatDto, ChatD
     {
         var chat = await GetChatIfExistsAsync(chatId);
 
-        var userId = _http.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
+        var userId = _http.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ;
+        if(userId == null )
+        {
+            throw new NotFoundException("User not found");
+        }
         var user = await _userManager.FindByIdAsync(userId);
         if (user is null)
             throw new NotFoundException("User not found");
@@ -64,7 +69,6 @@ public class ChatService : CrudService<Chat, CreateChatDto, UpdateChatDto, ChatD
 
         await _messageRepository.CreateAsync(message);
         await _messageRepository.SaveChangesAsync();
-
         return message;
     }
     public async Task DeleteChatIfNoMutualFollowAsync(string otherUserId)
@@ -193,7 +197,7 @@ public class ChatService : CrudService<Chat, CreateChatDto, UpdateChatDto, ChatD
             .SendAsync("MessagesMarkedAsRead", chatId, userId);
     }
 
-    public async Task<Chat?> GetChatIfExistsAsync(int id)
+    public async Task<ChatDto?> GetChatIfExistsAsync(int id)
     {
         var userId = _http.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "";
         var user = await _userManager.FindByIdAsync(userId);
@@ -204,7 +208,14 @@ public class ChatService : CrudService<Chat, CreateChatDto, UpdateChatDto, ChatD
         {
             throw new NotFoundException();
         }
-        return chat;
+
+        var dto = _mapper.Map<ChatDto>(chat);
+        var otherUser = chat.AppUserChats
+       .FirstOrDefault(ac => ac.AppUserId != userId)?.AppUser;
+
+        dto.Name = otherUser?.UserName;
+        dto.ProfileUrl = otherUser?.ProfilePhotoUrl;
+        return dto;
     }
     public async Task<Message?> SendMessageAsync(int chatId, string text, string userId, Message message)
     {

@@ -1,9 +1,10 @@
-﻿﻿@using SocialMedia.Core.Entities
+﻿@using SocalMedia.Business.Dtos.ChatDtos
+﻿@using SocialMedia.Core.Entities
 @using System.Security.Claims
 @{
     Layout = null;
 }
-@model Chat
+@model ChatDto
 
 <!DOCTYPE html>
 <html lang="en">
@@ -42,7 +43,6 @@
             color: white;
             padding: 10px 15px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
         }
 
@@ -141,6 +141,13 @@
             .chat-list li:hover {
                 background-color: #d9d9d9;
             }
+
+        .phtimg{
+            width: 50px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
     </style>
 </head>
 <body>
@@ -148,7 +155,8 @@
 
         <div class="chat-content">
             <div class="chat-header">
-                <span>Chat Adı</span>
+                <img  class="phtimg" src="@Model.ProfileUrl"   alt="Alternate Text"  />
+                <span>@Model.Name</span>
             </div>
             <div class="chat-messages">
                 <ol class="messages-list">

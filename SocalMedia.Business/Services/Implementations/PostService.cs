@@ -5,6 +5,7 @@ using SocalMedia.Business.Dtos;
 using SocalMedia.Business.Dtos.CommentDtos;
 using SocalMedia.Business.Dtos.PostDtos;
 using SocalMedia.Business.Exceptions;
+using SocalMedia.Business.Extensions;
 using SocalMedia.Business.Services.Abstractions;
 using SocalMedia.Business.Services.Implementations.Generic;
 using SocalMedia.Business.UiServices.Abstractions;
@@ -75,6 +76,14 @@ public class PostService : CrudService<Post, CreatePostDto, UpdatePostDto, PostD
 
         foreach (var image in createPostDto.ImageUrls)
         {
+            if (!image.ValidateSize(50))
+            {
+                throw new NotFoundException();
+            }
+            if (!image.ValidateType( ))
+            {
+                throw new NotFoundException();
+            }
             string imageUrl = await _cloudinaryManager.FileCreateAsync(image);
             var imageEntity = new PostImage
             {
@@ -86,6 +95,16 @@ public class PostService : CrudService<Post, CreatePostDto, UpdatePostDto, PostD
 
         foreach (var video in createPostDto.VideoUrls)
         {
+
+
+            if (!video.ValidateSize(10000))
+            {
+                throw new NotFoundException();
+            }
+            if (!video.ValidateVideoType())
+            {
+                throw new NotFoundException();
+            }
             string videoUrl = await _cloudinaryManager.VideoUploadAsync(video);
             var videoEntity = new PostVideo
             {
