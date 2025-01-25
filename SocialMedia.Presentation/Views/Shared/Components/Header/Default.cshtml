@@ -313,20 +313,35 @@
 
                     @foreach (var chat in Model.Chats)
                     {
-                        <a asp-controller="Message" asp-action="Detail" asp-route-id="@chat.Id">
-                            <div class="d-flex align-items-center mb-4">
+                        <div class="d-flex align-items-center mb-4 position-relative">
+                            <a asp-controller="Message" asp-action="Detail" asp-route-id="@chat.Id" class="d-flex flex-grow-1 align-items-center">
                                 <div class="iq-profile-avatar status-online">
                                     <img class="rounded-circle avatar-50" src="@chat.ProfileUrl" alt="">
                                 </div>
                                 <div class="ms-3">
                                     <h6 class="mb-0">@chat.Name</h6>
+                                </div>
+                            </a>
 
-                                </div>  
-                            </div>
-                        </a>
-
+                            <a class="xclas" asp-controller="chat" asp-action="Delete" asp-route-id="@chat.Id">x</a>
+                        </div>
                     }
+                    <style>
+                        .xclas {
+                            position: absolute;
+                            right: 15px; /* Position it near the right edge */
+                            top: 50%; /* Align vertically */
+                            transform: translateY(-50%); /* Center vertically */
+                            color: red; /* Highlight with red */
+                            cursor: pointer; /* Add pointer cursor for interactivity */
+                            font-size: 24px; /* Large font for visibility */
+                            font-weight: bold; /* Make it bold */
+                        }
 
+                        .d-flex.position-relative {
+                            position: relative; /* Ensure proper alignment for the "x" button */
+                        }
+                    </style>
                 </div>
                 <div class="right-sidebar-toggle bg-primary text-white mt-3">
                     <i class="ri-arrow-left-line side-left-icon"></i>
@@ -336,6 +351,7 @@
         </div>
     </div>
 </div>
+
 
 <style>
     .notification-indicator {
@@ -348,16 +364,3 @@
         margin-left: 10px;
     }
 </style>
-
-<script>
-    // connection.on("MessagesMarkedAsRead", (chatId) => {
-    //     const chatElement = document.querySelector(`#chat-${chatId}`);
-    //     if (chatElement) {
-    //         const notificationIndicator = chatElement.querySelector(".notification-indicator");
-    //         if (notificationIndicator) {
-    //             notificationIndicator.remove(); Bildirimi temizle
-    //         }
-    //     }
-    // });
-
-</script>

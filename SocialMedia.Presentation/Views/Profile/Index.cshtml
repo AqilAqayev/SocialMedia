@@ -315,7 +315,7 @@
                                                     </div>
                                                 </div>
                                             }
-                                          
+
                                         </div>
                                     </div>
                                 </div>
@@ -743,7 +743,7 @@
         function toggleReplyInput(element) {
             const replyInput = element.closest('li').querySelector('.reply-input');
             if (replyInput.style.display === 'none' || replyInput.style.display === '') {
-                replyInput.style.display = 'flex'; // Görünür hale getir
+                replyInput.style.display = 'flex';
             } else {
                 replyInput.style.display = 'none';
             }
@@ -751,7 +751,7 @@
         function toggleComments(element) {
             const commentList = element.closest('.comment-area').querySelector('.post-comments');
             if (commentList.style.display === 'none' || commentList.style.display === '') {
-                commentList.style.display = 'block'; // Yorumları görünür yap
+                commentList.style.display = 'block';
             } else {
                 commentList.style.display = 'none';
             }
@@ -779,18 +779,16 @@
                     if (data.success) {
                         const likeCountElement = document.querySelector(`#like-count-${postId}`);
                         if (likeCountElement) {
-                            // Mövcud like sayını dəyişdir
                             const currentLikes = parseInt(likeCountElement.textContent) || 0;
                             const newLikes = currentLikes + (data.isLiked ? 1 : -1);
                             likeCountElement.textContent = `${newLikes} Likes`;
                         }
 
-                        // İstifadəçinin like statusunu dəyişdir
                         const likeImage = element.querySelector("img");
                         if (data.isLiked) {
-                            likeImage.src = "../assets/images/icon/01.png"; // Bəyəndiyi hal
+                            likeImage.src = "../assets/images/icon/01.png";
                         } else {
-                            likeImage.src = "../assets/images/icon/01.png"; // Bəyənmədiyi hal
+                            likeImage.src = "../assets/images/icon/01.png";
                         }
                     }
                 })
@@ -801,6 +799,58 @@
 
 
 
+
+
+        function addEvents(array) {
+            array.forEach((form) => {
+                form.addEventListener("submit", async (e) => {
+                    e.preventDefault();
+
+                    const postId1 = form.querySelector("input[name='PostId']").value;
+                    const parentId2 = form.querySelector("input[name='ParentId']").value;
+                    const text3 = form.querySelector("input[name='Text']").value;
+
+                    try {
+                        const response = await fetch('/Post/ReplyComment', {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-Requested-With": "XMLHttpRequest",
+                            },
+                            body: JSON.stringify({ PostId: postId1, ParentId: parentId2, Text: text3 }),
+                        });
+
+                        if (!response.ok) {
+                            console.error("Bir hata oluştu:", response.status);
+                            return;
+                        }
+
+                        const data = await response.text();
+
+                        const commentContainer = form.closest('li');
+                        const newChildComment = document.createElement('li');
+                        newChildComment.classList.add('child-comment');
+                        newChildComment.innerHTML = data;
+
+                        commentContainer.appendChild(newChildComment);
+
+                        form.reset();
+                        form.style.display = 'none';
+
+                        Swal.fire({
+                            position: "center",
+                            icon: "success",
+                            showConfirmButton: false,
+                            timer: 1500,
+                        });
+
+                    } catch (error) {
+                        console.error("Bir hata oluştu:", error);
+                    }
+                });
+            });
+
+        }
 
 
 
@@ -831,13 +881,16 @@
 
                     const data = await response.text();
 
-                    // Yeni əsas şərhi əlavə et
                     const commentList = commentsAreas[i];
                     const newComment = document.createElement("li");
-                    newComment.innerHTML = data; // Serverdən gələn HTML
-                    commentList.prepend(newComment); // Əvvələ əlavə et
+                    newComment.innerHTML = data;
+                    commentList.prepend(newComment);
 
-                    // Formu təmizlə
+                    const newReplyInput = commentList.querySelector(".reply-input");
+
+                    let arr = [newReplyInput];
+
+                    addEvents(arr);
                     form.reset();
 
                     Swal.fire({
@@ -852,10 +905,6 @@
                 }
             });
         });
-
-
-
-
 
 
 
@@ -871,63 +920,89 @@
 
 
         const replyForms1 = document.querySelectorAll(".reply-input");
-        replyForms1.forEach((form) => {
-            form.addEventListener("submit", async (e) => {
-                e.preventDefault();
-
-                const postId1 = form.querySelector("input[name='PostId']").value;
-                const parentId2 = form.querySelector("input[name='ParentId']").value;
-                const text3 = form.querySelector("input[name='Text']").value;
-
-                try {
-                    const response = await fetch('/Post/ReplyComment', {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-Requested-With": "XMLHttpRequest",
-                        },
-                        body: JSON.stringify({ PostId: postId1, ParentId: parentId2, Text: text3 }),
-                    });
-
-                    if (!response.ok) {
-                        console.error("Bir hata oluştu:", response.status);
-                        return;
-                    }
-
-                    const data = await response.text();
-
-                    // Yeni şərhi əlavə edin
-                    const commentContainer = form.closest('li');
-                    const newChildComment = document.createElement('li');
-                    newChildComment.classList.add('child-comment'); // Boşluq təmin edən CSS sinfi əlavə edilir
-                    newChildComment.innerHTML = data;
-
-                    commentContainer.appendChild(newChildComment); // Yeni şərh əlavə edilir
-
-                    // Formu təmizlə və gizlə
-                    form.reset();
-                    form.style.display = 'none';
-
-                    Swal.fire({
-                        position: "center",
-                        icon: "success",
-                        showConfirmButton: false,
-                        timer: 1500,
-                    });
-
-                } catch (error) {
-                    console.error("Bir hata oluştu:", error);
-                }
-            });
-        });
 
 
 
-       
+
+
+        addEvents(replyForms1);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        let allStories = [];
+        let currentStoryIndex = 0;
+        let autoChange;
+
+
+        function openStory(stories) {
+            console.log(stories)
+            allStories = stories;
+            currentStoryIndex = 0;
+            document.getElementById("storyImage").src = allStories[currentStoryIndex];
+            document.getElementById("storyModal").style.display = "flex";
+            startAutoChange();
+        }
+
+        function closeStory() {
+            document.getElementById("storyModal").style.display = "none";
+            clearInterval(autoChange);
+        }
+
+        function nextStory() {
+            if (currentStoryIndex < allStories.length - 1) {
+                currentStoryIndex++;
+                document.getElementById("storyImage").src = allStories[currentStoryIndex].url;
+                resetAutoChange();
+            } else {
+                closeStory();
+            }
+        }
+
+        function prevStory() {
+            if (currentStoryIndex > 0) {
+                currentStoryIndex--;
+                document.getElementById("storyImage").src = allStories[currentStoryIndex].url;
+                resetAutoChange();
+            }
+        }
+
+        function startAutoChange() {
+            autoChange = setInterval(nextStory, 15000);
+        }
+
+        function resetAutoChange() {
+            clearInterval(autoChange);
+            startAutoChange();
+        }
+
+        fetchStories();
     </script>
-   
-}
 
+}
 <style>
     /* Post Kartları */
     .card_card-block_card-stretch_card-height {
@@ -936,13 +1011,13 @@
         padding: 20px;
         margin-bottom: 20px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        overflow: hidden; /* Kart dışına taşmayı engelle */
+        overflow: hidden; 
     }
 
         /* Uzun metni sarmalama */
         .card_card-block_card-stretch_card-height p {
-            word-wrap: break-word; /* Uzun kelimelerin taşmasını önle */
-            overflow-wrap: break-word; /* Eski tarayıcılar için destek */
+            word-wrap: break-word; 
+            overflow-wrap: break-word; 
         }
 
     /* Görseller ve Videolar */
@@ -951,20 +1026,18 @@
         width: 100%;
         border-radius: 8px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        margin-bottom: 0; /* Medya elementleri arasındaki boşluk */
+        margin-bottom: 0; 
     }
 
-    /* Altındaki fazla boşluğu engelle */
     .user-post {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         gap: 10px;
         margin-top: 15px;
-        margin-bottom: 0; /* Alt boşluğu sıfırla */
-        padding-bottom: 0; /* Fazla içeriği engelle */
+        margin-bottom: 0; 
+        padding-bottom: 0;
     }
 
-    /* Kart içindeki medya ve metin düzeni */
     .user-post-data {
         margin-bottom: 10px;
     }
@@ -975,7 +1048,6 @@
             margin-bottom: 5px; /* Fazla boşluğu azalt */
         }
 
-    /* Genel margin ve padding ayarları */
     .comment-area {
         margin-top: 20px;
         padding: 20px;
@@ -989,7 +1061,6 @@
         padding-bottom: 15px;
     }
 
-    /* Uzun metinli yorumlar için düzenleme */
     .comment-data-block {
         margin-left: 10px;
         background: #fff;
@@ -1000,7 +1071,6 @@
         overflow-wrap: break-word;
     }
 
-    /* Çocuk yorum düzeni */
     .child-comment {
         margin-left: 40px;
         border-left: 2px solid #ddd;
@@ -1010,10 +1080,8 @@
     .post-comments {
         display: none; /* Başlangıçta gizli */
         transition: all 0.3s ease-in-out; /* Geçiş animasyonu */
-
-        .reply-input
-
-    {
+    }
+        .reply-input {
         display: none; /* Başlangıçta gizli */
         flex-direction: column; /* Dikey hizalama */
         margin-top: 10px;
@@ -1041,10 +1109,9 @@
     }
 
         .reply-input button:hover {
-            background-color: #0056b3; /* Daha koyu mavi */
+            background-color: #0056b3; 
         }
 
-    /* Yanıt Butonu */
     .reply-toggle {
         color: #007bff;
         cursor: pointer;

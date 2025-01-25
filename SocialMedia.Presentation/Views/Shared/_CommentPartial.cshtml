@@ -16,7 +16,6 @@
         </div>
     </div>
 
-    <!-- Reply Input -->
     <form class="reply-input" asp-controller="Post" asp-action="ReplyComment" method="post" style="display: none;">
         <input type="hidden" name="PostId" value="@Model.PostId" />
         <input type="hidden" name="ParentId" value="@Model.Id" />

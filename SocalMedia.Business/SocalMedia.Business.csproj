@@ -21,8 +21,4 @@
     <ProjectReference Include="..\SocialMedia.DataAccess\SocialMedia.DataAccess.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Validators\CommentValidators\" />
-  </ItemGroup>
-
 </Project>

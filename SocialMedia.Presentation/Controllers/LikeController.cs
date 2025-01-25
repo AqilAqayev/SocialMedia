@@ -18,12 +18,7 @@ public class LikeController : Controller
 
         var likeCount = await _postService.GetPostLikeCountAsync(postId);
 
-        return Json(new
-        {
-            success = true,
-            isLiked = like,
-            likeCount = likeCount
-        });
+        return Json(new { success = true,  isLiked = like, likeCount = likeCount});
     }
 
 }

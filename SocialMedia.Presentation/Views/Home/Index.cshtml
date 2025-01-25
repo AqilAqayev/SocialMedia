@@ -660,7 +660,7 @@
         function toggleReplyInput(element) {
             const replyInput = element.closest('li').querySelector('.reply-input');
             if (replyInput.style.display === 'none' || replyInput.style.display === '') {
-                replyInput.style.display = 'flex'; // Görünür hale getir
+                replyInput.style.display = 'flex'; 
             } else {
                 replyInput.style.display = 'none';
             }
@@ -668,7 +668,7 @@
         function toggleComments(element) {
             const commentList = element.closest('.comment-area').querySelector('.post-comments');
             if (commentList.style.display === 'none' || commentList.style.display === '') {
-                commentList.style.display = 'block'; // Yorumları görünür yap
+                commentList.style.display = 'block';
             } else {
                 commentList.style.display = 'none';
             }
@@ -696,18 +696,16 @@
                     if (data.success) {
                         const likeCountElement = document.querySelector(`#like-count-${postId}`);
                         if (likeCountElement) {
-                            // Mövcud like sayını dəyişdir
                             const currentLikes = parseInt(likeCountElement.textContent) || 0;
                             const newLikes = currentLikes + (data.isLiked ? 1 : -1);
                             likeCountElement.textContent = `${newLikes} Likes`;
                         }
 
-                        // İstifadəçinin like statusunu dəyişdir
                         const likeImage = element.querySelector("img");
                         if (data.isLiked) {
-                            likeImage.src = "../assets/images/icon/01.png"; // Bəyəndiyi hal
+                            likeImage.src = "../assets/images/icon/01.png"; 
                         } else {
-                            likeImage.src = "../assets/images/icon/01.png"; // Bəyənmədiyi hal
+                            likeImage.src = "../assets/images/icon/01.png"; 
                         }
                     }
                 })
@@ -746,15 +744,13 @@
 
                         const data = await response.text();
 
-                        // Yeni şərhi əlavə edin
                         const commentContainer = form.closest('li');
                         const newChildComment = document.createElement('li');
-                        newChildComment.classList.add('child-comment'); // Boşluq təmin edən CSS sinfi əlavə edilir
+                        newChildComment.classList.add('child-comment'); 
                         newChildComment.innerHTML = data;
 
-                        commentContainer.appendChild(newChildComment); // Yeni şərh əlavə edilir
+                        commentContainer.appendChild(newChildComment); 
 
-                        // Formu təmizlə və gizlə
                         form.reset();
                         form.style.display = 'none';
 
@@ -802,18 +798,16 @@
 
                     const data = await response.text();
 
-                    // Yeni əsas şərhi əlavə et
                     const commentList = commentsAreas[i];
                     const newComment = document.createElement("li");
-                    newComment.innerHTML = data; // Serverdən gələn HTML
-                    commentList.prepend(newComment); // Əvvələ əlavə et
+                    newComment.innerHTML = data; 
+                    commentList.prepend(newComment); 
 
                     const newReplyInput = commentList.querySelector(".reply-input");
 
                     let arr = [newReplyInput];
 
                     addEvents(arr);
-                    // Formu təmizlə
                     form.reset();
 
                     Swal.fire({
@@ -879,27 +873,6 @@
         let allStories = [];
         let currentStoryIndex = 0;
         let autoChange;
-
-        // async function fetchStories() {
-        //     try {
-        //         const response = await fetch('story/index'); Backend URL
-        //         if (!response.ok) throw new Error("Network response was not ok");
-        //         const storiesData = await response.json();
-
-        //         const container = document.getElementById("stories");
-        //         storiesData.forEach(user => {
-        //             const storyElem = document.createElement("div");
-        //             storyElem.classList.add("story");
-        //             storyElem.innerHTML = `
-        //                                         <img src="${user.profilePicture}" alt="${user.userName}"
-        //                                              onclick="openStory(${JSON.stringify(user.stories).replace(/"/g, '&quot;')})">
-        //                                     `;
-        //             container.appendChild(storyElem);
-        //         });
-        //     } catch (error) {
-        //         console.error("Error fetching stories:", error);
-        //     }
-        // }
 
 
         function openStory(stories) {

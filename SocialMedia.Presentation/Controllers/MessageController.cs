@@ -2,13 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using SocalMedia.Business.Dtos.MessageDtos;
+using SocalMedia.Business.Exceptions;
 using SocalMedia.Business.Hubs;
 using SocalMedia.Business.Services.Abstractions;
-using SocalMedia.Business.StaticFiles;
 using SocalMedia.Business.UiServices.Abstractions;
 using SocialMedia.Core.Entities;
-using SocialMedia.Presentation.Extensions;
-using System.Security.Claims;
 namespace SocialMedia.Presentation.Controllers
 {
     public class MessageController : Controller
@@ -33,26 +31,35 @@ namespace SocialMedia.Presentation.Controllers
 
             return View(chat);
         }
-      
+
         [HttpPost]
 
-        public async Task<IActionResult> SendMessage([FromBody]SendMessageDto dto)
+        public async Task<IActionResult> SendMessage([FromBody] SendMessageDto dto)
         {
-            var userId =  _accountService.GetId();
+            var userId = _accountService.GetId();
             var message = await _chatService.CreateMessage(dto.Text, dto.ChatId);
             message.Chats = null;
-             await _chatService.SendMessageAsync(dto.ChatId,dto.Text, userId, message);
-          
+            await _chatService.SendMessageAsync(dto.ChatId, dto.Text, userId, message);
+
             return Json(message);
         }
+
 
         public async Task<IActionResult> Delete(int id)
         {
             var userId = _accountService.GetId();
 
             await _chatService.DeleteChatIfNoMutualFollowAsync(userId);
-            
+
             return RedirectToAction("Index", "Home");
+        }
+
+
+        public async Task<IActionResult> CreateChat(string userId)
+        {
+            var chat = await _chatService.CreateChatIfMutualFollowAsync(userId);
+
+            return RedirectToAction("Detail", new { id = chat.Id });
         }
     }
 }

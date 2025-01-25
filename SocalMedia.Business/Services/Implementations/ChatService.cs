@@ -102,6 +102,10 @@ public class ChatService : CrudService<Chat, CreateChatDto, UpdateChatDto, ChatD
         {
             throw new NotFoundException("Friend not found");
         }
+        if(friendId == null)
+        {
+            throw new NotFoundException("Friend not found");
+        }
 
         string userId = _http.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
 

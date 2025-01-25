@@ -211,7 +211,7 @@ public class FollowService : CrudService<Follow, CreateFollowDto, UpdateFollowDt
         {
             throw new NotFoundException("Follow request not found.");
         }
-        var notification = await _sendNatficationService.GetAsync(x => x.UserId == userId);
+        var notification = await _sendNatficationService.GetAsync(x => x.UserId == userId && x.IsDeleted == false);
         if (notification != null)
         {
             await _sendNatficationService.DeleteAsync(notification.Id);
