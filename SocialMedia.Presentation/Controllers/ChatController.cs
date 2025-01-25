@@ -24,9 +24,8 @@ namespace SocialMedia.Presentation.Controllers
 
         public async Task<IActionResult> Delete(int id)
         {
-            var userId = _accountService.GetId();
 
-            await _chatService.DeleteChatIfNoMutualFollowAsync(userId);
+            await _chatService.DeleteAsync(id);
 
             return RedirectToAction("Index", "Home");
         }

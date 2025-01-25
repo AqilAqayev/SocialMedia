@@ -1,12 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SocalMedia.Business;
 using SocalMedia.Business.Dtos.CommentDtos;
 using SocalMedia.Business.Services.Abstractions;
-using SocalMedia.Business.UiServices.Abstractions;
-using SocialMedia.Core.Entities;
-using SocialMedia.DataAccess.Context;
 using System.Security.Claims;
 
 namespace SocialMedia.Presentation.Controllers;
@@ -14,24 +10,19 @@ namespace SocialMedia.Presentation.Controllers;
 public class PostController : Controller
 {
     private readonly IPostService _postService;
-    private readonly UserManager<AppUser> _userManager;
-    private readonly IAccountService _accountService;
-    private readonly IStoryService _storyService;
 
 
-    public PostController(IPostService postService, UserManager<AppUser> userManager, IAccountService accountService, IStoryService storyService)
+    public PostController(IPostService postService)
     {
         _postService = postService;
-        _userManager = userManager;
-        _accountService = accountService;
-        _storyService = storyService;
+        
     }
 
     [HttpPost]
     [Authorize]
 
     public async Task<IActionResult> Create(CreatePostDto createPostDto)
-    {
+    { 
         if (!ModelState.IsValid)
         {
             return RedirectToAction("Index", "Home");
@@ -75,7 +66,15 @@ public class PostController : Controller
         var newDto = await _postService.AddReplyAsync(dto, userId);
 
         return PartialView("_ReplyCommentPartial", newDto);
-    }   
+    }
+
+
+    //[HttpPost]
+    //[Authorize]
+    //public async Task<IActionResult> Delete(string id)
+    //{
+       
+    //}
 
 
 }

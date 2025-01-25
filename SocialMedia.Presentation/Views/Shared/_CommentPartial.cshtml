@@ -12,6 +12,21 @@
                 <a href="javascript:void();">Like</a>
                 <a href="javascript:void();">Translate</a>
                 <span>@Model.CreatedTime</span>
+                <a class="ccc" asp-controller="Comment" asp-action="Delete" asp asp-route-commentUserId="@Model.Id" asp-route-postUserId="@Model.PostId">
+                    x
+                </a>
+
+                <style>
+                    .ccc {
+                        position: relative;
+                        bottom: 70px;
+                        right: 3px;
+                        color: red;
+                        cursor: pointer;
+                        font-size: 14px;
+                        font-weight: bold;
+                    }
+                </style>
             </div>
         </div>
     </div>
@@ -38,6 +53,22 @@
                     <a href="javascript:void();">Like</a>
                     <a href="javascript:void();">Reply</a>
                     <span>@child.CreatedTime</span>
+                    <a class="cCc" asp-controller="Comment" asp-action="Delete" asp asp-route-commentUserId="@Model.Id" asp-route-postUserId="@Model.PostId">
+                        x
+                    </a>
+
+                    <style>
+                        .cCc {
+                            position: relative;
+                            bottom: 40px;
+                            right: 3px;
+                            color: red;
+                            cursor: pointer;
+                            font-size: 14px;
+                            font-weight: bold;
+                        }
+                    </style>
+
                 </div>
             </div>
         </div>

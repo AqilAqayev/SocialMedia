@@ -119,7 +119,8 @@ public class AccountService : IAccountService
     public async Task<SignInResult> LoginUserAsync(LoginDto loginDto)
     {
         var user = await _userManager.FindByEmailAsync(loginDto.Email);
-        if (user == null || !user.EmailConfirmed) return SignInResult.Failed;
+        if (user == null || !user.EmailConfirmed || user.IsDisabled==true) 
+            return SignInResult.Failed;
 
         return await _signInManager.PasswordSignInAsync(user, loginDto.Password, true, true);
     }
@@ -148,6 +149,10 @@ public class AccountService : IAccountService
     public async Task<AppUser> HandleGoogleLoginAsync(ExternalLoginInfo info)
     {
         var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+        if (email is null)
+        {
+            throw new SignInException();
+        }
         var userName = info.Principal.FindFirstValue(ClaimTypes.Name);
 
         if (!string.IsNullOrEmpty(userName))
@@ -156,10 +161,19 @@ public class AccountService : IAccountService
         }
 
         var existingUser = await _userManager.FindByEmailAsync(email);
+       
         if (existingUser != null)
         {
-            await _signInManager.SignInAsync(existingUser, isPersistent: false);
-            return existingUser;
+            if (existingUser.IsDisabled == false)
+            {
+                await _signInManager.SignInAsync(existingUser, isPersistent: false);
+                return existingUser;
+            }
+            else
+            {
+                throw new SignInException("Your account has been disabled. Please contact support.");
+            }
+           
         }
 
         var newUser = new AppUser

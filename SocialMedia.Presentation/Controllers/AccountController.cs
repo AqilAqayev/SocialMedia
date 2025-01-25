@@ -2,7 +2,6 @@
 using SocalMedia.Business.Dtos.Account;
 using SocalMedia.Business.Dtos.ProfileDtos;
 using SocalMedia.Business.UiServices.Abstractions;
-using System.ComponentModel.DataAnnotations;
 
 namespace SocialMedia.Presentation.Controllers;
 
@@ -70,7 +69,15 @@ public class AccountController : Controller
         var result = await _accountService.LoginUserAsync(loginDto);
         if (!result.Succeeded)
         {
-            ModelState.AddModelError("", "Username or password is incorrect.");
+            var userLogin= await _accountService.FindUserByEmailAsync(loginDto.Email);
+            if (userLogin != null && userLogin.IsDisabled)
+            {
+                ModelState.AddModelError("", "Your account has been disabled. Please contact support.");
+            }
+            else
+            {
+                ModelState.AddModelError("", "Username or password is incorrect.");
+            }
             return View();
         }
 

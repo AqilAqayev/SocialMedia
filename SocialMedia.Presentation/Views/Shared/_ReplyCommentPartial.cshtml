@@ -13,6 +13,21 @@
                 <a href="javascript:void();">Like</a>
                 <a href="javascript:void();">Reply</a>
                 <span>@Model.CreatedTime</span>
+            <span>@Model.CreatedTime</span>  <a class="cCc" asp-controller="Comment" asp-action="Delete" asp asp-route-commentUserId="@Model.Id" asp-route-postUserId="@Model.PostId">
+                x
+            </a>
+
+            <style>
+                .cCc {
+                    position: relative;
+                    bottom: 40px;
+                    right: 3px;
+                    color: red;
+                    cursor: pointer;
+                    font-size: 14px;
+                    font-weight: bold;
+                }
+            </style>
             </div>
         </div>
     </div>

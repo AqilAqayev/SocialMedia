@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using SocalMedia.Business.Dtos.StoryDtos;
+using SocalMedia.Business.Exceptions;
+using SocalMedia.Business.Extensions;
 using SocalMedia.Business.Services.Abstractions;
 using SocalMedia.Business.Services.Implementations.Generic;
 using SocalMedia.Business.UiServices.Abstractions;
@@ -45,6 +47,14 @@ public class StoryService : CrudService<Story, CreateStoryDto, UpdateStoryDto, S
 
         foreach (var image in createStoryDto.ImagesUrls)
         {
+            if (!image.ValidateSize(50))
+            {
+                throw new NotFoundException();
+            }
+            if (!image.ValidateType())
+            {
+                throw new NotFoundException();
+            }
             string imageUrl = await _cloudinaryManager.FileCreateAsync(image);
             var imageEntity = new StoryImage
             {
@@ -59,6 +69,15 @@ public class StoryService : CrudService<Story, CreateStoryDto, UpdateStoryDto, S
 
         foreach (var video in createStoryDto.VideoUrls)
         {
+            if (!video.ValidateSize(10000))
+            {
+                throw new NotFoundException();
+            }
+            if (!video.ValidateVideoType())
+            {
+                throw new NotFoundException();
+            }
+
             string videoUrl = await _cloudinaryManager.VideoUploadAsync(video);
             var videoEntity = new StoryVideo
             {

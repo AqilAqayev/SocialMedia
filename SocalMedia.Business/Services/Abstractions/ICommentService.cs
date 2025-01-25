@@ -7,6 +7,5 @@ namespace SocalMedia.Business.Services.Abstractions;
 
 public interface ICommentService : ICrudService<Comment, CreateCommentDto, UpdateCommentDto, CommentDto>
 {
-    Task<bool> AddCommentAsync(CreateCommentDto dto);
-    Task<bool> ReplyToCommentAsync(CommentReplyDto dto);
+    Task<bool> DeleteCommentAsync(int commentId, int postId);
 }

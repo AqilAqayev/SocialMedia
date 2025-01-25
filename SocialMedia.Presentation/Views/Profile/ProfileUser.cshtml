@@ -1,72 +1,72 @@
-﻿    @using SocalMedia.Business.Dtos.ProfileDtos
+﻿﻿    @using SocalMedia.Business.Dtos.ProfileDtos
     @model ProfileOther
-    <div id="content-page" class="content-page">
-        <div class="container">
-                   <div class="row">
-                      <div class="col-sm-12">
-                         <div class="card">
-                            <div class="card-body profile-page p-0">
-                               <div class="profile-header profile-info">
-                                  <div class="cover-container">
-                                     <img src="../assets/images/page-img/profile-bg1.jpg" alt="profile-bg" class="rounded img-fluid">
-                                     <ul class="header-nav d-flex flex-wrap justify-end p-0 m-0">
-                                        <li><a href="javascript:void();"><i class="ri-pencil-line"></i></a></li>
-                                        <li><a href="javascript:void();"><i class="ri-settings-4-line"></i></a></li>
-                                     </ul>
-                                  </div>
-                                  <div class="user-detail text-center mb-3">
-                                     <div class="profile-img">
-                                        <img src="@Model.ProfilePhoto" alt="profile-img" class="avatar-130 img-fluid" />
-                                     </div>
-                                     <div class="profile-detail">
-                                        <h3 class="">@Model.Name</h3>
-                                     </div>
-                                  </div>
-                                  <div class="profile-info p-4 d-flex align-items-center justify-content-between position-relative">
-                                     <div class="social-links">
-                                        <ul class="social-data-block d-flex align-items-center justify-content-between list-inline p-0 m-0">
-                                           <li class="text-center pe-3">
-                                              <a href="#"><img src="../assets/images/icon/08.png" class="img-fluid rounded" alt="facebook"></a>
-                                           </li>
-                                           <li class="text-center pe-3">
-                                              <a href="#"><img src="../assets/images/icon/09.png" class="img-fluid rounded" alt="Twitter"></a>
-                                           </li>
-                                           <li class="text-center pe-3">
-                                              <a href="#"><img src="../assets/images/icon/10.png" class="img-fluid rounded" alt="Instagram"></a>
-                                           </li>
-                                           <li class="text-center pe-3">
-                                              <a href="#"><img src="../assets/images/icon/11.png" class="img-fluid rounded" alt="Google plus"></a>
-                                           </li>
-                                           <li class="text-center pe-3">
-                                              <a href="#"><img src="../assets/images/icon/12.png" class="img-fluid rounded" alt="You tube"></a>
-                                           </li>
-                                           <li class="text-center pe-3">
-                                              <a href="#"><img src="../assets/images/icon/13.png" class="img-fluid rounded" alt="linkedin"></a>
-                                           </li>
-                                        </ul>
-                                     </div>
-                                     <div class="social-info">
-                                        <ul class="social-data-block d-flex align-items-center justify-content-between list-inline p-0 m-0">
-                                           <li class="text-center pe-3">
-                                              <h6>Posts</h6>
-                                              <p class="mb-0">@Model.PostCount</p>
-                                           </li>
-                                           <li class="text-center pe-3">
-                                              <h6>Followers</h6>
-                                              <p class="mb-0">@Model.FollowCount</p>
-                                           </li>
-                                           <li class="text-center pe-3">
-                                              <h6>Following</h6>
-                                              <p class="mb-0">@Model.FollowingCount</p>
-                                           </li>
-                                        </ul>
-                                     </div>
-                                  </div>
-                               </div>
-                            </div>
-                         </div>
-                      </div>
+<div id="content-page" class="content-page">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
                 <div class="card">
+                    <div class="card-body profile-page p-0">
+                        <div class="profile-header profile-info">
+                            <div class="cover-container">
+                                <img src="../assets/images/page-img/profile-bg1.jpg" alt="profile-bg" class="rounded img-fluid">
+                                <ul class="header-nav d-flex flex-wrap justify-end p-0 m-0">
+                                    <li><a href="javascript:void();"><i class="ri-pencil-line"></i></a></li>
+                                    <li><a href="javascript:void();"><i class="ri-settings-4-line"></i></a></li>
+                                </ul>
+                            </div>
+                            <div class="user-detail text-center mb-3">
+                                <div class="profile-img">
+                                    <img src="@Model.ProfilePhoto" alt="profile-img" class="avatar-130 img-fluid" />
+                                </div>
+                                <div class="profile-detail">
+                                    <h3 class="">@Model.Name</h3>
+                                </div>
+                            </div>
+                            <div class="profile-info p-4 d-flex align-items-center justify-content-between position-relative">
+                                <div class="social-links">
+                                    <ul class="social-data-block d-flex align-items-center justify-content-between list-inline p-0 m-0">
+                                        <li class="text-center pe-3">
+                                            <a href="#"><img src="../assets/images/icon/08.png" class="img-fluid rounded" alt="facebook"></a>
+                                        </li>
+                                        <li class="text-center pe-3">
+                                            <a href="#"><img src="../assets/images/icon/09.png" class="img-fluid rounded" alt="Twitter"></a>
+                                        </li>
+                                        <li class="text-center pe-3">
+                                            <a href="#"><img src="../assets/images/icon/10.png" class="img-fluid rounded" alt="Instagram"></a>
+                                        </li>
+                                        <li class="text-center pe-3">
+                                            <a href="#"><img src="../assets/images/icon/11.png" class="img-fluid rounded" alt="Google plus"></a>
+                                        </li>
+                                        <li class="text-center pe-3">
+                                            <a href="#"><img src="../assets/images/icon/12.png" class="img-fluid rounded" alt="You tube"></a>
+                                        </li>
+                                        <li class="text-center pe-3">
+                                            <a href="#"><img src="../assets/images/icon/13.png" class="img-fluid rounded" alt="linkedin"></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="social-info">
+                                    <ul class="social-data-block d-flex align-items-center justify-content-between list-inline p-0 m-0">
+                                        <li class="text-center pe-3">
+                                            <h6>Posts</h6>
+                                            <p class="mb-0">@Model.PostCount</p>
+                                        </li>
+                                        <li class="text-center pe-3">
+                                            <h6>Followers</h6>
+                                            <p class="mb-0">@Model.FollowCount</p>
+                                        </li>
+                                        <li class="text-center pe-3">
+                                            <h6>Following</h6>
+                                            <p class="mb-0">@Model.FollowingCount</p>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
                 @if (!Model.FollowBtn)
                 {
                     <div class="card-body text-center">
@@ -83,16 +83,16 @@
                     </div>
                 }
 
-                    
-                </div>
-                @if (Model.Status)
-                {
-                     <div class="row">
-                      
-                         <div class="col-lg-8">
-                       
-                             <div class="card">
-                                        <div class="card-body">
+
+            </div>
+            @if (Model.Status)
+            {
+                <div class="row">
+
+                    <div class="col-lg-8">
+
+                        <div class="card">
+                            <div class="card-body">
                                 @foreach (var post in Model.Posts)
                                 {
                                     <div class="card_card-block_card-stretch_card-height">
@@ -111,8 +111,6 @@
                                                             </div>
                                                             <div class="card-post-toolbar">
                                                                 <div class="dropdown">
-                                                                   
-                                                                   
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -203,10 +201,29 @@
                                                                         <a href="javascript:void();">Like</a>
                                                                         <a href="javascript:void();">Translate</a>
                                                                         <span>@comment.CreatedTime</span>
+                                                                        <a class="ccc" asp-controller="Comment" asp-action="Delete" asp asp-route-commentUserId="@comment.Id" asp-route-postUserId="@comment.PostId">
+                                                                            x
+                                                                        </a>
+
+                                                                        <style>
+                                                                            .ccc {
+                                                                                position: relative;
+                                                                                bottom: 70px;
+                                                                                right: 3px;
+                                                                                color: red;
+                                                                                cursor: pointer;
+                                                                                font-size: 14px;
+                                                                                font-weight: bold;
+                                                                            }
+                                                                        </style>
+
+
+
                                                                     </div>
                                                                 </div>
                                                             </div>
 
+                                                            <!-- Reply Input -->
                                                             <form class="reply-input" asp-controller="Post" asp-action="ReplyComment" method="post" style="display: none;">
                                                                 <input type="hidden" name="PostId" value="@post.Id" />
                                                                 <input type="hidden" name="ParentId" value="@comment.Id" />
@@ -214,6 +231,7 @@
                                                                 <button type="submit">Reply</button>
                                                             </form>
 
+                                                            <!-- Child Comments -->
                                                             @foreach (var child in comment.Children)
                                                             {
                                                             <li class="child-comment">
@@ -227,7 +245,22 @@
                                                                         <div class="d-flex flex-wrap align-items-center comment-activity">
                                                                             <a href="javascript:void();">Like</a>
                                                                             <a href="javascript:void();">Reply</a>
-                                                                            <span>@child.CreatedTime</span>
+                                                                            <span>@child.CreatedTime</span>  <a class="cCc" asp-controller="Comment" asp-action="Delete" asp asp-route-commentUserId="@comment.Id" asp-route-postUserId="@comment.PostId">
+                                                                                x
+                                                                            </a>
+
+                                                                            <style>
+                                                                                .cCc {
+                                                                                    position: relative;
+                                                                                    bottom: 40px;
+                                                                                    right: 3px;
+                                                                                    color: red;
+                                                                                    cursor: pointer;
+                                                                                    font-size: 14px;
+                                                                                    font-weight: bold;
+                                                                                }
+                                                                            </style>
+
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -236,7 +269,6 @@
                                                         </li>
                                                     }
                                                 </ul>
-
 
                                                 <form class="commentForm" asp-controller="Post" asp-action="PostComment" method="post">
                                                     <input type="hidden" name="PostId" value="@post.Id" />
@@ -253,14 +285,14 @@
                                     </div>
                                 }
 
-                                        </div>
-                                    </div>
-                         </div>
-                      </div>
-                }
-                 
+                            </div>
+                        </div>
+                    </div>
                 </div>
-          </div>
+            }
+
+        </div>
+    </div>
 
 
     <style>
@@ -271,12 +303,12 @@
             padding: 10px 20px;
             border-radius: 5px;
             font-size: 16px;
-            cursor: pointer; 
+            cursor: pointer;
             transition: background-color 0.3s ease;
         }
 
             .add-follow-button:hover {
-                background-color: #0056b3; 
+                background-color: #0056b3;
             }
     </style>
 
@@ -553,23 +585,24 @@
             padding: 20px;
             margin-bottom: 20px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            overflow: hidden; 
+            overflow: hidden;
         }
 
-       .col-lg-8{
-           margin-left:180px;
-       }
-            .card_card-block_card-stretch_card-height p {
-                word-wrap: break-word;
-                overflow-wrap: break-word; 
-            }
+        .col-lg-8 {
+            margin-left: 180px;
+        }
+
+        .card_card-block_card-stretch_card-height p {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
 
         .user-post img,
         .user-post video {
             width: 100%;
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            margin-bottom: 0; 
+            margin-bottom: 0;
         }
 
         .user-post {
@@ -577,7 +610,7 @@
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 10px;
             margin-top: 15px;
-            margin-bottom: 0; 
+            margin-bottom: 0;
             padding-bottom: 0;
         }
 
@@ -588,7 +621,7 @@
             .user-post-data p {
                 font-size: 14px;
                 color: #555;
-                margin-bottom: 5px; 
+                margin-bottom: 5px;
             }
 
         .comment-area {
@@ -610,7 +643,7 @@
             border-radius: 8px;
             padding: 10px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            word-wrap: break-word; 
+            word-wrap: break-word;
             overflow-wrap: break-word;
         }
 
@@ -621,14 +654,13 @@
         }
 
         .post-comments {
-            display: none; 
-            transition: all 0.3s ease-in-out; 
-
+            display: none;
+            transition: all 0.3s ease-in-out;
             .reply-input
 
         {
-            display: none; 
-            flex-direction: column; 
+            display: none;
+            flex-direction: column;
             margin-top: 10px;
         }
 

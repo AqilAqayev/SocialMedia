@@ -46,8 +46,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 
-if (!app.Environment.IsDevelopment())
-    app.UseMiddleware<GlobalExceptionHandler>();
+ app.UseMiddleware<GlobalExceptionHandler>();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

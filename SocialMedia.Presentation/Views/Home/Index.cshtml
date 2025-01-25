@@ -12,8 +12,8 @@
     }
 
         .card_card-block_card-stretch_card-height p {
-            word-wrap: break-word; 
-            overflow-wrap: break-word; 
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
     .user-post img,
@@ -21,7 +21,7 @@
         width: 100%;
         border-radius: 8px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        margin-bottom: 0; 
+        margin-bottom: 0;
     }
 
     .user-post {
@@ -29,8 +29,8 @@
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         gap: 10px;
         margin-top: 15px;
-        margin-bottom: 0; 
-        padding-bottom: 0; 
+        margin-bottom: 0;
+        padding-bottom: 0;
     }
 
     .user-post-data {
@@ -82,7 +82,7 @@
 
     .reply-input {
         display: none;
-        flex-direction: column; 
+        flex-direction: column;
         margin-top: 10px;
     }
 
@@ -98,7 +98,7 @@
 
         .reply-input button {
             padding: 10px 20px;
-            background-color: #007bff; 
+            background-color: #007bff;
             color: #fff;
             border: none;
             border-radius: 5px;
@@ -316,7 +316,7 @@
         max-height: 100%; /* Modalın hündürlüyü ilə uyğunlaş */
         object-fit: contain; /* Şəkilin nisbətini qoruyaraq tam göstər */
     }
-     
+
 
     .close {
         position: absolute;
@@ -356,10 +356,11 @@
         align-items: center; /* Şaquli mərkəzləşdirmə */
         justify-content: center; /* Üfüqi mərkəzləşdirmə */
     }
-    .modal img{
-        height:auto;
-        width:auto;
-    }
+
+        .modal img {
+            height: auto;
+            width: auto;
+        }
 </style>
 
 <div id="content-page" class="content-page">
@@ -368,7 +369,7 @@
             <div class="col-lg-8 row m-0 p-0">
                 <form class="post-text ms-3 w-100" action="/Post/Create" method="post" enctype="multipart/form-data">
                     <div class="form-group">
-                        <input type="text" name="Text" class="form-control rounded" placeholder="Write something here..." style="border:none;" required>
+                        <input type="text" name="Text" class="form-control rounded" placeholder="Write something here..." style="border:none;">
                     </div>
                     <div class="form-group">
                         <label for="ImageUrls">Upload Images</label>
@@ -393,7 +394,7 @@
                                 <div class="story">
                                     <img src="@story.Stories.FirstOrDefault()?.StoryImages.FirstOrDefault()" onclick="openStory(['@(string.Join("' , '",story.Stories.Select(x=>x.StoryVideos.FirstOrDefault())))'])">
                                 </div>
-                               
+
                             </div>
                             <div class="modal" id="storyModal">
                                 <span class="close" onclick="closeStory()">&times;</span>
@@ -562,6 +563,24 @@
                                                             <a href="javascript:void();">Like</a>
                                                             <a href="javascript:void();">Translate</a>
                                                             <span>@comment.CreatedTime</span>
+                                                            <a class="ccc" asp-controller="Comment" asp-action="Delete" asp asp-route-commentUserId="@comment.Id" asp-route-postUserId="@comment.PostId">
+                                                                x
+                                                            </a>
+
+                                                            <style>
+                                                                .ccc {
+                                                                    position: relative; 
+                                                                    bottom: 70px; 
+                                                                    right: 3px; 
+                                                                    color: red; 
+                                                                    cursor: pointer; 
+                                                                    font-size: 14px; 
+                                                                    font-weight: bold; 
+                                                                }
+                                                            </style>
+
+
+
                                                         </div>
                                                     </div>
                                                 </div>
@@ -588,7 +607,22 @@
                                                             <div class="d-flex flex-wrap align-items-center comment-activity">
                                                                 <a href="javascript:void();">Like</a>
                                                                 <a href="javascript:void();">Reply</a>
-                                                                <span>@child.CreatedTime</span>
+                                                                <span>@child.CreatedTime</span>  <a class="cCc" asp-controller="Comment" asp-action="Delete" asp asp-route-commentUserId="@comment.Id" asp-route-postUserId="@comment.PostId">
+                                                                    x
+                                                                </a>
+
+                                                                <style>
+                                                                    .cCc {
+                                                                        position: relative;
+                                                                        bottom: 40px;
+                                                                        right: 3px;
+                                                                        color: red;
+                                                                        cursor: pointer;
+                                                                        font-size: 14px;
+                                                                        font-weight: bold;
+                                                                    }
+                                                                </style>
+
                                                             </div>
                                                         </div>
                                                     </div>
@@ -660,7 +694,7 @@
         function toggleReplyInput(element) {
             const replyInput = element.closest('li').querySelector('.reply-input');
             if (replyInput.style.display === 'none' || replyInput.style.display === '') {
-                replyInput.style.display = 'flex'; 
+                replyInput.style.display = 'flex';
             } else {
                 replyInput.style.display = 'none';
             }
@@ -703,9 +737,9 @@
 
                         const likeImage = element.querySelector("img");
                         if (data.isLiked) {
-                            likeImage.src = "../assets/images/icon/01.png"; 
+                            likeImage.src = "../assets/images/icon/01.png";
                         } else {
-                            likeImage.src = "../assets/images/icon/01.png"; 
+                            likeImage.src = "../assets/images/icon/01.png";
                         }
                     }
                 })
@@ -746,10 +780,10 @@
 
                         const commentContainer = form.closest('li');
                         const newChildComment = document.createElement('li');
-                        newChildComment.classList.add('child-comment'); 
+                        newChildComment.classList.add('child-comment');
                         newChildComment.innerHTML = data;
 
-                        commentContainer.appendChild(newChildComment); 
+                        commentContainer.appendChild(newChildComment);
 
                         form.reset();
                         form.style.display = 'none';
@@ -800,8 +834,8 @@
 
                     const commentList = commentsAreas[i];
                     const newComment = document.createElement("li");
-                    newComment.innerHTML = data; 
-                    commentList.prepend(newComment); 
+                    newComment.innerHTML = data;
+                    commentList.prepend(newComment);
 
                     const newReplyInput = commentList.querySelector(".reply-input");
 
