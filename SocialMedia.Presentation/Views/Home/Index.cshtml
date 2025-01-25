@@ -391,9 +391,7 @@
                                 <div class="story">
                                     <img src="@story.Stories.FirstOrDefault()?.StoryImages.FirstOrDefault()" onclick="openStory(['@(string.Join("' , '",story.Stories.Select(x=>x.StoryImages.FirstOrDefault())))'])">
                                 </div>
-                                <div class="story">
-                                    <img src="@story.Stories.FirstOrDefault()?.StoryImages.FirstOrDefault()" onclick="openStory(['@(string.Join("' , '",story.Stories.Select(x=>x.StoryVideos.FirstOrDefault())))'])">
-                                </div>
+                               
 
                             </div>
                             <div class="modal" id="storyModal">
